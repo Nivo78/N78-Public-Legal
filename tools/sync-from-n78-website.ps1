@@ -6,6 +6,7 @@
 #>
 param(
     [string] $WebsiteRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-Website'),
+    [string] $ApaRepoRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-APA'),
     [string] $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 )
 
@@ -22,6 +23,7 @@ $apps = @(
     @{ Slug = 'life';       Name = 'N78-Life' }
     @{ Slug = 'estimate';   Name = 'N78-Estimate'; FamilyTerms = $true }
     @{ Slug = 'ops';        Name = 'N78-Ops'; PrivacyBody = 'ops\N78-Ops-Privacy\privacy_body.html'; TermsBody = 'ops\N78-Ops-Terms\terms_body.html' }
+    @{ Slug = 'apa';        Name = 'N78-APA' }
 )
 
 $familyTermsOverrides = @{
@@ -54,6 +56,29 @@ function Expand-N78FamilyTermsHtml {
     }
     foreach ($key in $map.Keys) { $tpl = $tpl.Replace($key, [string]$map[$key]) }
     return $tpl
+}
+
+function Get-N78ApaWebsiteRoot {
+    param([string] $ApaRepo, [string] $RepoRoot)
+    $live = Join-Path $ApaRepo 'code\Website'
+    if (Test-Path -LiteralPath (Join-Path $live 'apa\privacy\index.html')) {
+        return $live
+    }
+    $staging = Join-Path $RepoRoot '.staging\apa-website'
+    foreach ($rel in @('apa\privacy\index.html', 'apa\terms\index.html')) {
+        $gitPath = 'code/Website/' + ($rel -replace '\\', '/')
+        $dest = Join-Path $staging $rel
+        $destDir = Split-Path -Parent $dest
+        if (-not (Test-Path -LiteralPath $destDir)) {
+            New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+        }
+        $content = & git -C $ApaRepo show "HEAD:$gitPath" 2>&1
+        if ($LASTEXITCODE -ne 0) {
+            throw "Could not read $gitPath from N78-APA ($ApaRepo). Check out the repo or fix the path."
+        }
+        Set-Content -LiteralPath $dest -Value $content -Encoding UTF8
+    }
+    return $staging
 }
 
 function Get-SafePageFileName {
@@ -153,8 +178,17 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: system
     Set-Content -LiteralPath $cssDest -Value ($base + $extra) -Encoding UTF8
 }
 
+$apaWebsiteRoot = $null
+if (Test-Path -LiteralPath $ApaRepoRoot) {
+    $apaWebsiteRoot = Get-N78ApaWebsiteRoot -ApaRepo $ApaRepoRoot -RepoRoot $RepoRoot
+}
+
 $manifest = @()
 foreach ($app in $apps) {
+    $appWebsiteRoot = $WebsiteRoot
+    if ($app.Slug -eq 'apa' -and $apaWebsiteRoot) {
+        $appWebsiteRoot = $apaWebsiteRoot
+    }
     foreach ($kind in @('privacy', 'terms')) {
         $bodyRel = ''
         if ($kind -eq 'privacy' -and $app.PrivacyBody) { $bodyRel = $app.PrivacyBody }
@@ -169,9 +203,9 @@ foreach ($app in $apps) {
             $manifest += [pscustomobject]@{ App = $app.Name; Kind = $kind; File = "pages/$outName" }
             continue
         }
-        $src = Resolve-N78LegalSourceFile -WebsiteRoot $WebsiteRoot -Slug $app.Slug -Kind $kind -BodyRelative $bodyRel
+        $src = Resolve-N78LegalSourceFile -WebsiteRoot $appWebsiteRoot -Slug $app.Slug -Kind $kind -BodyRelative $bodyRel
         if (-not $src) {
-            Write-Warning "Skip $($app.Name) $kind — no source under $WebsiteRoot"
+            Write-Warning "Skip $($app.Name) $kind — no source under $appWebsiteRoot"
             continue
         }
         switch ($src.Mode) {
@@ -196,7 +230,7 @@ $indexLines = @(
     '<link rel="stylesheet" href="legal.css">',
     '</head><body><main class="app"><article class="panel legal-prose">',
     '<h1>Nivo78 public legal mirror</h1>',
-    '<p>Continuity copies of product privacy and terms (sourced from <code>N78-Website</code>). Primary site: <a class="text-link" href="https://nivo78.com/">nivo78.com</a>.</p>',
+    '<p>Canonical public privacy and terms for Nivo78 apps (sourced from <code>N78-Website</code> via <code>tools/sync-from-n78-website.ps1</code>). Marketing: <a class="text-link" href="https://nivo78.com/">nivo78.com</a>.</p>',
     '<ul>'
 )
 foreach ($row in ($manifest | Sort-Object App, Kind)) {
@@ -206,29 +240,5 @@ foreach ($row in ($manifest | Sort-Object App, Kind)) {
 $indexLines += @('</ul>', '</article></main></body></html>')
 Set-Content -LiteralPath (Join-Path $RepoRoot 'index.html') -Value ($indexLines -join "`n") -Encoding UTF8
 
-$readme = @"
-# N78-Public-Legal
-
-Public mirror of Nivo78 product **privacy** and **terms** HTML for continuity if nivo78.com is unavailable.
-
-## Files
-
-Each product uses flat names under ``pages/``:
-
-- ``{App display name}.privacy.html``
-- ``{App display name}.terms.html``
-
-Example: ``pages/N78-Machining.privacy.html``
-
-## Refresh from N78-Website
-
-``````powershell
-pwsh -NoProfile -File tools/sync-from-n78-website.ps1
-``````
-
-## GitHub Pages
-
-Publish from branch ``main``, folder ``/`` (root). Enable Pages in repo settings after push.
-"@
-Set-Content -LiteralPath (Join-Path $RepoRoot 'README.md') -Value $readme.TrimEnd() -Encoding UTF8
+& (Join-Path $PSScriptRoot 'write-legal-url-catalog.ps1') -RepoRoot $RepoRoot
 Write-Host "[PASS] Sync complete ($($manifest.Count) pages)"
