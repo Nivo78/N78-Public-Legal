@@ -1,0 +1,45 @@
+/**
+ * Nivo78 privacy policy header — mandatory first two lines on every privacy page.
+ * Canonical copy: N78APA code/Website/_shared/n78_legal_privacy_header.css
+ * Spec: reference/NIVO78_APP_STANDARD.txt — Privacy policy first two lines
+ */
+:root {
+  --privacy-h1-size: 1.75rem;
+  --privacy-tagline-size: 1rem;
+  --privacy-product-name-size: calc(1.5rem - 4pt);
+}
+
+.n78-privacy-policy-header {
+  margin-bottom: 20px;
+}
+
+.header h1,
+.n78-privacy-policy-header h1 {
+  margin: 0;
+  font-size: var(--privacy-h1-size);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.header p.policy-product-name,
+.n78-privacy-policy-header p.policy-product-name {
+  margin: 8px 0 6px;
+  font-size: var(--privacy-product-name-size);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Flat mirror pages (N78-Public-Legal) */
+:root {
+  color-scheme: light;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --link: #006eff;
+}
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, Segoe UI, Roboto, sans-serif; line-height: 1.55; }
+.app { max-width: 48rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+.text-link { color: var(--link); }

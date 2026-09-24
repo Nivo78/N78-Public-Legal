@@ -1,0 +1,234 @@
+#Requires -Version 5.1
+<#
+.SYNOPSIS
+  Copy privacy and terms HTML from N78-Website into flat GitHub Pages files:
+  pages/{AppDisplayName}.privacy.html and pages/{AppDisplayName}.terms.html
+#>
+param(
+    [string] $WebsiteRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-Website'),
+    [string] $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+)
+
+$ErrorActionPreference = 'Stop'
+
+$apps = @(
+    @{ Slug = 'dash';       Name = 'N78-Dash' }
+    @{ Slug = 'probe';      Name = 'N78-Probe' }
+    @{ Slug = 'stllite';    Name = 'N78 STL Lite' }
+    @{ Slug = 'track';      Name = 'N78-Track' }
+    @{ Slug = 'machining';  Name = 'N78-Machining' }
+    @{ Slug = 'electrical'; Name = 'N78-Electrical' }
+    @{ Slug = 'frame';      Name = 'N78-Frame' }
+    @{ Slug = 'life';       Name = 'N78-Life' }
+    @{ Slug = 'estimate';   Name = 'N78-Estimate'; FamilyTerms = $true }
+    @{ Slug = 'ops';        Name = 'N78-Ops'; PrivacyBody = 'ops\N78-Ops-Privacy\privacy_body.html'; TermsBody = 'ops\N78-Ops-Terms\terms_body.html' }
+)
+
+$familyTermsOverrides = @{
+    estimate = @{
+        terms_effective = 'August 31, 2026'
+        terms_version   = '1'
+        one_job         = 'Turn measurements and labor into a practical job price for small businesses and solo operators.'
+    }
+}
+
+function Expand-N78FamilyTermsHtml {
+    param(
+        [string] $WebsiteRoot,
+        [string] $Slug,
+        [string] $DisplayName
+    )
+    $tplPath = Join-Path $WebsiteRoot 'legal\terms_family.html'
+    if (-not (Test-Path -LiteralPath $tplPath)) { throw "Missing $tplPath" }
+    $tpl = Get-Content -LiteralPath $tplPath -Raw -Encoding UTF8
+    $ovr = $familyTermsOverrides[$Slug]
+    if (-not $ovr) { $ovr = @{ terms_effective = 'September 2, 2026'; terms_version = '1'; one_job = 'Finish the stated job on this device without a Nivo78 account.' } }
+    $year = (Get-Date).Year
+    $map = @{
+        '{{PRODUCT_TITLE}}'   = $DisplayName
+        '{{PRODUCT_SLUG}}'    = $Slug
+        '{{TERMS_EFFECTIVE}}' = $ovr.terms_effective
+        '{{TERMS_VERSION}}'   = $ovr.terms_version
+        '{{ONE_JOB}}'         = $ovr.one_job
+        '{{COPYRIGHT_YEAR}}'  = [string]$year
+    }
+    foreach ($key in $map.Keys) { $tpl = $tpl.Replace($key, [string]$map[$key]) }
+    return $tpl
+}
+
+function Get-SafePageFileName {
+    param([string] $DisplayName, [string] $Kind)
+    return "$DisplayName.$Kind.html"
+}
+
+function Resolve-N78LegalSourceFile {
+    param(
+        [string] $WebsiteRoot,
+        [string] $Slug,
+        [ValidateSet('privacy', 'terms')][string] $Kind,
+        [string] $BodyRelative = ''
+    )
+    if ($BodyRelative) {
+        $bodyPath = Join-Path $WebsiteRoot $BodyRelative
+        if (Test-Path -LiteralPath $bodyPath) { return @{ Mode = 'body'; Path = $bodyPath } }
+        throw "Missing body source: $bodyPath"
+    }
+    $dir = Join-Path $WebsiteRoot "$Slug\$Kind"
+    $html = Join-Path $dir 'index.html'
+    $php = Join-Path $dir 'index.php'
+    if (Test-Path -LiteralPath $html) { return @{ Mode = 'file'; Path = $html } }
+    if (Test-Path -LiteralPath $php) { return @{ Mode = 'php'; Path = $php } }
+    return $null
+}
+
+function Convert-N78LegalHtmlForPages {
+    param(
+        [string] $Html,
+        [string] $DisplayName,
+        [ValidateSet('privacy', 'terms')][string] $Kind
+    )
+    $titleKind = if ($Kind -eq 'privacy') { 'Privacy Policy' } else { 'Terms of Use' }
+    $h = $Html
+    $h = $h -replace 'href="\.\./legal\.css"', 'href="../legal.css"'
+    $h = $h -replace 'href="\.\./\.\./legal\.css"', 'href="../legal.css"'
+    $h = $h -replace 'href="\.\./support/"', 'href="https://nivo78.com/support/"'
+    $h = $h -replace 'href="\.\./\.\./support/"', 'href="https://nivo78.com/support/"'
+    if ($h -notmatch '<html') {
+        $h = @"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$DisplayName — $titleKind</title>
+  <meta name="robots" content="index, follow">
+  <link rel="stylesheet" href="../legal.css">
+</head>
+<body>
+<main class="app">
+<article class="panel legal-prose">
+$h
+</article>
+</main>
+</body>
+</html>
+"@
+    }
+    return $h
+}
+
+function Read-N78PhpLegalMain {
+    param([string] $PhpPath)
+    $raw = Get-Content -LiteralPath $PhpPath -Raw -Encoding UTF8
+    if ($raw -match '(?s)<main\s+class="app">(.*)</main>') {
+        return $Matches[1].Trim()
+    }
+    throw "Could not extract <main> from $PhpPath"
+}
+
+$pagesDir = Join-Path $RepoRoot 'pages'
+New-Item -ItemType Directory -Path $pagesDir -Force | Out-Null
+
+$cssSrc = Join-Path $WebsiteRoot 'assets\css\n78_legal_privacy_header.css'
+$cssDest = Join-Path $RepoRoot 'legal.css'
+if (Test-Path -LiteralPath $cssSrc) {
+    $base = Get-Content -LiteralPath $cssSrc -Raw -Encoding UTF8
+    $extra = @'
+
+/* Flat mirror pages (N78-Public-Legal) */
+:root {
+  color-scheme: light;
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --link: #006eff;
+}
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, Segoe UI, Roboto, sans-serif; line-height: 1.55; }
+.app { max-width: 48rem; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem 1.5rem; }
+.text-link { color: var(--link); }
+'@
+    Set-Content -LiteralPath $cssDest -Value ($base + $extra) -Encoding UTF8
+}
+
+$manifest = @()
+foreach ($app in $apps) {
+    foreach ($kind in @('privacy', 'terms')) {
+        $bodyRel = ''
+        if ($kind -eq 'privacy' -and $app.PrivacyBody) { $bodyRel = $app.PrivacyBody }
+        if ($kind -eq 'terms' -and $app.TermsBody) { $bodyRel = $app.TermsBody }
+        if ($kind -eq 'terms' -and $app.FamilyTerms) {
+            $content = Expand-N78FamilyTermsHtml -WebsiteRoot $WebsiteRoot -Slug $app.Slug -DisplayName $app.Name
+            $outName = Get-SafePageFileName -DisplayName $app.Name -Kind $kind
+            $outPath = Join-Path $pagesDir $outName
+            $final = Convert-N78LegalHtmlForPages -Html $content -DisplayName $app.Name -Kind $kind
+            Set-Content -LiteralPath $outPath -Value $final.TrimEnd() -Encoding UTF8
+            Write-Host "Wrote $outName (family terms template)"
+            $manifest += [pscustomobject]@{ App = $app.Name; Kind = $kind; File = "pages/$outName" }
+            continue
+        }
+        $src = Resolve-N78LegalSourceFile -WebsiteRoot $WebsiteRoot -Slug $app.Slug -Kind $kind -BodyRelative $bodyRel
+        if (-not $src) {
+            Write-Warning "Skip $($app.Name) $kind — no source under $WebsiteRoot"
+            continue
+        }
+        switch ($src.Mode) {
+            'file' { $content = Get-Content -LiteralPath $src.Path -Raw -Encoding UTF8 }
+            'body' { $content = Get-Content -LiteralPath $src.Path -Raw -Encoding UTF8 }
+            'php' { $content = Read-N78PhpLegalMain -PhpPath $src.Path }
+            default { throw "Unknown mode $($src.Mode)" }
+        }
+        $outName = Get-SafePageFileName -DisplayName $app.Name -Kind $kind
+        $outPath = Join-Path $pagesDir $outName
+        $final = Convert-N78LegalHtmlForPages -Html $content -DisplayName $app.Name -Kind $kind
+        Set-Content -LiteralPath $outPath -Value $final.TrimEnd() -Encoding UTF8
+        Write-Host "Wrote $outName"
+        $manifest += [pscustomobject]@{ App = $app.Name; Kind = $kind; File = "pages/$outName" }
+    }
+}
+
+$indexLines = @(
+    '<!DOCTYPE html>',
+    '<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">',
+    '<title>Nivo78 — public legal mirror</title>',
+    '<link rel="stylesheet" href="legal.css">',
+    '</head><body><main class="app"><article class="panel legal-prose">',
+    '<h1>Nivo78 public legal mirror</h1>',
+    '<p>Continuity copies of product privacy and terms (sourced from <code>N78-Website</code>). Primary site: <a class="text-link" href="https://nivo78.com/">nivo78.com</a>.</p>',
+    '<ul>'
+)
+foreach ($row in ($manifest | Sort-Object App, Kind)) {
+    $label = if ($row.Kind -eq 'privacy') { 'Privacy' } else { 'Terms' }
+    $indexLines += "<li><a class=`"text-link`" href=`"$($row.File)`">$($row.App) — $label</a></li>"
+}
+$indexLines += @('</ul>', '</article></main></body></html>')
+Set-Content -LiteralPath (Join-Path $RepoRoot 'index.html') -Value ($indexLines -join "`n") -Encoding UTF8
+
+$readme = @"
+# N78-Public-Legal
+
+Public mirror of Nivo78 product **privacy** and **terms** HTML for continuity if nivo78.com is unavailable.
+
+## Files
+
+Each product uses flat names under ``pages/``:
+
+- ``{App display name}.privacy.html``
+- ``{App display name}.terms.html``
+
+Example: ``pages/N78-Machining.privacy.html``
+
+## Refresh from N78-Website
+
+``````powershell
+pwsh -NoProfile -File tools/sync-from-n78-website.ps1
+``````
+
+## GitHub Pages
+
+Publish from branch ``main``, folder ``/`` (root). Enable Pages in repo settings after push.
+"@
+Set-Content -LiteralPath (Join-Path $RepoRoot 'README.md') -Value $readme.TrimEnd() -Encoding UTF8
+Write-Host "[PASS] Sync complete ($($manifest.Count) pages)"
