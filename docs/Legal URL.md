@@ -29,8 +29,8 @@ Canonical GitHub Pages base: `https://nivo78.github.io/N78-Public-Legal/`
 - **N78-Ops — Terms** (`pages/N78-Ops.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Ops.terms.html
 - **N78-Probe — Privacy** (`pages/N78-Probe.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Probe.privacy.html
 - **N78-Probe — Terms** (`pages/N78-Probe.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Probe.terms.html
-- **N78-Stl Lite — Privacy** (`pages/N78-Stl Lite.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Stl%20Lite.privacy.html
-- **N78-Stl Lite — Terms** (`pages/N78-Stl Lite.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Stl%20Lite.terms.html
+- **N78-StlLite — Privacy** (`pages/N78-StlLite.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-StlLite.privacy.html
+- **N78-StlLite — Terms** (`pages/N78-StlLite.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-StlLite.terms.html
 - **N78-Track — Privacy** (`pages/N78-Track.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Track.privacy.html
 - **N78-Track — Terms** (`pages/N78-Track.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Track.terms.html
 

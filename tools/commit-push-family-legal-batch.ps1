@@ -22,7 +22,7 @@ $repos = @(
     'C:\Users\Mike\Desktop\Nivo78\Business\N78-Standards',
     'C:\Users\Mike\Desktop\Nivo78\N78-QRTest'
 )
-$msg = "Canonical public legal on GitHub Pages (N78-Public-Legal).`n`nApps use nivo78.github.io legal URLs; N78-Stl Lite customer display name; kit/theme URL helpers."
+$msg = "Canonical public legal on GitHub Pages (N78-Public-Legal).`n`nApps use nivo78.github.io legal URLs; N78-StlLite customer display name; kit/theme URL helpers."
 foreach ($repo in $repos) {
     if (-not (Test-Path -LiteralPath (Join-Path $repo '.git'))) { continue }
     Push-Location -LiteralPath $repo

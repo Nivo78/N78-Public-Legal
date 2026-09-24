@@ -15,7 +15,7 @@ $ErrorActionPreference = 'Stop'
 $apps = @(
     @{ Slug = 'dash';       Name = 'N78-Dash' }
     @{ Slug = 'probe';      Name = 'N78-Probe' }
-    @{ Slug = 'stllite';    Name = 'N78-Stl Lite' }
+    @{ Slug = 'stllite';    Name = 'N78-StlLite' }
     @{ Slug = 'track';      Name = 'N78-Track' }
     @{ Slug = 'machining';  Name = 'N78-Machining' }
     @{ Slug = 'electrical'; Name = 'N78-Electrical' }
