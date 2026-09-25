@@ -7,7 +7,9 @@
 param(
     [string] $WebsiteRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-Website'),
     [string] $ApaRepoRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-APA'),
-    [string] $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+    [string] $OpsRepoRoot = (Join-Path $env:USERPROFILE 'Desktop\Nivo78\N78-Ops'),
+    [string] $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path,
+    [switch] $OpsOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -22,7 +24,7 @@ $apps = @(
     @{ Slug = 'frame';      Name = 'N78-Frame' }
     @{ Slug = 'life';       Name = 'N78-Life' }
     @{ Slug = 'estimate';   Name = 'N78-Estimate'; FamilyTerms = $true }
-    @{ Slug = 'ops';        Name = 'N78-Ops'; PrivacyBody = 'ops\N78-Ops-Privacy\privacy_body.html'; TermsBody = 'ops\N78-Ops-Terms\terms_body.html' }
+    @{ Slug = 'ops';        Name = 'N78-Ops'; OpsFromAppAssets = $true }
     @{ Slug = 'apa';        Name = 'N78-APA' }
 )
 
@@ -151,6 +153,12 @@ function Read-N78PhpLegalMain {
     throw "Could not extract <main> from $PhpPath"
 }
 
+if ($OpsOnly) {
+    & (Join-Path $PSScriptRoot 'Sync-N78OpsLegalPagesFromAppAssets.ps1') -OpsRepoRoot $OpsRepoRoot -PublicLegalRoot $RepoRoot
+    Write-Host '[PASS] Ops-only public legal sync complete'
+    exit 0
+}
+
 $pagesDir = Join-Path $RepoRoot 'pages'
 New-Item -ItemType Directory -Path $pagesDir -Force | Out-Null
 
@@ -185,6 +193,12 @@ if (Test-Path -LiteralPath $ApaRepoRoot) {
 
 $manifest = @()
 foreach ($app in $apps) {
+    if ($app.OpsFromAppAssets) {
+        & (Join-Path $PSScriptRoot 'Sync-N78OpsLegalPagesFromAppAssets.ps1') -OpsRepoRoot $OpsRepoRoot -PublicLegalRoot $RepoRoot
+        $manifest += [pscustomobject]@{ App = $app.Name; Kind = 'privacy'; File = 'pages/N78-Ops.privacy.html' }
+        $manifest += [pscustomobject]@{ App = $app.Name; Kind = 'terms'; File = 'pages/N78-Ops.terms.html' }
+        continue
+    }
     $appWebsiteRoot = $WebsiteRoot
     if ($app.Slug -eq 'apa' -and $apaWebsiteRoot) {
         $appWebsiteRoot = $apaWebsiteRoot
