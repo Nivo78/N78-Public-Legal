@@ -1,0 +1,58 @@
+---
+description: Before writing or changing code, pause to anticipate failure modes, edge cases, and integration risks — then design to avoid them.
+alwaysApply: true
+---
+
+**Rank:** Operating workflow rule. Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Do not weaken, skip, or silently bypass a family rule to satisfy this one. Conflicts require an approved override.
+
+# Anticipate before implementing
+
+Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\anticipate-before-implementing.mdc` — edit the repo file, then `run-updocs.ps1 -SyncMirrors` (or install-n78-cursor-standards.ps1).
+
+Creating code is not done when it compiles. **Before editing or adding behavior**, spend a short deliberate pass on what could go wrong — then implement once, correctly.
+
+## When this applies
+
+- New features, UI, persistence, navigation, exports, scripts
+- Bug fixes (anticipate regressions and sibling call sites)
+- Refactors that touch shared types, paths, or cross-platform code
+
+Skip only for trivial one-line fixes with no behavioral surface (typo, comment, rename with zero callers).
+
+## Required pre-implementation pass (1–3 minutes)
+
+Answer these **before** the first edit:
+
+1. **Wrong inputs** — null/empty paths, missing files, stale state, reload keys, race/async load?
+2. **Wrong units or semantics** — pixels vs dp, source vs output artifact, local vs network path, file vs URL, hardcoded 96-DPI pixel assumptions vs dynamic DPI/zoom scaling?
+3. **Wrong scope** — shared vs platform code, wrong module/store/service, desktop-only API in shared logic?
+4. **Layout, scaling, and UX** — high-resolution display awareness (HiDPI / 4K / Retina), full display zoom & DPI scalability (100% to 300%+), aspect ratio, scroll/clipping, input preferred heights vs fixed pixel bounds, atomic control wrapping, empty/loading/error states, parent constraints?
+5. **Integration** — who calls this, who consumes the output, do tests/docs/scripts need updating?
+6. **Data lifecycle** — save vs preview vs export: same file, same dimensions, same fallback rules?
+7. **Deferred commit / blur-only** — if parent state updates only on blur/commit, will required / empty / dirty / Save UI still read that parent state while the user types? (False “required” with text on screen.) Prefer a live-draft callback for validation UI.
+8. **Format/validate on commit** — structured fields (email, URL, phone, postal, clock times, money/duration, IDs) must not canonicalize or show required-format errors on every keystroke (`APP-INPUT-FORMAT-ON-COMMIT`). Will mid-edit padding/mask rewrite jump the caret or fight deletes?
+9. **Focus edit-only** — must not select-all or clear on focus (`APP-INPUT-FOCUS-EDIT-ONLY`). Will Tab/tap into a filled field wipe or fight in-place edits?
+10. **Flush before persist** — if storage commits on blur only, will Save / Lock / Next / Finish / leave persist a leftover parent copy or leftover composed snapshot while the field is still focused? (`APP-INPUT-FLUSH-BEFORE-PERSIST`) Persist the inner committed text; assemble from live fields after flush. Scan sibling outlined hosts.
+
+If any answer is uncertain, **read the caller and one consumer** before coding.
+
+## Implement with anticipation baked in
+
+- Prefer **explicit paths and dimensions from the actual artifact** (loaded file, generated output) over assumed constants.
+- Handle **loading, empty, and failure** in UI — not only the happy path.
+- When adding a flag or mode, trace **both branches** and document which artifact each uses.
+- After editing, ask: **“What would I break if I were wrong about X?”** — spot-check that case.
+
+## Report briefly when closing a change
+
+In the summary, include one line when non-trivial:
+
+- **Anticipated risks:** … (and what you did to address them)
+
+Example: *Anticipated: UI treating pixel size as layout dp and loading the wrong output file — fixed file-driven sizing and store-only preview path.*
+
+## Balance
+
+Do not over-engineer hypothetical edges. Anticipate **likely** failures for the current project (layout, async load, path semantics, platform splits). Fix the obvious ones in the same pass; call out the rest for the user only if they matter.
+
+After the fix ships, run **fix-propagation-audit** — search for the same pattern elsewhere before closing the task.

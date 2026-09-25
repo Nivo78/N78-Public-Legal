@@ -1,0 +1,403 @@
+---
+description: "Website product support CTA, marketing/scope copy, will/won’t claims, and web copy honesty."
+alwaysApply: false
+globs: ["**/Website/**/*.{php,html,md,txt,json}"]
+---
+
+# Nivo78 Rule Projection — 17-web-marketing
+
+**Binding status:** Maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** Canonical standard and rule-ID catalog control if this projection differs.
+
+## Agent instructions
+- Apply whenever this scope is relevant.
+- Preserve canonical rule IDs.
+- Treat requirements as binding unless the canonical standard explicitly marks them `[QA]` or conditional.
+- Do not weaken requirements for convenience.
+- If a requirement cannot be met, stop and use the approved override process.
+
+---
+
+WEB PRODUCT SUPPORT CTA — BOTTOM OF EVERY PRODUCT
+MARKETING PAGE
+
+\================================================================================
+
+
+
+Required placement
+
+\- Every hosted product marketing page
+(nivo78.com/{product}/) MUST render the “Support and updates” card
+
+  immediately
+before the site footer — last content block on the page.
+
+\- Legal pages (privacy, terms, in-repo support/index.html)
+do NOT use this card — they use legal.css footers instead.
+
+
+
+Shared implementation (Website repo)
+
+\- include/n78\_product\_support\_updates\_cta.php —
+n78\_product\_render\_support\_updates\_cta()
+
+\- Per-product wrappers (e.g.
+n78\_apa\_render\_support\_updates\_cta(), n78\_ops\_render\_support\_updates\_cta())
+pass
+
+  product label,
+public product name, support href, privacy href, and /contact/ link.
+
+
+
+Card structure (required markers)
+
+\- section.n78-product-support-cta.logic-card with
+aria-labelledby heading
+
+\- h2 “Support and updates”
+
+\- Body copy: each Nivo78 app has its own support
+center; visit {product} support; contact page for launch updates —
+
+  choose
+{product label} ({public product name}) as primary interest
+
+\- div.n78-product-support-cta-actions with three links
+— ALL use btn-cta-single (solid accent, pill shape):
+
+  1. Support
+center → product support/KB URL
+
+  2. Privacy
+Policy → product privacy URL
+
+  3. Contact →
+/contact/
+
+\- Do NOT mix btn-cta-outline on this card — all three
+actions share the same primary button style.
+
+
+
+Visual contract (nivo78\_theme.css)
+
+\- Flex row, centered, wrap on narrow screens; gap
+\~0.75rem
+
+\- .n78-product-support-cta-actions .btn-cta-single:
+margin-top 0, min-width \~11rem, border-radius 999px (pill)
+
+\- Same logic-card styling as other product sections
+(accent underline on h2, max-width \~52rem)
+
+
+
+
+
+\================================================================================
+
+MARKETING AND SCOPE COPY — CANONICAL SOURCE FOR EVERY
+PRODUCT
+
+\================================================================================
+
+
+
+Principle
+
+\- This standard is the parent source for
+customer-facing philosophy, audience, and honest scope copy — not a separate
+marketing playbook that can drift.
+
+\- Product-specific wording lives in
+reference/MARKETING\_COPY.txt (or {Product}/MARKETING\_COPY.txt when products
+split repos) — derived from sections in this file, then adapted to the
+product’s one job.
+
+\- In-app About, upgrade panels, Help summaries, store
+listings, and web pages pull from the same will/won’t lists — updocs keeps them
+aligned.
+
+
+
+What to derive from this standard (mapping)
+
+\- Through-line + Brand Philosophy stamp → philosophy
+tagline, hub hero, About, and philosophy-banner.
+
+\- Brand Philosophy principles → support local-first
+callouts; must stay aligned with nivo78.com/about/.
+
+\- One job, done well + Handoff honesty + What a good
+Nivo78 app will do → “What {Product} will do for you”
+
+  bullets
+(product-specific tasks + validate + hand off).
+
+\- Expectation honesty + Transparent → will/won’t
+lists, Help limits, and About copy that prevent
+
+  post-install
+surprise (capabilities and boundaries together).
+
+\- Local-first and trustworthy data → philosophy-banner
+and local-first callout on support and product pages.
+
+\- What a good Nivo78 app will not do + Brand
+Philosophy avoid-list + Handoff honesty limits → family-wide
+
+  “won’t do”
+bullets (no cloud login, no silent upload, no nags, no trackers, etc.).
+
+\- Commercial honesty + Fair Business Model → tier
+lines, subscription justification, good-fit / skip-if, device restrictions.
+
+\- Trust sections (v1.3+) → security summaries on
+support; don’t duplicate full vault spec on marketing pages.
+
+
+
+Per-product marketing copy file (required for shipped
+products)
+
+\- Maintain reference/MARKETING\_COPY.txt (APA:
+reference/MARKETING\_COPY.txt) with:
+
+  - Core pitch
+(short + long)
+
+  - What
+{Product} will do for you (bullets — shipped behavior only)
+
+  - What
+{Product} won’t do for you (bullets — permanent boundaries; say “won’t,” not
+“not yet”)
+
+  - Good fit if
+you / Skip if (optional but recommended)
+
+  - FAQ snippets
+aligned with web and in-app copy
+
+  - Pointers to
+engine copy constants and hosted website PHP when applicable
+
+\- When standard or shipped behavior changes, update
+MARKETING\_COPY.txt first, then web HTML, in-app registries, and Help KB via updocs.
+
+
+
+Voice rules (marketing derived from standard)
+
+\- Plain language for everyday users — no pitch-deck
+superlatives unless literally true.
+
+\- Will-do bullets describe actions the app performs
+today; won’t-do bullets describe boundaries the code and policy enforce.
+
+\- Aim every webpage and Help sentence at trust: if a
+limit would disappoint a reasonable buyer,
+
+  put it in
+won’t-do (or adjacent plain language) before they purchase or depend on the
+feature.
+
+\- No “coming soon,” “planned,” or roadmap language — deferred
+capability belongs in “won’t do,” not “will do later.”
+
+\- Good-fit / skip-if describe audience and situation —
+not insults; skip-if is optional when good-fit is enough.
+
+
+
+
+
+\================================================================================
+
+WEB WILL DO / WON’T DO — REQUIRED ON EVERY PRODUCT WEB
+PAGE
+
+\================================================================================
+
+
+
+Principle
+
+\- Every Nivo78 product web presence states plainly
+what the product will do for the user and what it will not do — before download
+or store install.
+
+\- The goal is trust: a customer who reads the page
+should not hit a negative surprise about scope,
+
+  automation,
+sync, tiers, or handoffs after they install.
+
+\- Same promise on in-repo hub, hosted product page,
+and support scope summary; legal pages link here instead of duplicating full
+lists.
+
+
+
+Required pages and sections
+
+
+
+Product hub — code/Website/{product}/index.html (and
+hosted https\://nivo78.com/{product}/)
+
+\- philosophy-tagline when accurate (local-first, account,
+sync, analytics — adapt with plain exceptions).
+
+\- h2: “What {Product} will do for you” — bullet list
+from MARKETING\_COPY.txt (minimum 4 bullets covering core job,
+validation/handoff, offline/local, collect-once or equivalent when applicable).
+
+\- h2: “What {Product} won’t do for you” — bullet list
+from MARKETING\_COPY.txt (minimum 4 bullets including handoff honesty — e.g. no
+store upload when preparation-only; plus family boundaries that apply).
+
+\- Recommended: “Good fit if you” and/or “Skip if”
+short blocks for audience clarity.
+
+\- Legal & support links panel unchanged (Privacy,
+Terms, Support center).
+
+
+
+Support center — support/index.html
+
+\- philosophy-banner (local-first / data-on-device) —
+already required.
+
+\- h2: “What {Product} will and won’t do” — condensed
+won’t-do boundaries (minimum 3 bullets) plus one-line will-do summary OR
+explicit link to product page full lists.
+
+\- Must not contradict product page will/won’t lists.
+
+
+
+Privacy and terms
+
+\- No full marketing will/won’t sections required —
+link to support or product page for product scope when mentioning capabilities.
+
+
+
+In-app alignment
+
+\- About, first-run scope, or upgrade copy should
+reflect the same will/won’t boundaries as web — TRUTH text test traces claims
+across surfaces.
+
+
+
+Verify and audit
+
+\- Website verify script checks index.html for will-do
+and won’t-do section headings (or equivalent labeled headings).
+
+\- Nivo78 app.txt SCOPE-WEB vector audits product hub
+and support scope sections.
+
+\- COVERAGE vector checks bidirectional completeness —
+every shipped capability in will-do; every won’t-do boundary enforced in code.
+
+
+
+
+
+\================================================================================
+
+WEB COPY, HONESTY, AND APP ALIGNMENT
+
+\================================================================================
+
+
+
+Copy–code parity (mandatory)
+
+\- Privacy policy describes what the engine actually
+stores: plain vs encrypted vs blocked vs never stored.
+
+\- Terms effective date and version match in-app
+ApaLegalCopy (or product equivalent) and acceptance gate.
+
+\- Platform scope on web matches shipped binaries
+(desktop vs mobile companion vs unsupported form factors).
+
+\- “What the product does / does not do” on web matches
+in-app Help and export/handoff behavior — no implied upload, sync, or
+automation.
+
+\- No “coming soon,” “planned,” or roadmap language on
+legal/support pages unless capability is shipped in this build.
+
+
+
+Will do / won’t do on product web pages (mandatory —
+see MARKETING AND SCOPE COPY section)
+
+\- Every product ships scannable “will do for you” and
+“won’t do for you” sections on the product hub and hosted product page — not
+optional marketing fluff.
+
+\- Support page includes at least a won’t-do boundary
+summary or link to the full scope on the product page.
+
+\- Privacy and terms pages do not need full marketing
+lists — they cross-link to support or product page for scope.
+
+
+
+Security and privacy content layering
+
+\- Support page: plain-language “what is encrypted vs
+plain” and “blocked from plain saves.”
+
+\- Privacy page: full policy including optional technical
+specifications section (crypto detail belongs here, not primary Help hub rows).
+
+\- In-app Data security / Help summaries must not
+contradict privacy HTML — run updocs after engine security copy changes.
+
+
+
+Last updated / effective dates
+
+\- Engine legal copy object is the source of truth
+(APA: ApaLegalCopy.kt — PRIVACY\_LAST\_UPDATED, EFFECTIVE\_DATE, TERMS\_VERSION;
+product title from ApaProductIdentity.PRODUCT\_TITLE).
+
+\- Privacy: “Last updated” at top MUST equal
+ApaLegalCopy.PRIVACY\_LAST\_UPDATED (or product equivalent); bump both when
+privacy policy changes.
+
+\- Terms: “Effective date” and “Version” at top MUST
+equal ApaLegalCopy.EFFECTIVE\_DATE and ApaLegalCopy.TERMS\_VERSION; bump
+TERMS\_VERSION when terms change materially and re-run legal gate.
+
+\- Privacy policy-product-name text MUST equal the
+public product title constant in engine code.
+
+\- Release verify (verify-apa-website.ps1 WEB LEGAL
+SYNC + ApaInRepoLegalSecurityCopyTest) fails when HTML dates, version, or
+product name drift from engine constants.
+
+\- Privacy changes section explains re-consent when
+terms reference updated policy.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: KB-COPY-DRIFT, MARKETING-HUB-WILL-DRIFT, MARKETING-HUB-WONT-DRIFT.

@@ -1,0 +1,230 @@
+---
+description: "Data lifecycle, backup/restore/leave behavior, schema versioning, migration, and recovery hardening."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,sql,json,xml,gradle}"]
+---
+
+# Nivo78 Rule Projection — 09-data-recovery-migrations
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+DATA LIFECYCLE — BACKUP, RESTORE, AND LEAVE — EVERY
+APP
+
+\================================================================================
+
+
+
+Principle
+
+\- User data is theirs — portable backup, honest
+restore, and clear leave path are part of the product job, not an afterthought.
+
+
+
+Backup and export
+
+\- Encrypted backup (or product-equivalent portable
+archive) available without paid tier toll on finished work.
+
+\- Backup/export labels plain: what is included, what
+is excluded (e.g. secrets require vault password to restore).
+
+\- Backup artifact named clearly (product, context,
+date/version).
+
+
+
+Restore
+
+\- Restore path documented in Help; user selects file;
+confirm before overwrite when existing data would be replaced.
+
+\- Restore failure reports honestly — partial restore
+rolled back where policy requires; no false success.
+
+
+
+Leave and uninstall
+
+\- Privacy policy and Help state what remains on disk
+after uninstall vs what the app removes.
+
+\- User can export or backup before destructive remove
+flows — discoverable from settings or data security area.
+
+\- No vendor lock-in: core working data exportable in
+open or documented formats (JSON, CSV, PDF, encrypted bundle, etc.)
+
+  without
+requiring the app shell or a proprietary service to parse it
+(APP-DATA-OPEN-EXPORT, APP-DATA-PORTABILITY).
+
+
+
+Process restore (APP-LIFECYCLE-STATE-RESTORE)
+
+\- Engine persists active workflow state continuously.
+
+\- If the OS kills the process while backgrounded, the
+next cold start resumes the exact screen and draft state —
+
+  not a false
+empty workspace.
+
+
+
+
+
+\================================================================================
+
+SCHEMA VERSION AND MIGRATION — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Persisted data carries schema version; engine
+migrates forward or fails closed — UI never pretends empty when load failed.
+
+
+
+Versioning rules
+
+\- Every persisted JSON, vault file, and backup format
+declares schema version in engine — single source of truth.
+
+\- Load path: detect version → migrate in engine when
+supported → or block with plain message when not.
+
+\- Migration logic lives in engine packages — not in
+Composables.
+
+
+
+Fail closed
+
+\- Corrupt or unreadable session file: show
+operator-facing error — do not silently reset to blank workspace that looks
+saved.
+
+\- Partial save failure: report which parts failed; do
+not mark all clean when engine reports partial failure.
+
+\- Reload from disk after Cancel uses same engine load
+path — same failure semantics as cold start.
+
+
+
+Testing
+
+\- Engine tests cover migration from prior schema
+version and corrupt-file handling on critical stores
+(APP-DATA-SCHEMA-MIGRATION).
+
+\- Pair with Error detection and recovery.txt and Data
+integrity.txt text tests when changing persistence.
+
+
+
+
+
+\================================================================================
+
+ARCHITECTURE AND DATA INTEGRITY RULE IDS
+
+\================================================================================
+
+
+
+APP-ARCH-CLEAN-ENGINE [STATIC]
+
+\- Logic, validation, persistence, calculations, data
+handling, export, and vault live in the engine
+
+  (commonMain /
+Clean Engine). UI (Compose, SwiftUI, desktop) handles only trivial view state.
+
+
+
+APP-ARCH-NO-PLATFORM-APIS [STATIC]
+
+\- No platform APIs in shared engine (android.\*,
+java.awt.\*, UIKit, Win32, OS env).
+
+  Use
+expect/actual or injected abstractions.
+
+
+
+APP-ARCH-NEUTRAL-PATHS [STATIC]
+
+\- Neutral file paths in engine (okio.Path or
+equivalent).
+
+
+
+APP-ARCH-CODE-INTEGRITY [STATIC]
+
+\- Complete compilable sources — never truncate,
+“cleanup,” or omit logic in shipped paths. No stub TODOs.
+
+
+
+APP-ARCH-ONE-JOB [QA]
+
+\- One real job per product — not an everything
+platform.
+
+
+
+APP-UI-EXPLAIN-JARGON [QA]
+
+\- No “Registry Tweak” or Windows jargon in shared copy
+— Logic Update or Internal Settings.
+
+  No unexplained
+jargon on Help or primary form rows.
+
+
+
+APP-DATA-NO-TELEMETRY [GATE]
+
+\- Core workflows 100% offline. Do not transmit
+business data to Nivo78 servers except when the user
+
+  explicitly
+sends support/feedback email. Network only for user-initiated handoffs.
+
+
+
+APP-DATA-BLOCK-SECRETS [STATIC]
+
+\- Block bank / routing / IBAN (and similar) from plain
+saves where policy forbids it.
+
+  Auto-clear copied
+secrets from clipboard after a short timeout when supported.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: .

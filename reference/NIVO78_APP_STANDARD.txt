@@ -1,0 +1,5548 @@
+NIVO78 PRODUCT STANDARD (APP + WEBSITE)
+
+Product-agnostic reference for any Nivo78 product
+(desktop, mobile, web pages, or combined)
+
+Standards home (canonical):
+Desktop/Nivo78/N78Ops/reference/NIVO78\_APP\_STANDARD.txt
+
+Binding rules:
+N78Ops/.cursor/rules/*.mdc (focused Cursor projections; sync from the canonical
+standard using the N78Ops standards tooling)
+
+New product checklist:
+N78Ops/reference/NIVO78\_NEW\_PRODUCT\_CHECKLIST.txt
+
+Publish spine (family release orchestration):
+N78Ops/reference/NIVO78\_PUBLISH\_SPINE.txt
+
+Install / sync:
+N78Ops/tools/maintain/install-n78-cursor-standards.ps1
+
+  (or
+run-updocs.ps1 -SyncMirrors from N78Ops)
+
+N78Ops is the family standards home. Product repositories may contain local
+projections or wrappers, but the canonical standard and enforcement metadata
+are maintained in N78Ops.
+
+
+## CURSOR ENFORCEMENT ARCHITECTURE (MANDATORY)
+
+This standard is the policy source of truth. Cursor must NOT be given this entire document as one monolithic always-on rule. The repository MUST project the standard into focused `.cursor/rules/*.mdc` files.
+
+### Rule architecture
+- `nivo78-core.mdc` — **[ALWAYS APPLY]** compact router, non-waivable principles, precedence, deviation/override policy, and required agent workflow.
+- Focused `.mdc` files — **[APPLY INTELLIGENTLY]** by concern: product philosophy, UI/input, architecture/data, security/vault, feedback/support, legal/privacy, accessibility/I18N, recovery/upgrades, testing, release/supply chain, web/marketing, and performance.
+- Release verification rules may be manually invoked for final certification; they must never be treated as satisfied merely because the agent says they passed.
+- Each focused rule file MUST remain below 500 lines. If it grows beyond that, split it by concern rather than weakening or omitting rules.
+
+### Rule-file contract
+Every `.mdc` rule MUST have YAML frontmatter containing `description` and an explicit `alwaysApply` value. File names MUST be stable and descriptive. Rules MUST use imperative, testable language: **MUST**, **MUST NOT**, **SHOULD**, or **MAY**. Avoid vague phrases such as “try to” or “generally.”
+
+### Source-of-truth contract
+- Edit the canonical standard and rule-ID catalog first.
+- Cursor projections are maintained from the canonical source and registry; do not treat projections as independent policy. Validate their metadata and globs after standards changes.
+- Every projected rule MUST preserve its canonical rule IDs.
+- No Cursor rule may silently create a new product requirement that is absent from the canonical standard.
+
+### Agent workflow
+1. Identify the product surface being changed: app, shared engine, web, legal/support, release tooling, or multiple surfaces.
+2. Apply `nivo78-core.mdc` plus every focused rule whose description matches the work.
+3. Before editing, identify applicable rule IDs and their enforcement class: `[STATIC]`, `[GATE]`, or `[QA]`.
+4. Implement the smallest change that satisfies the applicable rules.
+5. Run the applicable automated verification. For `[QA]`, perform or document the required human/audit check.
+6. Do not claim compliance from inspection alone when a `[GATE]` script/test is required.
+7. If a rule cannot be satisfied, STOP and use the documented standard-override process. Never disable a verifier globally to make a violation disappear.
+
+### Precedence
+1. Never-waivable Nivo78 controls.
+2. Applicable canonical Nivo78 rule.
+3. Product-specific implementation detail that does not conflict with the standard.
+4. Accepted, current product override with owner, reason, risk, compensating control where applicable, and review trigger/date.
+
+If two applicable Nivo78 rules appear to conflict, do not choose silently. Surface the conflict and resolve it in the canonical standard or through the approved override mechanism.
+
+### Cursor limitation
+Cursor rules are AI guidance, not a security boundary. Mandatory `[GATE]` requirements MUST have executable verification outside the model’s judgment. Cursor documentation likewise recommends focused rules, clear descriptions, and keeping rules under 500 lines.
+
+
+
+Version: 1.41
+
+Changelog:
+
+  1.41
+(2026-09-22) — Desktop vertical chrome order (APP-DESKTOP-CHROME-VERTICAL-ORDER):
+Main window top-to-bottom MUST be menu → brand header → optional meta/toolbar → worksheet.
+WinForms use _formHeaderHost TableLayoutPanel; Compose Desktop MenuBar before brand Column.
+Detail: reference/NIVO78_DESKTOP_MENU_BAR.txt.
+
+  1.40
+(2026-09-22) — Desktop top menu + non-duplicating action toolbar (APP-DESKTOP-MODERN-STYLE):
+All PC/Mac desktop apps MUST expose the family standard top menu bar (File, product menus,
+Help in canonical order). Optional modern action toolbars are high-frequency shortcuts only
+and MUST NOT duplicate commands already on the top menu. Supersedes the 1.37 "toolbar-only"
+and "eliminate MenuStrip" guidance. Detail: reference/NIVO78_DESKTOP_MENU_BAR.txt.
+
+  1.39
+(2026-09-16) — Mandatory Top-Level Assets Folder (APP-ASSETS-TOP-LEVEL) [GATE]:
+Every Nivo78 application repository (desktop, mobile, cross-platform) and website
+repository MUST have an Assets directory at the top level of the repository (root Assets/ or assets/).
+All canonical graphic assets for the product—including application icons (.png, .ico, .icns),
+brand logos, diagrams, marketing graphics, badges, and screenshots—MUST reside in this top-level
+Assets folder. Platform-specific runtime copies (e.g. desktopMain/resources, res/drawable)
+and website asset subfolders are generated or synchronized from this canonical root Assets folder.
+N78-Kit must automatically scaffold and enforce this top-level Assets directory for all newly
+stamped utilities.
+
+  1.38
+(2026-09-14) — Uniform UI surface and main viewport (APP-UI-UNIFORM-SURFACE-VIEWPORT) [GATE]:
+Mandatory family contract for desktop workstation apps with dense fixed layouts: canonical
+1920×1080 logical surface, single ScaleFactor from device DPI, one primary viewport with
+explicit H/V scrollbars (reference CompactMainViewportHost — not WinForms AutoScroll as
+primary host), scroll home flush top-left, signed WM_MOUSEWHEEL delta, no competing inner
+horizontal scroll that clips totals. Full spec: reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md.
+Reference implementation: N78-Estimate (AppUiScaling, CompactMainViewportHost, WorksheetHighDpiPolicy).
+New desktop-dense products port this pattern from N78Kit — do not rebuild from scratch.
+
+  1.37
+(2026-09-08) — Modern Desktop Style Standard (APP-DESKTOP-MODERN-STYLE) [historical]:
+Toolbar-only / eliminate MenuStrip guidance — superseded by 1.40 (standard top menu +
+non-duplicating action toolbar). Retained in changelog for audit trail only.
+
+  1.37
+(2026-09-22) — Help menu store update check (APP-SUPPORT-CHECK-FOR-UPDATES): every
+store-distributed app exposes user-initiated Help → Check for updates before About;
+official store APIs only; no startup nag. Reference: N78-Frame FrameStoreUpdateCheck.
+
+  1.36
+(2026-09-03) — Feedback bug narrative email contract (APP-FEEDBACK-BUG-NARRATIVE):
+mandatory N78-Ops-aligned mailto body section headers (NAME/EMAIL/PHONE,
+--- REPORT_TYPE ---, doing/happened/expected, --- SETTINGS_FOR_SUPPORT ---,
+--- EXTENDED_DIAGNOSTICS --- when applicable). Primary send label "Send request".
+Canonical reference: N78-Ops FeedbackScreen.kt.
+
+  1.35
+(2026-09-03) — Universal UI, High-Resolution Display, and Display Scaling Awareness
+(APP-A11Y-TEXT-SCALING / APP-UI-A11Y-FLOOR): All Nivo78 applications must be display
+resolution aware and fully functional on high-resolution (HiDPI / 4K / Retina) displays.
+Applications must be fully scalable across all screen zoom levels, display scaling
+settings (100%–300%+), high-resolution monitors, and dynamic per-monitor DPI transitions.
+Desktop apps must enable per-monitor DPI awareness (e.g. PerMonitorV2) at startup prior
+to UI/font initialization. Controls, inputs, numeric up/downs, dropdowns, buttons,
+sliders, vector glyphs, icons, labels, dialogs, and layout containers must dynamically scale,
+adapt, and reflow without clipping, blurriness, truncating text, squashing heights,
+overlapping, or breaking atomic control groups. Hardcoded 96-DPI pixel dimensions
+on interactive chrome and unscaled fixed window assumptions are prohibited.
+
+  1.30
+(2026-09-01) — Standards home moved to N78Ops so the family bar survives if
+N78APA is
+
+    retired.
+Canonical text, rule IDs, checklist, Cursor enforcement, and install/sync
+tooling
+
+    live under
+N78Ops; APA scripts become consumers/wrappers.
+
+  1.29
+(2026-09-01) — Mandatory additions for all Nivo78 apps: application security
+(APP-SEC-\*),
+
+    testing
+& quality (APP-TEST-\*), release engineering & supply chain
+(APP-RELEASE-\*, APP-DEPENDENCY-\*,
+
+   
+APP-SUPPLY-CHAIN-\*), accessibility expansion (APP-A11Y-\*),
+internationalization (APP-I18N-\*),
+
+    performance
+(APP-PERF-\*), backup/restore integrity (APP-BACKUP-\*, APP-RESTORE-\*), upgrades
+&
+
+    migration
+(APP-UPGRADE-\*), data lifecycle honesty
+(APP-DATA-LIFECYCLE/DELETION/TEMPORARY/EXPORT-TRUTH),
+
+    analytics
+& third-party collection (APP-PRIVACY-\*), vulnerability & incident
+response (APP-SEC-\*),
+
+    override governance
+(APP-OVERRIDE-\*), and compact release certification checklist. Existing 1.28
+
+    rules
+unchanged; new rule ids registered in NIVO78\_STANDARD\_RULE\_IDS.txt.
+
+  1.28
+(2026-08-31) — APP-LEAVE-DIRTY-PROMPT is persist-on-leave: Home/Back flush and
+persist valid
+
+    typed Save
+drafts; invalid or failed save blocks leave; honest hint "Valid changes
+save when
+
+    you
+leave." Optional Save/Don't save/Stay dialog only with accepted override
+when explicit
+
+    discard is
+required.
+
+  1.27
+(2026-08-31) — Required-rule catalog refined. Enforcement tags: [STATIC]
+Cursor/linter,
+
+    [GATE]
+verify/release-gate, [QA] human/audit. Family rules APP-SAVE-VERIFIED-INACTIVE
+and
+
+   
+APP-LEAVE-DIRTY-PROMPT (persist valid typed drafts on Home/Back; block
+invalid/failed leave).
+
+   
+APP-UI-A11Y-FLOOR, APP-ARCH-\*, APP-UI-EXPLAIN-JARGON,
+APP-LIFECYCLE-STATE-RESTORE,
+
+   
+APP-DATA-NO-TELEMETRY, APP-DATA-BLOCK-SECRETS, APP-DATA-PORTABILITY,
+APP-DATA-OPEN-EXPORT,
+
+   
+APP-DATA-SCHEMA-MIGRATION. Never-waivable list tagged by enforcement layer.
+
+  1.25
+(2026-08-31) — Family utilities are designed for Windows, Mac, Android phone
+and tablet,
+
+    iPhone, and
+iPad (same engine; chrome may differ by form factor). Public copy uses Not yet
+
+    until a real
+install exists. APA remains Windows-only because the job is store portals on a
+PC.
+
+  1.24
+(2026-08-15) — Persist-what-is-on-screen tightened: inner field commit is the
+source of
+
+    truth; do
+not save a leftover parent copy or a leftover composed form snapshot (Lock/Save
+
+    must write
+live fields). Scan every blur-only outlined host, not only duration rows
+
+   
+(APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+  1.23
+(2026-08-15) — Persist what is on screen: Save, Lock, Next, Finish, and
+page-leave MUST
+
+    flush
+blur-only field drafts first (APP-INPUT-FLUSH-BEFORE-PERSIST). The operator
+does not
+
+    have to tap
+away from a focused field. Pair with APP-INPUT-COMMIT /
+APP-INPUT-FORMAT-ON-COMMIT.
+
+    Plain
+will/won’t language is mandatory; commitAll / registry jargon stays
+engineering-only.
+
+  1.22
+(2026-08-15) — Debug-only 10,000-event breadcrumb ring buffer is mandatory in
+every
+
+    Nivo78 app
+(APP-BREADCRUMB-DEBUG-ONLY): local UI/navigation/function/input-length events
+for
+
+    in-app
+bug-report troubleshooting. Release builds MUST no-op with zero ring-buffer
+allocation;
+
+   
+attachBreadcrumbsToBugReport MUST live only in the debug source set.
+Never log raw text or PII.
+
+  1.21
+(2026-08-12) — Master-password recovery key is mandatory for every Nivo78 app
+that uses a
+
+    master
+password (APA pattern): generate a one-time key at first set; tell the user to
+store it
+
+    off-device
+and why; the key sets a new master password (does not reveal the old password);
+
+    using it
+issues a new key and invalidates the old one; no email/SMS/support reset.
+
+  1.20
+(2026-08-11) — Expanded family won’t-do: no required host login, no ads, no
+tolls on using the
+
+    app without
+valid maintenance, development, or infrastructure costs (verbatim commercial
+rule),
+
+    plus access,
+data/network, trust, attention/scope, and honesty won’ts from the good-app bar.
+
+  1.19
+(2026-08-11) — Expanded “what makes a good Nivo78 app” (will do / will not /
+technical bar):
+
+    one-sitting
+finish without traps, honest defaults, label-true Cancel/Decline,
+Help/web/screen
+
+    agreement,
+fail-closed with next step, handoff “what we didn’t do,” scannable density, no
+second
+
+    job inside
+the job, rare consequential interruptions, family chrome consistency,
+longevity,
+
+    last-mile
+honesty, no unshipped AI claims; technical bar adds remount/dirty-draft/shared-field
+rules.
+
+  1.18
+(2026-08-11) — Focus behavior (internal engineering): on focus, input fields
+place the caret
+
+    for in-place
+edit — never select-all or clear the value automatically. Not customer-facing
+copy.
+
+  1.17
+(2026-08-11) — Input commit timing (internal engineering): required format and
+validation for
+
+    structured
+fields run on blur / IME Done / leave / save only — never canonicalize or show
+format
+
+    errors on
+every keystroke; light mid-edit filters OK. Not customer-facing marketing copy.
+
+  1.16
+(2026-08-11) — Expectation honesty: Help, marketing, and web copy must state
+features and
+
+    limitations
+plainly so customers are not surprised after install; Brand Philosophy
+Transparent
+
+    principle
+expanded; will/won’t and Help article pattern require limits alongside
+capabilities.
+
+  1.15
+(2026-08-06) — Brand Philosophy (Nivo78-like): binding brand stamp, core
+principles,
+
+    fair
+commercial model (subscriptions OK for support/updates/services — not tolls on
+finished
+
+    offline work),
+deliberate avoid-list, and web /about/ as the public philosophy home.
+
+  1.14
+(2026-08-04) — App shell footer: line 1 is local-first philosophy only; line 2
+is
+
+    © Nivo78
+Mobile Apps, LLC · Tyler, Texas. All rights reserved. Web site-footer stays copyright-only;
+
+    Tyler
+remains in the legal/support entity/contact block on the web.
+
+  1.13
+(2026-07-31) — Save validation feedback & exit guard: engine validation
+failures must appear
+
+    immediately
+above Back | Cancel | Save; block Back/Cancel/discard navigation until fixed or
+Save anyway
+
+   
+(acknowledgement warnings only). ApaSaveChangesBar.validationMessages is
+the shared contract.
+
+  1.12
+(2026-07-31) — Privacy policy first two lines standardized across all Nivo78
+products
+
+    (shared
+n78\_legal\_privacy\_header.css + n78\_render\_privacy\_policy\_header(); h1 +
+policy-product-name contract).
+
+  1.11
+(2026-07-31) — Privacy policy product name styling (h1 typography; calc(1.5rem
+\- 4pt) between title and tagline);
+
+    engine legal
+copy is source of truth for privacy Last updated and terms effective
+date/version;
+
+    release gate
+verifies in-repo legal HTML stays in sync with ApaLegalCopy and product
+identity.
+
+  1.10
+(2026-07-31) — Comprehensive website SEO mandatory: meta description,
+canonical, Open Graph,
+
+    Twitter
+cards on in-repo legal HTML; n78\_seo\_head.php profiles and render calls on
+hosted PHP pages;
+
+   
+verify-apa-website.ps1 runs WEB SEO checks (in-repo + hosted).
+
+  1.9
+(2026-07-31) — Privacy policy product name under title; Support and updates
+product CTA card.
+
+  1.8
+(2026-07-31) — Privacy policy prominent product name (policy-product-name)
+under h1 on every privacy page.
+
+  1.7
+(2026-07-31) — Per-product standard override registry: accepted deviations stay
+active
+
+    in
+Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json; verify
+scripts and text tests honor them.
+
+  1.6
+(2026-07-31) — Feedback routing by channel: bug reports in-app only
+(diagnostics);
+
+    Help and
+feature request allowed on web via mailto; web must not offer equivalent bug
+path.
+
+  1.5
+(2026-07-31) — Mobile phone input chrome: bordered field with title in border
+and active
+
+    placeholder
+hint (N78-Ops profile reference); phone-only — not desktop or tablet.
+
+  1.4
+(2026-07-31) — Marketing and scope copy: standard as canonical source for
+philosophy and will/won't
+
+    do; required
+"will do / won't do for you" sections on every product web page;
+per-product MARKETING\_COPY.txt.
+
+  1.3
+(2026-07-31) — Trust and data integrity: destructive actions,
+vault/master-password contract,
+
+   
+error/empty/loading states, data lifecycle (backup/restore/leave),
+schema version and migration.
+
+  1.2
+(2026-07-31) — Legal gating and customer acknowledgement merged from Legal text
+test.
+
+  1.1
+(2026-07-31) — Website / legal page standards added (parity with app).
+
+  1.0
+(2026-07-31) — Initial canonical release.
+
+
+
+\================================================================================
+
+ENFORCEMENT LAYERS (every required rule)
+
+
+
+[STATIC] Enforced by Cursor always-on rules or
+standard linters (IDE).
+
+[GATE]  
+Enforced by automated verify / release-gate scripts (build).
+
+[QA]    
+Verified by human review or documented SOP (audit).
+
+
+
+Never waivable (do not override):
+
+  [GATE] Silent
+upload of business data
+
+  [GATE] Silent
+diagnostics / background bug reporting
+
+  [GATE]
+Breadcrumb logger or attachBreadcrumbsToBugReport in release / main
+
+  [GATE]
+Intentional security bypasses in release (debug unlocks, test credentials,
+development endpoints)
+
+  [QA]   Pre-checked legal acceptance
+
+  [STATIC] Vault
+/ secrets bypass (plaintext secrets after save, support reset of master
+password)
+
+
+
+\================================================================================
+
+
+
+WHAT CONSTITUTES A GOOD NIVO78 APP
+
+
+
+Through-line
+
+\- Utility first. Your data under your control. Never
+pay for fluff.
+
+\- Brand stamp (public + in-product voice): Local-First
+Software. The way we think apps should be.
+
+  Do the job.
+Respect the user. Skip the fluff. Cloud is optional, never required.
+
+
+
+Brand Philosophy (keep every app Nivo78-like)
+
+\- Mission: Build professional-quality software that
+respects its users.
+
+\- Public home: https\://nivo78.com/about/ (Website
+include/n78\_company\_philosophy.php) — product
+
+ 
+About/Help/support copy must not contradict this philosophy.
+
+\- Guiding test: Would a user feel the software exists
+to help them accomplish their goals —
+
+  not to
+monetize their attention, harvest their data, or lock them into an ecosystem?
+
+\- Trust test (copy and product): After reading the
+product page and Help, would a careful customer
+
+  still be
+surprised by a hard limit, missing automation, or handoff they must do
+themselves?
+
+  If yes, the
+copy failed — fix the claim, not the customer’s expectations.
+
+\- Core principles (every product MUST honor unless an
+accepted standard override records otherwise):
+
+  - Local-First
+— working data stays on the device; everyday use does not require the Internet.
+
+  - Cloud
+Optional — cloud may add value; cloud is optional, never required for core
+work.
+
+  - No Account
+Required — start immediately; no mandatory Nivo78 sign-up for daily use unless
+
+    the
+product’s explicit job requires an account (document that exception).
+
+  - No In-App
+Advertising — no banners, pop-ups, or sponsored content.
+
+  - No User
+Tracking — no behavioral tracking, no selling user data, no advertising
+profiles.
+
+  - Strong Data
+Security — encrypt secrets appropriately; data leaves the device only when the
+user chooses.
+
+  - Your Data Is
+Yours — export anytime; open formats when practical; no vendor lock-in.
+
+  - Fair
+Business Model — clear product pricing—one-time purchase or subscription—where
+each
+
+    product
+provides real value; no tolls on using the app without valid maintenance,
+development,
+
+    or
+infrastructure costs. This is one of the ways we keep your costs low;
+subscriptions are fair
+
+    when they
+fund ongoing support, updates, or services — not as a toll on finished offline
+work
+
+    that does
+not need our servers; low cost — focused apps, honest tiers, no fluff markup.
+
+  - Fast &
+Reliable — starts quickly on the device; responsive UI; works offline and
+during outages / remote use.
+
+  - Respectful —
+no nag screens, notification spam, constant review requests, or manipulative
+design.
+
+  - Transparent
+— honest privacy policy, clear pricing, and plain talk about what the product
+does
+
+    and does not
+do; no hidden surprises after install or purchase.
+
+  - Built to
+Last — remain useful for years; data stays accessible if cloud services are
+unavailable.
+
+\- Brand statements (use on hub, About, store/marketing
+where accurate):
+
+  - Software
+that works for you—not on you.
+
+  - Tools you
+run. Data you control.
+
+  - Professional
+apps built around users, not business models.
+
+  - Cloud is
+optional, never required.
+
+  - The way apps
+should be.
+
+  - Do the job.
+Respect the user. Skip the fluff.
+
+  - Local-first.
+Low cost. Your data belongs to you.
+
+  - Honest about
+what we do — and what we don’t.
+
+\- Deliberately avoid (in addition to the won’t-do list
+below): forced account creation; required host
+
+  login for core
+offline work; excessive permissions; Internet required just to open the app;
+
+  tolls on using
+the app without valid maintenance, development, or infrastructure costs (this
+is
+
+  one of the
+ways we keep your costs low); proprietary-only data formats; manipulative
+feature
+
+  locks;
+manipulative microtransactions; hidden pricing;
+
+  unnecessary
+background activity; marketing or Help that oversells automation, sync, or
+outcomes
+
+  the shipped
+build does not deliver.
+
+
+
+One job, done well
+
+\- The app solves one clear problem — not an
+“everything platform.”
+
+\- A user can finish the core workflow without
+memorizing external manuals.
+
+\- The app prepares and validates work, then hands off
+when needed — it does not pretend to replace the user’s primary external tool
+(browser, email client, accounting site, file host, etc.) unless that
+replacement is explicitly shipped and labeled.
+
+
+
+Utility-first UI
+
+\- Compact, scannable layout — easy to read at a
+glance, not decorative.
+
+\- Visible controls only: buttons, checkboxes, menus,
+tabs — no hidden gestures as primary actions.
+
+\- Plain language on every screen users see — labels,
+errors, help, and empty states.
+
+\- Non-trivial fields get ? help; dangerous or
+irreversible warnings stay inline.
+
+\- Form state preserved when navigating back until the
+user saves or dismisses.
+
+
+
+Local-first and trustworthy data
+
+\- Core workflows work fully offline.
+
+\- The user’s working data stays on the device by
+default.
+
+\- Cloud login, sync, and backup are optional when offered
+— never required for daily work.
+
+\- No Nivo78 account required for daily use unless the
+product’s job explicitly needs it.
+
+\- No nags, behavioral profiling, telemetry for resale,
+or silent “phone home” analytics.
+
+\- Secrets encrypted at rest; after save, secrets are
+copy-only and not shown on screen again.
+
+\- Sensitive identifiers blocked from plain saves when
+product policy requires a vault.
+
+\- Clipboard cleared after a short timeout when the
+platform supports it.
+
+
+
+Clean architecture (multiplatform products)
+
+\- Business rules, validation, persistence, export, and
+vault live in shared engine code — not scattered in UI except trivial view
+state.
+
+\- No platform-specific APIs in shared engine code; OS
+access goes through bridges or injected abstractions.
+
+\- Paths and storage semantics are neutral in engine
+code — no hardcoded OS jargon in shared logic.
+
+\- Android, iOS, and desktop behave consistently
+because they share one rules engine.
+
+\- Debug-only 10,000-event breadcrumb ring buffer lives
+in shared engine code (expect/actual
+
+  isDebugBuild +
+MutexLock). UI intercepts touch, navigation, and field length — never raw text.
+
+
+
+Workflow quality
+
+\- Collect shared facts once (profile, organization,
+defaults) and reuse — do not re-ask the same data on every screen.
+
+\- Ask for context-specific details only where that
+context truly differs (e.g. separate external accounts or listing contacts when
+the product supports multiple destinations).
+
+\- Validate before save using published rules — not
+only at export time.
+
+\- Checklist or status indicators match engine truth
+(not started / needs attention / complete).
+
+\- Empty, loading, and error states on major screens —
+not happy-path only.
+
+
+
+Handoff honesty
+
+\- The app says plainly what it does vs what the user
+must do in an external app, site, or service.
+
+\- Network use is user-initiated and labeled (open
+browser, send email, confirm purchase) — never silent transmission of user
+data.
+
+\- No implied automation the product does not perform
+(upload, charge, sync, “we’ll submit this for you”) unless that capability is
+actually shipped.
+
+\- Readiness is obvious: what is done, what is missing,
+what to do next.
+
+
+
+Expectation honesty (no negative customer surprises)
+
+\- Trust is built by stating features and limitations
+in the same breath — on the product webpage,
+
+  in Help, in
+About/upgrade copy, and at the step where a limit matters.
+
+\- Prefer “does X; does not do Y” over glowing
+capability claims that omit the boundary.
+
+\- Limits that change outcomes (tiers, offline vs
+online, handoff vs automation, platform gaps,
+
+  what stays
+on-device vs what the user must do elsewhere) MUST be discoverable before the
+user
+
+  depends on the
+wrong assumption — not only after a failed action.
+
+\- Help articles for non-trivial tasks MUST include
+rules and limits, not only happy-path steps.
+
+\- Website “will do / won’t do” sections, store listing
+claims, and in-app Help MUST agree with
+
+  shipped
+behavior in the current build — overselling is a defect, same as a wrong
+calculation.
+
+\- When scope is preparation-only, say so. When a
+calendar, store portal, bank, or mail app still
+
+  has the last
+step, say so. When a setting or feature lives on one surface only (e.g.
+calendar,
+
+  not Settings),
+say so.
+
+
+
+Help and support
+
+\- Searchable Help hub: browse, search, deep-link by
+article id where the product uses that pattern.
+
+\- Structured Feedback (report type, contact,
+narrative, optional diagnostics); user reviews before send.
+
+\- Menu or equivalent includes Help, Feedback, Support,
+Privacy, and Terms (or documented equivalent placement).
+
+\- Help and support copy encourage trust: accurate
+capabilities, clear limits, plain next steps —
+
+  never
+marketing that sets up disappointment after install.
+
+
+
+Commercial honesty
+
+\- Free tiers are genuinely useful — not demo timers or
+crippled core jobs.
+
+\- Paid upgrades add caps or extras — not tolls on
+finished work the user already created.
+
+\- No tolls on using the app without valid maintenance,
+development, or infrastructure costs. This is one of the ways we keep your
+costs low.
+
+\- Subscriptions are fair when they fund ongoing
+support, updates, or services — not as a toll
+
+  on finished
+offline work that does not need our servers.
+
+\- Keep prices as low as practical utility allows —
+focused scope, no fluff markup.
+
+\- Customer-facing copy matches shipped behavior in the
+current build.
+
+\- No “coming soon,” “planned,” or roadmap language
+unless the feature is declared shipped for this version.
+
+\- Copy is complete: users can discover what the app
+does, what it does not do, limits, handoffs, and platform restrictions (Help, privacy,
+about, upgrade, or critical inline warnings).
+
+\- Product web pages publish explicit “what it will do
+for you” and “what it won’t do for you” sections derived from this standard and
+the product’s MARKETING\_COPY.txt — not buried in a single paragraph.
+
+\- Every public product web page includes comprehensive
+SEO metadata in the same pass as copy edits: unique title, meta description
+(\~160 characters), canonical URL, Open Graph, and Twitter cards — verified by
+the product website script (WEB SEO checks).
+
+
+
+Technical bar for a good Nivo78 app (engineering — not
+customer marketing)
+
+\- Shared outlined fields on critical paths; engine
+validation; Enter/IME and blur commit (APP-INPUT-COMMIT).
+
+\- Required format/validate on blur / Done / leave /
+Save only (APP-INPUT-FORMAT-ON-COMMIT).
+
+\- Flush blur-only drafts before same-screen persist
+(Save / Lock / Next / Finish) and before
+
+  page-leave
+persist — a control that does not steal focus still writes what is on screen
+
+ 
+(APP-INPUT-FLUSH-BEFORE-PERSIST). Persist from the inner field commit
+(the text just typed).
+
+  Do not persist
+a leftover parent copy, and do not persist a leftover composed snapshot of the
+
+  form after
+that flush.
+
+\- Save is inactive when the on-screen draft matches
+the last registry-verified values; active
+
+  when dirty;
+inactive again only after flush + write + read-back
+(APP-SAVE-VERIFIED-INACTIVE).
+
+  Confirmation
+is inactive Save, not a success toast. Failed write keeps Save active.
+
+\- Home / Back from a typed Save page: when the draft
+differs from last verified values,
+
+  flush and
+persist when engine validation passes, then leave (APP-LEAVE-DIRTY-PROMPT).
+
+  Invalid draft
+or failed write blocks leave with field errors or failure toast. Say on the
+
+  page: Valid
+changes save when you leave. Instant controls (toggles, chips) MAY persist
+
+  immediately.
+Optional Save / Don't save / Stay dialog only with accepted override.
+
+\- Focus places caret for in-place edit — never select-all
+or clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Minimum 44×44 dp touch targets on mobile; contrast
+and Dynamic Type / Large Text (APP-UI-A11Y-FLOOR).
+
+\- Universal UI, HiDPI Resolution, and Display Scaling Awareness: Every application MUST be
+display resolution aware and fully operational on high-resolution displays (HiDPI / 4K / Retina).
+Apps must be fully scalable across all screen zoom levels, display DPI scaling (100% to
+300%+), and per-monitor dynamic DPI transitions. Desktop apps must configure per-monitor
+high-DPI mode at startup before font or UI creation. No fixed 96-DPI pixel constraints
+on input heights, button dimensions, sliders, spinners, or container bounds. Every control,
+text string, icon, glyph, and dialog must scale dynamically with font metrics and DPI factors
+without blurriness, clipping, squashing, overlapping, or text truncation (APP-A11Y-TEXT-SCALING).
+
+\- No silent remount or sibling-field wipe while the
+operator is editing related rows (e.g. profile revision
+
+  bumps that
+discard in-progress drafts on the same screen).
+
+\- Dirty / required / Save UI must not lie while the
+user is typing — use live draft when storage commits on blur.
+
+\- One shared field component family on critical form
+paths — no one-off Material fields that drift from the standard.
+
+\- These rules are build/QA requirements. Do not put
+them in Brand Philosophy, About, store, or product will/won’t marketing copy.
+
+\- Debug-only breadcrumb troubleshooting (engineering —
+not customer marketing): every Nivo78 app
+
+  MUST keep a
+10,000-event local ring buffer in DEBUG builds (UI events, function calls,
+navigation,
+
+  text-input
+\*length\* only). Release builds MUST no-op \`log()\` on the first line (\`if
+(!isDebugBuild)
+
+  return\`) with
+zero ring-buffer allocation. The file export \`attachBreadcrumbsToBugReport\`
+MUST live
+
+  only in
+\`src/debug\` / \`src/androidDebug\` — never main, androidMain, or release. MUST
+NOT log raw
+
+  field text,
+secrets, or PII. MUST NOT appear in store listings or customer will/won’t copy.
+
+
+
+What a good Nivo78 app will do
+
+\- Present the right data at the right step — field,
+screen, and time aligned to the user’s job.
+
+\- Guided checklists someone can finish without
+memorizing external manuals.
+
+\- Let the operator finish a real task in one sitting —
+no “come back later” traps (forced tours, account gates,
+
+  or walls that
+demand unrelated fields). Optional facts (e.g. full address) stay optional
+until the job needs them.
+
+\- Use honest defaults for a real solo day — empty or
+zero where empty is true; not demo theater or fake sample data.
+
+\- Make Cancel, Discard, Decline, and Exit match their
+labels — the safe choice is always the labeled safe choice.
+
+\- Edit-until-handoff; validate before save, not only
+at export.
+
+\- Persist what is on the screen when the user taps
+Save, Lock, Next, or Finish — including a
+
+  field that is
+still focused. The operator does not have to tap away first. Reopen the record
+
+  and see the
+same values that were on screen (duration, line items, settings rows).
+
+\- Keep Save inactive until the draft differs from the
+last registry-verified values; after Save,
+
+  keep it active
+until a read-back confirms those values are stored, then make it inactive
+
+ 
+(APP-SAVE-VERIFIED-INACTIVE).
+
+\- On Home or Back with typed changes next to Save: valid
+drafts persist on leave; invalid or
+
+  failed save
+blocks leave (APP-LEAVE-DIRTY-PROMPT). Valid changes save when you leave.
+
+\- If the OS kills the process while backgrounded, the
+next cold start resumes the exact screen
+
+  and draft —
+not a false empty workspace (APP-LIFECYCLE-STATE-RESTORE).
+
+\- Core business data exportable in an openly readable
+standard (SQLite, JSON, CSV) without the
+
+  app shell or a
+proprietary service (APP-DATA-OPEN-EXPORT).
+
+\- Keep Help, website will/won’t (or equivalent
+limits), and the screen in agreement — if they disagree, the product is wrong.
+
+\- Fail closed with a plain next step (corrupt file,
+bad restore, unsupported schema) — never a blank workspace that looks empty.
+
+\- On handoffs, state what the app produced, what the
+user still does externally, and what was not sent
+
+  (did not email
+the client, did not upload, did not charge) unless that action truly shipped.
+
+\- Keep screens dense but scannable in a few seconds:
+title → status → next action.
+
+\- Prepare and check; the user owns the last mile
+(portal, bank, calendar, mail app) unless the product
+
+  explicitly
+ships and labels that mile.
+
+\- Scannable progress so gaps are obvious before
+external handoff.
+
+\- Collect once, reuse everywhere; portable exports
+(PDF, CSV, encrypted backup, copy sheets).
+
+\- Let the user leave with their data (export/backup)
+without calling support.
+
+\- Fully offline everyday work; optional online
+features user-initiated and labeled.
+
+\- Remain useful for years offline even if a cloud
+side-project ends.
+
+\- ? help on non-trivial fields + searchable Help hub +
+nivo78.com support articles.
+
+\- Native handoffs for send (email, SMS, calendar,
+browser) — user confirms send; app never silently transmits.
+
+\- Honest free tiers with real limits, not demo timers.
+
+\- Look and operate like other Nivo78 apps — shared
+theme, menu contract, input/output patterns
+
+  (learn one
+app, know the chrome of the next: Help → Feedback → Support center → Privacy →
+Terms, save bar, ? help).
+
+\- Phone, tablet, and desktop may look different; business
+rules and validation stay the same.
+
+\- Family utilities (the /tools/ catalog: Estimate,
+Measure, and the rest) are designed to run on
+
+  Windows, Mac,
+Android phones and tablets, iPhone, and iPad. One business-rules engine. Do not
+
+  stamp a new
+utility as phone-only or Windows-only unless the job itself requires it (APA:
+
+  store listing
+prep on a Windows PC) and an accepted override records that exception.
+
+  Website and
+Help MUST say Not yet / in development until a public install exists — never
+Yes
+
+  without a
+channel, and never No for a surface that is still in the family design.
+
+\- Interruptions are rare; when they appear they are
+consequential (legal gate, vault, overwrite) — not nags.
+
+\- Embody Brand Philosophy: local-first, respectful,
+transparent, fast/reliable, built to last.
+
+\- Earn trust with honest scope — website and Help name
+capabilities and limitations so there are
+
+  no negative
+surprises after install.
+
+\- Issue a one-time recovery key when the master
+password is created (and a new key after a
+
+  recovery-key
+reset). Tell the user to store it off the device and why. The key sets a new
+
+  master
+password; it does not reveal the old password. Nivo78 cannot recover either
+secret.
+
+\- In DEBUG builds only, keep a local 10,000-event
+breadcrumb ring buffer (UI, navigation, function
+
+  calls, input
+length — never raw text) so in-app bug reports can attach a troubleshooting
+file.
+
+  Release builds
+discard every event with zero ring-buffer allocation.
+
+
+
+What a good Nivo78 app will not do
+
+Access and money
+
+\- No required host login (Nivo78 account or cloud
+sign-in) for core offline work.
+
+\- No nags, sponsored rows, or “watch this to continue.”
+
+\- No tolls on using the app without valid maintenance,
+development, or infrastructure costs. This is one of the ways we keep your
+costs low.
+
+\- No toll on finished offline work that does not need
+our servers (open old projects, export, print,
+
+  backup) merely
+because a subscription lapsed — charge for ongoing support, updates, or real
+
+ 
+infrastructure, not for opening the user’s own data.
+
+\- No dark-pattern upgrade walls mid-task (“pay to save
+what you already typed”).
+
+\- No hidden pricing or surprise microtransactions.
+
+
+
+Data and network
+
+\- No background upload of the business database or
+project folder.
+
+\- No selling data, advertising profiles, or silent
+behavioral tracking for resale.
+
+\- No internet required merely to open or use the core
+offline job.
+
+\- No silent email, SMS, calendar, or payment sends.
+
+\- No silent diagnostics collection or background bug
+reporting.
+
+\- No breadcrumb logger, UI-event ring buffer, or debug
+breadcrumb export in any \*\*release\*\* build
+
+  (debug-only
+troubleshooting is mandatory; shipping it in release is a defect).
+
+
+
+Trust and control
+
+\- No silent or pre-checked legal acceptance.
+
+\- No delete or overwrite without a clear confirm.
+
+\- No false empty workspace after a failed load,
+corrupt file, or unsupported schema.
+
+\- No proprietary-only lock-in — exports and backups
+stay portable.
+
+\- No “AI will handle it” (or similar automation)
+unless that capability is shipped and labeled
+
+  in the current
+build.
+
+\- No stack traces or internal error codes on primary
+user-facing rows.
+
+\- No email, SMS, or support reset of the master
+password. No Nivo78 account to recover it.
+
+  A recovery key
+the user stored off-device is the only emergency path to set a new master
+password.
+
+
+
+Attention and scope
+
+\- No nag screens, review spam, or engagement feeds.
+
+\- No second product inside the product (social, news,
+unrelated tools).
+
+\- No forced tours or account gates before a usable
+first pass.
+
+\- No walls that demand unrelated optional fields
+before the operator can finish setup.
+
+\- No jargon walls on primary form rows.
+
+\- No decorative hero screens inside the core job.
+
+\- No excessive permissions unrelated to the job.
+
+\- No “everything platform” scope creep.
+
+
+
+Honesty
+
+\- No Help / website / in-app disagreement about the
+same capability or limit.
+
+\- No “coming soon,” “planned,” or roadmap language
+sold as shipped.
+
+\- No mislabelled Cancel, Discard, Decline, or Exit
+that does not match what the button does.
+
+\- No dishonest defaults or demo theater that pretends
+real data was already entered.
+
+\- No overselling features or burying material limits
+so customers discover the gap only after
+
+  they rely on
+the product.
+
+\- No persist of a stale stored value while a focused
+field still holds a newer draft
+
+  (operator must
+not have to tap away before Save, Lock, Next, or Finish).
+
+\- No persist of a leftover composed form snapshot that
+drops what is on screen.
+
+
+
+Pre-ship bar (minimum)
+
+\- Engine and UI separation verified; no platform
+leakage in shared logic.
+
+\- User-facing strings scanned for jargon and honesty;
+help updated for new fields and tasks —
+
+  including
+limits and handoffs that prevent negative surprises.
+
+\- Shared profile fields not duplicated; validation
+before save on critical paths.
+
+\- Input focus is in-place edit only — no select-all or
+clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Save/Lock/Next/Finish persist inner committed text
+and live form fields (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+\- Save inactive vs verified registry values; persist
+valid on leave, block invalid leave (APP-SAVE-VERIFIED-INACTIVE,
+APP-LEAVE-DIRTY-PROMPT).
+
+\- Accessibility floor on mobile: 44×44 dp targets,
+contrast, Dynamic Type (APP-UI-A11Y-FLOOR).
+
+\- No silent remount wiping sibling drafts;
+dirty/required UI honest while typing (live draft when blur-commit).
+
+\- Offline core path works; vault and secret rules
+honored.
+
+\- Destructive actions confirmed; load/migrate fail
+closed; empty/error states on major screens.
+
+\- Setup path finishes a usable first pass without
+traps; optional fields stay optional; Cancel/Decline match labels.
+
+\- Handoff screens state what was produced, what the
+user still does, and what was not sent.
+
+\- Engine tests and product regression verify green
+before release.
+
+\- Copy voice: plain, practical, respectful — written
+for a person doing real work, not for a pitch deck.
+
+\- Web and Help will/won’t (or equivalent limit
+statements) match shipped behavior — trust test passed.
+
+\- Public web pages: comprehensive SEO head
+(description, canonical, Open Graph, Twitter) on every page touched; website
+verify green including WEB SEO checks.
+
+
+
+
+
+\================================================================================
+
+NIVO78 FAMILY IDENTITY — LOOK, FEEL, AND OPERATE THE
+SAME
+
+\================================================================================
+
+
+
+Shared visual system
+
+\- Every Nivo78 app uses the shared nivo78-theme
+package — typography, color roles, spacing tokens, and component shapes — not
+one-off styling per product.
+
+\- Density is utility-first: compact vertical rhythm,
+scannable sections, no hero banners or decorative animation inside core
+workflows.
+
+\- Primary actions use the same button hierarchy
+everywhere: primary (solid), secondary (outlined/text), destructive (labeled
+and confirmed).
+
+\- Page titles follow one pattern: destination name,
+optional subtitle in muted body text — no marketing headlines on form screens.
+
+\- Status and progress use the same vocabulary and
+colors: not started / needs attention / complete (or product-equivalent labels
+mapped to those three states).
+
+\- Icons and affordances are consistent: ? opens Help
+for that field or task; never a mystery icon with no label.
+
+
+
+Shared navigation chrome
+
+\- Desktop (APP-DESKTOP-MODERN-STYLE — see reference/NIVO78_DESKTOP_MENU_BAR.txt):
+  - Vertical order (APP-DESKTOP-CHROME-VERTICAL-ORDER): menu → brand header → optional meta/toolbar → primary worksheet/viewport.
+  - Standard top menu bar on every PC/Mac desktop window: File (at least Exit), product menus as needed, Help in canonical family order (Help topics, Feedback, Support center, Privacy, Terms, Check for updates, About).
+  - Optional horizontal action toolbar on or below the brand row for high-frequency commands only (Save, Open, Undo, lock vault, common navigation). Action bar MUST NOT duplicate any command already on the top menu with the same outcome. No full File or Help mirror on the bar; at most one ? / F1 help-topics shortcut on the bar.
+  - Full keyboard shortcuts (Ctrl+S, Ctrl+N, Ctrl+O, F1, Ctrl+Q / Cmd+Q, etc.) wired to menu commands via ProcessCmdKey / desktop key dispatcher.
+  - Row and item editing via right-click context menus on grids and lists.
+  - Desktop header: product logo (~80px target height), bold title, utility tagline; primary action bar buttons may use the Nivo78 top accent stripe (3px–4px #006EFF).
+
+\- Mobile: a visible support row or drawer section with
+the same five links; never bury Privacy or Terms only on the website.
+
+\- Back navigation preserves unsaved form state until
+the user saves or explicitly cancels/reverts — except when Save failed
+validation: Back, Cancel, and discard navigation stay blocked until items are fixed
+or the user chooses Save anyway on acknowledgement warnings.
+
+\- Current location is obvious: active tab, breadcrumb,
+or page title matches engine destination id (useful for diagnostics and Help
+deep links).
+
+
+
+Shared page structure
+
+\- Top: page title + optional one-line intro (plain
+language, no paragraph essays).
+
+\- Body: grouped sections with short section headers;
+fields in consistent layout per form factor (see Mobile phone input chrome —
+phone-only).
+
+\- Bottom (when editing): save/cancel bar in the same
+place and behavior across apps — visible when dirty, disabled when invalid,
+never hidden until the user discovers a gesture.
+
+\- Critical warnings stay inline near the control they
+protect; everything else goes behind ?.
+
+
+
+================================================================================
+
+MANDATORY TOP-LEVEL ASSETS FOLDER (APP-ASSETS-TOP-LEVEL) [GATE]
+
+================================================================================
+
+Every Nivo78 product repository (application, utility, library, or website) must
+maintain a dedicated, top-level Assets directory at the repository root (`Assets/` or `assets/`):
+
+1. Canonical Home for Visual Assets:
+- All graphics, brand logos, product emblems, high-resolution source icons (.png, .ico, .icns),
+  marketing hero graphics, diagrams, UI screenshots, and vector marks for the application
+  or website MUST reside in the repository root `Assets/` directory.
+
+2. Platform Resource Synchronization:
+- Platform-specific build copies (e.g. `desktopMain/resources`, `androidMain/res/drawable`,
+  `iosApp/Assets.xcassets`, `packaging/msix/Assets`, `packaging/store-listing`, etc.) and
+  hosted website asset directories are downstream mirrors or build inputs generated from
+  this root `Assets/` directory.
+- Standalone icon generation scripts (e.g. `generate-icon.ps1`) and graphics pipeline tools
+  MUST emit their master outputs into the root `Assets/` folder first before syncing to
+  framework packaging folders.
+
+3. Mandatory in N78-Kit:
+- Every new utility stamped by `N78-Kit` (`new-n78-utility.ps1`, `stamp-kmp-utility.ps1`)
+  MUST automatically create and populate the top-level `Assets/` folder upon initial scaffolding.
+- The `verify-n78-kit.ps1` verification suite must strictly enforce this requirement.
+
+
+
+
+
+
+\================================================================================
+
+INPUT STANDARDIZATION — SAME INPUT STYLE IN EVERY APP
+
+\================================================================================
+
+
+
+Field components (mandatory for form rows)
+
+\- Single-line text, multi-line text, email, phone,
+URL, and numeric fields use the shared outlined field component — same border,
+label placement, focus ring, and error line placement.
+
+\- Typed fields (email, URL, phone, postal, clock
+times, money/duration with unit, application IDs) use shared input profiles
+where the product has them: validation messages from engine rules — not ad hoc
+regex in Composables.
+
+\- Password and secret fields use the vault pattern:
+masked entry, save once, copy-only after save — never re-display plaintext secrets.
+
+\- Dropdowns and filter chips for small fixed sets;
+free-text only when the value is truly open-ended.
+
+
+
+Format and validate on commit (mandatory — not while
+typing; internal engineering — not marketing)
+
+\- Required format and validation for structured fields
+run only on blur, IME Done / Enter commit, leave, or Save — never on every
+keystroke.
+
+\- Canonical rewrite (pad minutes, insert separators,
+snap to \`h\:mm AM/PM\`, phone mask completion, URL scheme fill, etc.) happens at
+those commit points only.
+
+\- While focused, leave the draft as typed. Do not
+fight mid-edit by rewriting partial values or jumping the cursor to the end
+after each character.
+
+\- Light mid-edit filters are allowed when they do not
+change structure or fight the caret: digit-only filters, paste-noise strip,
+case of AM/PM letters, keeping a live draft for dirty/required UI when storage
+commits on blur.
+
+\- Format errors stay under the field (and on the save
+bar when the page has one) after commit failure — not as a live “invalid” flash
+while the user is still typing a partial value.
+
+\- Do not put this rule in customer-facing will/won’t,
+Brand Philosophy, About, store, or Help marketing copy — it is build/QA
+guidance (APP-INPUT-FORMAT-ON-COMMIT; pairs with APP-INPUT-COMMIT).
+
+
+
+Flush blur-only drafts before persist (mandatory —
+APP-INPUT-FLUSH-BEFORE-PERSIST)
+
+\- When storage commits on blur / Done only, parent
+state can still hold the previous value while
+
+  the focused
+field shows a newer draft.
+
+\- Save, Lock, Next, Finish, customer handoff, and
+page-leave autosave MUST flush registered
+
+  field drafts
+first (\`commitAll\` or the product’s equivalent), then persist. A control that
+
+  does not steal
+focus is still required to persist what is on screen.
+
+\- The persist MUST use the inner field’s committed
+text. MUST NOT register a second persist that
+
+  reads a
+leftover parent copy (previous \`localValue\` / \`rememberUpdatedState\`) and runs
+before
+
+  the inner
+field flushes — that writes the old minutes/rate/name.
+
+\- Flush order: innermost field state first, then parent
+persist callbacks.
+
+\- After flush, Lock/Save MUST assemble from live
+editor fields (current line items, duration,
+
+  settings), not
+a \`remember {}\` derived snapshot from the last composition.
+
+\- IME Done / Enter remains a commit path; it is not a
+substitute for flushing on Lock/Save.
+
+\- Guardrail tests MUST cover every host of a blur-only
+outlined duration/money/clock/settings
+
+  row (or an
+equivalent structural scan), not only one screen.
+
+\- Customer-facing will/won’t uses the plain language
+above (persist what is on screen). Do not put
+
+  \`commitAll\`,
+commit registry, or blur jargon in Brand Philosophy, About, store, or Help
+marketing.
+
+
+
+Focus behavior (mandatory — all input fields; internal
+engineering — not marketing)
+
+\- When a text field receives focus, place the caret
+for in-place edit (tap position or platform default). Do nothing else to the
+value.
+
+\- MUST NOT select-all on focus (including “select all
+when not blank”).
+
+\- MUST NOT clear or erase the field on focus.
+
+\- Replace-all remains user-initiated (platform Select
+all / Ctrl+A / Cmd+A / long-press), never automatic on focus.
+
+\- Applies to profile, settings, quotes, search, and
+every other outlined or shared text input — same rule family-wide.
+
+\- Rule id: APP-INPUT-FOCUS-EDIT-ONLY. Not
+customer-facing will/won’t or Brand Philosophy copy.
+
+
+
+Field row layout
+
+\- Label on the primary form row; ? help icon aligned
+to the label when the field is non-trivial.
+
+\- Validation errors appear directly under the field in
+plain language; engine message wins over UI paraphrase.
+
+\- Required vs optional is explicit in the label or
+helper line — never implied only by validation failure on save.
+
+\- Placeholders supplement the label; they do not
+replace it.
+
+
+
+Commit and keyboard behavior
+
+\- Enter / IME Done commits the field and moves focus
+predictably (or triggers save when that is the established pattern for inline
+rows).
+
+\- Blur commits draft text to view model state; dirty
+tracking reflects engine comparison — not string equality in the Composable
+alone.
+
+\- Same-screen persist (Save / Lock / Next / Finish)
+and page-leave MUST flush those drafts even when the control does not steal
+focus (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+\- Commit is also when required formatting and field
+validation run (see Format and validate on commit above).
+
+\- Focus does not select-all or clear (see Focus
+behavior above).
+
+\- Long text areas cap length with visible feedback
+before send/save fails silently.
+
+
+
+Save and cancel semantics (same everywhere)
+
+\- Save validates through engine coordinators first; UI
+shows the first blocking message.
+
+\- Cancel on a dirty form reloads from disk or reverts
+draft — same wording (“Cancel changes” / “Discard”) per platform shell.
+
+\- Save bar: primary Save, secondary Cancel, optional
+status line for last save or error — pinned bottom on mobile, consistent strip
+on desktop. When Save fails engine validation, every message appears in error
+styling immediately above the save bar (not only at the top of a long page).
+Back and Cancel on that page are disabled until validation clears or the user
+chooses Save anyway where acknowledgement warnings apply (APP-SAVE-BAR).
+
+\- Save stays inactive when the draft matches last
+registry-verified values; enable when dirty;
+
+  after write,
+stay active until read-back matches, then inactive (APP-SAVE-VERIFIED-INACTIVE).
+
+  Failed write
+keeps Save active and uses Could not save — not a success toast.
+
+\- Home / Back with a typed Save draft
+(APP-LEAVE-DIRTY-PROMPT): flush; persist when valid;
+
+  block leave
+when invalid or save fails. Save = save now and stay. Hint: Valid changes save
+
+  when you
+leave. Optional Save / Don't save / Stay dialog only with accepted override.
+
+  Toggles /
+checkboxes / frequency chips MAY persist immediately.
+
+
+
+Pickers and file input
+
+\- File and folder pickers go through platform bridges;
+engine receives neutral paths (okio.Path or equivalent).
+
+\- After pick: show filename or path summary in the
+same read-only row pattern; user can replace, never edit path as raw text
+unless the product explicitly supports path entry.
+
+
+
+
+
+\================================================================================
+
+MOBILE PHONE INPUT CHROME — BORDERED FIELD WITH TITLE
+IN BORDER (PHONE ONLY)
+
+\================================================================================
+
+
+
+Principle
+
+\- On mobile \*\*phone\*\* shells only (Android phone,
+iPhone), primary form rows — especially \*\*profile\*\* and setup fields — use the
+Nivo78 phone field pattern inspired by N78-Ops profile: a visible border around
+the control, the field \*\*title in the border\*\* (attached notch label), and a
+\*\*placeholder hint inside the field\*\* that reads more prominently when the
+field is focused/active.
+
+\- \*\*Desktop\*\* (Windows, Mac, Linux), \*\*iPad\*\*, and
+\*\*Android tablet\*\* shells use the standard compact outlined field layout for
+utility density — \*\*not\*\* the phone notch-label variant. Do not force phone
+chrome onto tablet or desktop just because the build is “mobile.”
+
+\- Form-factor detection lives in platform/shell layer
+(product ClientFormFactor or equivalent) — not guessed from Composable tree
+alone.
+
+
+
+Phone field pattern (required on phone for profile +
+primary form rows)
+
+\- Outlined border in default state; border accent on
+focus (primary color).
+
+\- Title/label sits in the border notch (attached
+label) — always visible; required marker on label when applicable.
+
+\- Placeholder hint inside the field when empty —
+supplements the title; \*\*must not\*\* replace the title.
+
+\- Placeholder/hint visually strengthens when the field
+is focused (higher contrast or emphasis vs unfocused empty state).
+
+\- Validation error line directly under the field —
+same plain-language engine messages as other platforms.
+
+\- ? help on the label row when the field is
+non-trivial — same Help hub contract as desktop.
+
+
+
+Where to apply on phone (minimum)
+
+\- Publisher / organization / profile screens (company
+name, address, support contact, etc.).
+
+\- Setup and account fields that mirror profile density
+on phone.
+
+\- Any phone-only workflow screen with more than one
+editable primary row.
+
+
+
+Where NOT to apply
+
+\- Desktop, Mac, Linux desktop shells — standard Nivo78
+outlined field density.
+
+\- iPad and Android tablet — standard
+tablet/desktop-density outlined fields; wider layout, not phone thumb-zone
+chrome.
+
+\- Products that block phone installs may defer
+implementation until phone ships — but the standard applies when phone is
+supported.
+
+
+
+Implementation spine (nivo78-theme — recommended)
+
+\- Shared tokens: border, focused border,
+label-in-border, placeholder default, placeholder focused — one source in
+nivo78-theme (Nivo78InputDefaults family).
+
+\- Phone shell selects phone field composable;
+tablet/desktop shell selects standard outlined field — same engine validation
+and commit semantics either way.
+
+\- Reference: N78-Ops profile fields on phone; APA and
+other products adopt via theme + form-factor gate, not one-off TextField
+copy-paste.
+
+
+
+Audit
+
+\- UI Audit.txt MOBILE-PHONE-INPUT vector; Platform
+parity.txt distinguishes phone vs tablet field chrome.
+
+\- Text test: profile on phone uses bordered
+notch-label fields; same profile on tablet uses standard outlined rows without
+phone-only chrome.
+
+
+
+
+
+\================================================================================
+
+MODERN DESKTOP STYLE STANDARD (APP-DESKTOP-MODERN-STYLE) [QA]
+
+\================================================================================
+
+All Nivo78 desktop applications (Windows, macOS, Linux desktop shells, Compose
+Multiplatform Desktop, WinForms, WPF, etc.) must adhere to the Modern Desktop Style.
+Full menu and toolbar rules: reference/NIVO78_DESKTOP_MENU_BAR.txt.
+
+0. Vertical chrome order (APP-DESKTOP-CHROME-VERTICAL-ORDER) [required]
+- Top to bottom: standard top menu → brand header row → optional customer/meta or
+  secondary toolbar → primary worksheet/viewport.
+- WinForms: TableLayoutPanel header host with menu row 0 and brand/action row 1.
+- Compose Desktop: MenuBar before root content Column; brand is first child of Column.
+
+1. Standard Top Menu Bar (required)
+- Every desktop shell MUST present the family standard top menu (File, product-specific
+  menus, Help). WinForms: MenuStrip / MainMenuStrip. Compose Desktop: MenuBar inside
+  Window { }. macOS: same logical menus (system or in-window per stack).
+- File includes at least Exit (Ctrl+Q / Cmd+Q). Document apps list Open, Save, New,
+  Close, and related commands here.
+- Help follows the canonical five support links, then Check for updates, then About.
+- MUST NOT ship toolbar-only or header-only chrome without this menu.
+
+2. Optional Action Toolbar (high-frequency only)
+- May sit below the brand header across the window width.
+- ONLY commands used often during active work (e.g. Save default, Open, Undo, lock vault).
+- MUST NOT duplicate any top-menu item with the same outcome. No parallel File menu or
+  Help hub on the bar. Toolbar dropdowns MUST NOT repeat entire menu sections.
+- Buttons use Nivo78 typography, clean borders, hover states; primary bar actions may use
+  the top accent stripe (3px–4px #006EFF).
+- During migration, menu and bar MAY share handlers; end state is one visible control
+  per command on the action bar.
+
+3. Global Keyboard Shortcut Preservation
+- Standard shortcuts (Ctrl+S, Ctrl+N, Ctrl+O, F1, etc.) MUST be wired to menu commands
+  via ProcessCmdKey / desktop key dispatcher.
+
+4. Contextual In-Place Menus
+- Row-level and selection-level operations (cut, copy, paste, delete row, insert
+  from catalog/price book, move up/down) MUST be accessible via right-click
+  context menus (ContextMenuStrip / Compose context menu) directly on the
+  workspace data grid or list.
+
+5. Brand Banner & Standard 80px Logo
+- Desktop header features the product logo with standard 80px target height
+  (targetHeightPx = 80 / 80.dp), scaled proportionally with high-quality rendering
+  (preserving aspect ratio, anti-aliased, transparent background).
+- Prominent bold product title (e.g. N78-Estimate, N78-Ops) alongside the clear
+  one-line plain-language product utility subtitle/tagline.
+
+6. High-Density Workspace & Docked Utility Panels
+- Full-width workspace expansion with high-density data grids, compact inputs,
+  alternating row shading, and clear financial/summary cards.
+- Docked tool/viewer panels (CAD blueprint viewer, document viewer, preview panel)
+  feature dark canvas theme, dedicated mini-toolbar controls (+, -, Fit, Float, X),
+  and live zoom/pan status.
+
+
+
+
+
+\================================================================================
+
+ACCESSIBILITY FLOOR (APP-UI-A11Y-FLOOR) [QA]
+
+\================================================================================
+
+
+
+\- Minimum touch target of 44×44 dp on mobile phone and
+tablet.
+
+\- Text and interactive elements meet standard contrast
+ratios.
+
+\- Layout and type respond gracefully to system Dynamic
+Type / Large Text.
+
+\- High-resolution display awareness & universal UI scalability:
+Applications must be display resolution aware and work seamlessly on
+high-resolution (HiDPI / 4K / Retina) screens. Layouts and controls must scale
+fluidly across all display zoom percentages and DPI scaling configurations
+(100% to 300%+), reflowing and wrapping properly while maintaining full accessibility
+and usability without clipping, blurriness, or overlapping.
+
+
+
+
+
+\================================================================================
+
+OUTPUT STANDARDIZATION — EXPORTS, COPY, AND HANDOFFS
+
+\================================================================================
+
+
+
+Export and copy behavior
+
+\- Every export names the artifact clearly (product,
+project or context, date or version) — no generic “export.txt.”
+
+\- Export actions are explicit buttons with plain
+labels: “Export PDF,” “Copy to clipboard,” “Save encrypted backup” — not
+ambiguous “Share.”
+
+\- Success feedback: short confirmation line or toast;
+failure: plain reason + what to fix — same tone as validation errors.
+
+\- Clipboard copy of secrets or tokens auto-clears
+after a short timeout when the platform supports it; user sees a one-line
+notice.
+
+
+
+Handoff outputs
+
+\- When the app prepares data for an external site or
+tool, offer the same output shapes where possible: structured file (JSON/CSV),
+human-readable sheet, and copy-friendly plain text.
+
+\- Handoff screens state what the app produced, what
+the user must paste or upload elsewhere, and what was not sent over the
+network.
+
+\- Readiness summary before handoff: checklist or
+bullet list tied to engine state — not a static marketing blurb.
+
+
+
+
+
+\================================================================================
+
+FOOTERS, LEGAL LINKS, AND SUPPORT PLACEMENT
+
+\================================================================================
+
+
+
+Where Privacy, Terms, and Support live (fixed
+contract)
+
+\- Every app exposes the same five user-facing support
+entry points with the same labels:
+
+  Help |
+Feedback | Support center | Privacy | Terms
+
+\- Placement rules:
+
+  - Desktop:
+application menu (or Help menu) — always reachable from the main window.
+
+  - Mobile:
+support row, drawer section, or settings support block — visible without
+completing a workflow.
+
+  - Feedback
+page footer: repeat links to Privacy, Terms, Support center, and Contact — so
+legal and help are discoverable from the send flow itself.
+
+\- URLs follow one site pattern per product:
+
+  -
+Privacy:  
+https\://nivo78.com/{product}/privacy/
+
+  - Terms:     https\://nivo78.com/{product}/terms/
+
+  -
+Support:  
+https\://nivo78.com/{product}/support/ 
+(knowledge base / help center)
+
+  -
+Contact:   mailto or support page linked
+from Feedback — never a hidden address buried in About only.
+
+\- In-app About / Data security (where the product has
+one) links to the same Privacy URL — no duplicate policy text that can drift.
+
+
+
+In-app and website linking standard (APP-WEBSITE-LINKS-STANDARD)
+
+- Every app provides clean, non-pushy pathways to the product website and support center:
+
+  1. Support menu: exact 5 canonical items (Help, Feedback, Support center, Privacy, Terms) — Support center opens https://nivo78.com/{product}/support/ in the system browser. After those five items, Help chrome MUST also include Check for updates immediately before About (APP-SUPPORT-CHECK-FOR-UPDATES).
+
+  2. In-app Help hub (F1): window action bar provides an "Online guides & support (nivo78.com)" link leading to https://nivo78.com/{product}/support/.
+
+  3. About dialog / screen: prominent, clickable "Visit https://nivo78.com/{product}/" link alongside product version, local-first promise, philosophy tagline, and copyright.
+
+- Constraint: Never nag, spam pop-ups, toast prompts, or interruptive review/visit prompts. Links are discoverable in standard menu and help chrome only. Check for updates is user-initiated only (no automatic checks on startup or timers).
+
+In-app store update check (APP-SUPPORT-CHECK-FOR-UPDATES) [QA]
+
+- Every Nivo78 app that ships through an official store (Microsoft Store, Google Play, Apple App Store) MUST expose Check for updates in Help chrome (desktop: Help ▾; mobile: Help, Settings, or Support section equivalent).
+- Label: Check for updates (accelerator on "updates" permitted).
+- Placement: immediately before About, after the five canonical support items (desktop separator before Check for updates and About is recommended).
+- User-initiated only. MUST NOT run background or startup update checks, timers, or unprompted toasts.
+- Store-installed behavior: up to date (confirm version; updates delivered by the official store); update available (offer store install and/or open listing); cannot determine (short neutral message + optional open store listing).
+- Non-store engineering runs: menu item MAY remain; outcome is cannot determine — no parallel sideload updater in shipped products.
+- NOT APPLICABLE only when release materials document no store distribution channel (rare internal utilities).
+
+
+
+Footer content (when a page has a footer)
+
+\- Utility footers are minimal: legal links, app
+version (optional), data-on-device reminder on first-run or security pages only
+— not copyright walls on every screen.
+
+\- Workflow footers hold Save/Cancel or Next/Back —
+never mix legal links into the save bar; legal links live in menu + Feedback
+footer.
+
+
+
+App shell footer (desktop and tablet/shared shell —
+every Nivo78 app that shows a window footer)
+
+\- Two centered lines, same order and jobs in every
+product:
+
+  1. Philosophy
+only: “Local-first · No Nivo78 account · No cloud sync · No analytics”
+
+     (adapt only
+when the product’s job explicitly requires an account or optional sync — state
+the exception plainly).
+
+     Do NOT
+append publisher city on this line.
+
+  2. Copyright
+with place of business: “© {year} Nivo78 Mobile Apps, LLC · Tyler, Texas. All
+rights reserved.”
+
+\- About / credits dialogs that show copyright MUST use
+the same copyright line (include Tyler, Texas there — do not duplicate a
+separate “LLC · Tyler” line above it).
+
+
+
+
+
+\================================================================================
+
+FEEDBACK, BUG REPORT, SUPPORT, AND CONTACT — ONE
+INTERFACE CONTRACT
+
+\================================================================================
+
+
+
+Single Feedback destination per app
+
+\- One in-app Feedback page (not separate “Contact us”
+and “Report bug” silos unless they are tabs on the same page).
+
+\- Report type chips or tabs — same three types in
+every app:
+
+  -
+Feedback      — comments, praise, or
+general product notes (not how-to)
+
+  - Bug
+report    — something broke or looks
+wrong
+
+  - Feature
+request — idea for a future version (honest: not a commitment)
+
+\- How-to questions belong in the in-app Help hub /
+Support center — NOT a Feedback report type.
+
+\- Contact block on every send:
+
+  - Name
+(required)
+
+  - Email
+(required, validated)
+
+  - Phone
+(optional)
+
+  - Pre-fill
+name and email from profile when the product stores them; user edits before
+send.
+
+\- Subject line: sensible default per report type; user
+can edit.
+
+\- Narrative fields depend on type:
+
+  - Bug: What
+were you doing? / What happened? / What did you expect? / Additional details
+(optional)
+
+  - Feedback:
+Message (comments)
+
+  - Feature:
+Describe the feature
+
+\- Send path: compose mailto (or platform mail handoff)
+— user reviews the draft in their mail app and taps Send. The app never
+silently transmits.
+
+\- Primary send action label: **Send request** (N78-Ops
+UiCopy.Feedback.sendButton pattern). Not “Submit”, “Send email”, or “Review in
+mail app” alone.
+
+
+
+Email draft body — structured sections
+(APP-FEEDBACK-BUG-NARRATIVE) [QA]
+
+\- Canonical reference: N78-Ops FeedbackScreen.kt,
+SupportFeedbackRouting, UiCopyFeedback. Family utilities implement the same
+contract scaled to product data. Ops diagnostics detail:
+docs/FEEDBACK_DATA_COLLECTION.md.
+
+\- Contact block at the top of the mailto body (before
+report-type narrative):
+
+  - NAME: {trimmed name}
+
+  - EMAIL: {normalized email}
+
+  - PHONE: {formatted phone or N/A}
+
+\- Report narrative MUST use these exact delimiter lines
+(support tooling parses them):
+
+  - --- REPORT_TYPE --- (human-readable type label on
+the next line)
+
+  - Feedback: --- FEEDBACK ---
+
+  - Bug report: --- WHAT_WERE_YOU_DOING --- / ---
+WHAT_HAPPENED --- / --- WHAT_DID_YOU_EXPECT --- / --- ADDITIONAL_DETAILS ---
+(only when the user entered optional additional comments)
+
+  - Feature request: --- FEATURE_REQUEST ---
+
+\- Blank narrative fields use the placeholder **(not
+provided)**.
+
+\- Always append on every report type: ---
+SETTINGS_FOR_SUPPORT --- (minimal operational snapshot — app version, device/OS
+summary, active screen, aggregate non-PII counts per product policy; never
+business record contents).
+
+\- Extended diagnostics (Bug report only when checkbox
+ON, default ON; optional on Feedback comments default OFF; never Feature
+request): --- EXTENDED_DIAGNOSTICS --- (product-specific redacted appendix).
+
+\- Forbidden for Bug report: a single unstructured
+“Details” or “Message” field instead of separate doing / happened / expected
+fields; omitting --- SETTINGS_FOR_SUPPORT ---; silent transmit without OS mail
+review.
+
+
+
+Support center vs Feedback
+
+\- Support center opens the hosted knowledge base in
+the browser (offline-safe: show a clear message if network unavailable).
+
+\- Feedback is for messages to Nivo78; Support center
+is for self-serve articles — cross-link both directions in intro copy.
+
+
+
+Contact without Feedback
+
+\- Products may expose “Email support” as a secondary
+action with the same contact defaults — still user-initiated mailto, still no
+silent send.
+
+
+
+Email routing (same three report types + two general
+channels)
+
+\- feedback\@nivo78.com — typed reports from in-app
+Feedback (Feedback / Bug report / Feature request); subject prefix per type
+({Product} Feedback:, Bug report:, Feature request:).
+
+\- support\@nivo78.com — licensing, account, and channel
+when the user skips structured Feedback (not a Feedback chip).
+
+\- contact\@nivo78.com — business, press, partnerships —
+not product bug triage.
+
+
+
+
+
+\================================================================================
+
+DEVICE VS WEB — FEEDBACK TYPE ROUTING (BINDING)
+
+\================================================================================
+
+
+
+Principle
+
+\- Structured Feedback with diagnostics exists only
+inside the installed app.
+
+\- The website and Help KB may offer mailto for
+human-written messages — never silent log upload, never web forms that attach
+project data or diagnostics.
+
+\- Bug reports that support can act on require
+on-device context; web cannot substitute.
+
+
+
+Routing matrix (every product)
+
+
+
+  Report
+type        In-app Feedback     Website / KB
+
+ 
+\----------------- 
+\------------------ 
+\------------------------------------------
+
+  Bug
+report         PRIMARY — only      Redirect only — do not present as equal
+path
+
+                    
+path with auto      (no “report a bug” web form; no promise of
+
+                    
+diagnostics         automatic
+version, page, or audit context)
+
+  Feedback           Primary             OK — mailto\:feedback@ with plain
+note that
+
+                    
+(comments)          diagnostics
+are not included
+
+  Feature
+request    Primary             OK — mailto\:feedback@; no
+diagnostics block
+
+  How-to / Help
+KB   Not a Feedback      Self-serve Help hub / Support center
+first;
+
+                    
+report type        
+mailto\:support@ secondary only
+
+  Contact
+(business) Secondary button    OK —
+mailto\:contact@ or site contact page
+
+                                         when
+product uses one — still no diagnostics
+
+
+
+In-app rules
+
+\- Bug report chip/tab is the only way to send
+structured doing / happened / expected fields plus SETTINGS\_FOR\_SUPPORT and
+extended diagnostics.
+
+\- Feedback (comments) may offer optional “Attach extra
+troubleshooting details” (default OFF) when the product has a diagnostics
+block; Feature request MUST NOT.
+
+\- Feature request MUST NOT show extended diagnostics
+checkbox — narrative and contact only (no audit trail by default).
+
+\- Copy on the Feedback page states that bug reports
+belong here so version, active page, and troubleshooting details can be
+included. How-to questions use Help, not Feedback.
+
+
+
+Web and Help KB rules
+
+\- Support page Contact block MUST say bug reports use
+Help → Feedback (or Settings → Feedback) in the app — not web mailto alone.
+
+\- Web mailto\:feedback@ MAY remain for Feedback and
+feature ideas with subject hint — MUST NOT describe web email as including
+automatic diagnostics.
+
+\- Help KB articles about bugs MUST point to in-app
+Feedback; MUST NOT promote a generic contact form or contact@ as the primary
+bug path.
+
+\- If the product has no installed app (marketing-only
+page), web copy states bugs cannot be triaged without the app — offer
+Feedback/feature mailto only.
+
+\- Website Support & feedback form report types are
+Feedback and Feature request only — no Help/Support how-to type.
+
+
+
+Anti-patterns (reject)
+
+\- Web “Report a bug” page or form that mimics in-app
+structured bug flow without diagnostics.
+
+\- Help KB copy that says “email contact@ with your
+version” instead of in-app Feedback.
+
+\- Feature request flow that attaches extended audit
+diagnostics by default.
+
+\- Presenting web mailto and in-app Feedback as
+interchangeable for bugs.
+
+
+
+
+
+\================================================================================
+
+STANDARD OVERRIDES — ACCEPTED DEVIATIONS PER PRODUCT
+(BINDING)
+
+\================================================================================
+
+
+
+Principle
+
+\- The global standard stays strict; a product may
+document an intentional, accepted deviation
+
+  without
+weakening the family bar for other apps.
+
+\- Overrides are explicit, reviewable, and persistent
+until revoked — not silent exceptions in verify scripts.
+
+
+
+Registry (required for shipped products)
+
+\- File:
+Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json
+
+\- Rule ids: reference/NIVO78\_STANDARD\_RULE\_IDS.txt —
+add new ids before referencing them
+
+\- README: reference/standard-overrides/README.txt
+(schema); Desktop/Nivo78/Common/standard-overrides/README.txt (location)
+
+
+
+Override entry (required fields)
+
+\- override\_id — stable id for later edits (manage
+script generates on -Add)
+
+\- rule\_id   —
+stable id from NIVO78\_STANDARD\_RULE\_IDS.txt
+
+\- surface   —
+website | app | kb | audit | tooling | all
+
+\- scope     —
+repo-relative path or functional area
+
+\- reason    —
+plain-language justification (min 10 characters)
+
+\- accepted  —
+ISO date YYYY-MM-DD
+
+\- status    —
+active | revoked
+
+
+
+Optional: detail (sub-scope), updated (auto on
+change), review\_by (warn when passed), ticket,
+
+owner, compensating\_control, risk (see Override
+governance / APP-OVERRIDE-\*)
+
+
+
+Edit workflow
+
+\- tools/maintain/manage-standard-overrides.ps1 — list,
+show, add, update, revoke, reactivate (-OverrideId)
+
+\- Change reason, scope, review date, or status with
+-Update; do not hand-edit JSON unless necessary
+
+\- Revoke when fixed; -Reactivate if waiver needed
+again
+
+
+
+Never waivable
+
+\- Silent data upload, silent diagnostics, background
+bug reporting
+
+\- Breadcrumb / UI-event ring buffer or
+attachBreadcrumbsToBugReport in any release / main source set
+
+\- Secrets shown on screen after save, skipping vault
+encryption where required
+
+\- Pre-checked legal acceptance or core workflows
+without terms acknowledgement
+
+\- Intentional security bypasses in release (debug
+unlocks, test credentials, development endpoints)
+
+
+
+Override governance (APP-OVERRIDE-\* — see OVERRIDE
+GOVERNANCE section)
+
+\- Every active override must record approving owner and
+compensating control where applicable (APP-OVERRIDE-OWNER).
+
+\- Every active override must set review\_by (date or
+trigger) and must not become permanent by neglect (APP-OVERRIDE-REVIEW).
+
+\- Overrides that weaken security, privacy, integrity,
+or release controls should record risk (APP-OVERRIDE-RISK).
+
+\- Revoke when no longer needed (APP-OVERRIDE-CLEANUP).
+Optional registry fields: owner, compensating\_control, risk.
+
+
+
+Tooling contract
+
+\- tools/maintain/manage-standard-overrides.ps1 — list,
+add, update, revoke, reactivate overrides by override\_id
+
+\- tools/lib/N78StandardOverrides.ps1 — load and match
+overrides
+
+\- tools/verify/verify-standard-overrides.ps1 —
+validate registry (release gate)
+
+\- tools/verify/verify-apa-website.ps1 — skip failing
+checks covered by active overrides; log ACCEPTED
+
+\- Marketing drift checks honor MARKETING-HUB-\*
+overrides with detail matching the bullet warning
+
+
+
+Text tests (Nivo78 app.txt vector STANDARD-OVERRIDES)
+
+\- Load
+Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json before
+scoring
+
+\- Finding matches active override (rule\_id + surface +
+scope) → report ACCEPTED-OVERRIDE with reason; not FAIL
+
+\- Violation with no override → normal finding severity
+
+\- Flag: unknown rule\_id, missing reason, expired
+review\_by still active, orphaned override with no matching check
+
+\- App audit vectors (APP-\*) and audit-vector waivers
+apply to manual/code review findings
+
+
+
+Workflow
+
+\- When you accept a deviation for the product you are
+working on, add or update the override in the same change
+
+  — do not
+disable verify scripts globally.
+
+\- Revoke (status revoked) when the product is brought
+back into compliance.
+
+
+
+
+
+\================================================================================
+
+DIAGNOSTICS ON BUG REPORTS — USER PERMISSION REQUIRED
+
+\================================================================================
+
+
+
+Principle
+
+\- Diagnostics help support reproduce issues; they are
+never collected silently or uploaded in the background.
+
+\- The user sees what will be included, toggles
+optional extras, and reviews the full draft before send.
+
+
+
+Always included in bug reports (minimal operational
+snapshot)
+
+\- App name and version
+
+\- Host OS summary (e.g. Windows 11, Android 14 — no
+raw env dumps)
+
+\- Active screen or destination id (which page the user
+was on)
+
+\- Product-neutral progress flags only when relevant
+(e.g. checklist counts — not business record contents)
+
+
+
+Included by default; user can turn off extended block
+(bug reports; optional on Feedback comments when offered)
+
+\- Checkbox: “Attach extra troubleshooting details” —
+shown for Bug report (default ON) and optionally Feedback comments (default
+OFF); never on Feature request; plain explanation of what that means.
+
+\- Feature request: no extended diagnostics checkbox —
+contact and narrative only.
+
+\- Extended block may include: recent sign-in or
+security audit lines (timestamps and action labels only), tier or mode labels,
+schema versions — whatever helps support without exposing business data.
+
+\- Bug reports MUST always include minimal
+SETTINGS\_FOR\_SUPPORT even when extended checkbox is OFF; extended audit block
+still applies for bug reports per product composer policy (user sees draft
+before send).
+
+\- How-to questions MUST NOT be a Feedback report type
+— use the Help hub.
+
+
+
+Debug-only breadcrumb snapshot
+(APP-BREADCRUMB-DEBUG-ONLY)
+
+\- Every Nivo78 app MUST implement the shared
+10,000-event breadcrumb ring buffer (nivo78-breadcrumbs
+
+  or an
+equivalent Clean Engine copy) with expect/actual \`isDebugBuild\` and
+\`MutexLock\`.
+
+\- \`log(event)\` MUST begin with \`if (!isDebugBuild)
+return\`. \`getSnapshot()\` MUST return
+
+  \`Release Build
+\- No Logs\` when \`isDebugBuild\` is false.
+
+\- Text input MUST log action + character count only —
+never the typed value.
+
+\- \`attachBreadcrumbsToBugReport\` MUST live only in the
+debug source set (\`src/androidDebug/kotlin\`
+
+  for KMP
+libraries, \`src/debug/kotlin\` for Android apps). Never \`src/androidMain\`,
+\`src/main\`,
+
+  or
+\`src/release\`.
+
+\- Full 10,000-event dumps are a local debug file, not
+mailto. A short debug tail MAY appear in
+
+  extended
+diagnostics on debug builds only.
+
+\- Release binaries MUST NOT allocate the ring buffer
+and MUST NOT include the export utility.
+
+
+
+Never include without explicit user paste
+
+\- Passwords, tokens, API keys, vault contents
+
+\- Full file paths to user projects (redact to basename
+or remove)
+
+\- Bank, tax, government, or payout identifiers
+
+\- Email bodies, customer lists, or exported
+attachments
+
+\- Database files or project folder trees
+
+
+
+Redaction rules (engine-side, before mailto)
+
+\- Run diagnostics through a privacy redactor: strip
+path prefixes, token-like strings, and fields on a deny list.
+
+\- Copy on the Feedback page states plainly: “Bug
+reports include app version and which page you were on. Optional details
+exclude project folders and saved passwords. Do not paste secrets unless you
+choose to.”
+
+\- When extended diagnostics is OFF, send the minimal
+snapshot only; do not sneak extended fields into the body.
+
+
+
+Platform limits
+
+\- Respect mailto URL length limits (especially
+Windows); truncate or summarize with a note in the draft when necessary — never
+fail silently.
+
+
+
+
+
+\================================================================================
+
+LEGAL GATING AND CUSTOMER ACKNOWLEDGEMENT — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Users must explicitly agree to Terms and acknowledge
+Privacy before core workflows — no silent acceptance, no pre-checked boxes, no
+bypass on upgrade unless terms version unchanged.
+
+\- Legal copy lives in engine-layer registries (product
+equivalent of ApaLegalCopy, ApaDataSecurityCopy) — not scattered in
+Composables.
+
+\- First-run dialog, menu Privacy/Terms links, and
+in-repo privacy/terms HTML must tell the same story.
+
+
+
+Explicit consent (first run and re-consent)
+
+\- Modal first-run legal dialog blocks the core shell
+until the user accepts or declines.
+
+\- Acceptance checkbox defaults unchecked; Accept
+button disabled until checked.
+
+\- Full Terms and Privacy reachable from the dialog
+before accepting — stable URLs (nivo78.com/{product}/…) or equivalent in-app
+viewers.
+
+\- No silent acceptance on install, upgrade, or terms
+bump.
+
+\- Plain-language in-app summary in the dialog; full
+policy on linked pages (layered disclosure).
+
+
+
+Decline integrity
+
+\- Decline button label must match behavior on every
+platform (desktop, mobile, tablet).
+
+\- If copy says “Decline and exit” (or equivalent), the
+app exits or fully blocks core workflows — not a no-op with full access.
+
+\- If the product allows limited use without
+acceptance, relabel the button honestly — never promise exit while leaving
+workflows open.
+
+
+
+Versioned acceptance record
+
+\- Record acceptance in engine/support layer with:
+terms version, timestamp, app version at accept time.
+
+\- Single gateway API per product (product equivalent
+of ApaLegalAcceptanceGateway) — platform stores implement persistence.
+
+\- When TERMS\_VERSION (or product equivalent)
+increases, users who accepted an older version see the first-run dialog again.
+
+\- Privacy policy documents what the acceptance record
+contains and where it is stored on device.
+
+
+
+Startup legal gate
+
+\- Core workflows unreachable before acceptance:
+open/create primary workspace, setup checklists, export/handoff, vault unlock
+when product policy requires legal gate first.
+
+\- Document and keep consistent the order of legal gate
+vs master-password or vault setup on each platform.
+
+\- Menu Privacy and Terms remain reachable after
+acceptance — not only on first run.
+
+
+
+Legal copy accuracy (aligned with privacy/terms web
+pages)
+
+\- In-app Terms privacy summary matches engine security
+copy and code/Website privacy HTML (plain vs encrypted vs blocked vs never
+stored).
+
+\- Terms state: not legal, tax, or store advice; no
+store affiliation or guaranteed approval outcomes.
+
+\- Platform scope honest in Terms, Privacy, and support
+pages (desktop vs companion vs unsupported form factors).
+
+\- Optional third-party egress (e.g. user-configured AI
+API) disclosed in Terms/Privacy when shipped — user-initiated only.
+
+
+
+Cross-platform parity
+
+\- Same TERMS\_VERSION and first-run dialog copy on
+desktop, mobile, and tablet shells.
+
+\- Decline, accept, and re-consent behavior equivalent
+across platforms; document intentional storage-path differences in privacy
+policy only.
+
+
+
+Store and entity alignment
+
+\- In-repo and hosted privacy/terms URLs match Partner
+Center / Play Console / App Store Connect listing requirements.
+
+\- Legal entity name consistent: Nivo78 Mobile Apps,
+LLC (or successor named in Terms) across Terms, Privacy, support, and in-app copy.
+
+
+
+Audit and ship
+
+\- Run reference/text-tests-audit/prompts/Legal.txt
+when consent, terms version, or legal copy changes.
+
+\- Run updocs after ApaLegalCopy (or product
+equivalent) or privacy/terms HTML changes.
+
+
+
+
+
+\================================================================================
+
+DESTRUCTIVE ACTIONS AND IRREVERSIBLE WARNINGS — EVERY
+APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Anything that deletes, overwrites, or cannot be
+undone gets explicit confirmation — never a single misclick away.
+
+\- Critical warnings stay inline near the control;
+confirmation dialogs use plain consequence language, not jargon.
+
+
+
+Requires confirmation (examples — adapt labels to
+product)
+
+\- Delete or remove workspace, project, profile, or
+stored record
+
+\- Clear vault entry or rotate master password when
+data loss is possible
+
+\- Overwrite export or replace file on disk when prior
+artifact would be lost
+
+\- Discard unsaved changes when leaving a screen
+(Cancel/revert — same family wording everywhere)
+
+\- Remove store account, destination, or irreversible
+identifier
+
+
+
+Confirmation pattern (same across apps)
+
+\- State what will happen and what cannot be undone in
+one or two plain sentences.
+
+\- Destructive confirm uses labeled destructive button
+(e.g. “Delete project”) — not generic “OK.”
+
+\- Safe default is Cancel / Keep; primary destructive
+action is never the default focused button unless platform requires explicit
+tab.
+
+\- No hidden gestures or long-press as the only guard
+for destructive work.
+
+
+
+Never silently
+
+\- Auto-delete user data on upgrade, tier change, or
+trial expiry.
+
+\- Remove files from disk without user-initiated
+confirm (except explicit temp/cache cleanup documented in privacy policy).
+
+
+
+
+
+\================================================================================
+
+VAULT AND MASTER-PASSWORD CONTRACT — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Secrets and vault behavior are identical in promise
+across Nivo78 apps: encrypt at rest, copy-only after save, user holds the keys.
+
+
+
+Master password and recovery
+
+\- Master password (or product-equivalent vault key) is
+never stored in plain project files or transmitted to Nivo78.
+
+\- When a product uses a master password, it MUST
+generate a high-entropy one-time recovery key at first set
+
+  (APA pattern:
+grouped unambiguous characters). Show it once with a critical warning: store it
+off the device,
+
+  not in the
+same place as the master password; Nivo78 never receives it; there is no
+email/phone/support reset.
+
+\- The recovery key MUST let the user set a new master
+password. It MUST NOT reveal the old password.
+
+ 
+Password-protected files already sealed with the old password stay tied
+to that password unless the product
+
+  also wraps
+those files with a data key (document that limit honestly).
+
+\- Using the recovery key MUST issue a new recovery key
+and invalidate the old one. Confirm the user saved the
+
+  new key before
+the reveal dialog can close.
+
+\- Existing installs that already have a master
+password MUST issue a recovery key the next time the user
+
+  enters that
+password — never from biometric unlock alone, and never from an unlocked phone
+with no secret.
+
+\- Recovery key / recovery mechanism loss is warned
+inline — critical, plain language: if both the master
+
+  password and
+the recovery key are lost, encrypted secrets and old password-protected files
+cannot be recovered.
+
+\- Failed unlock shows honest message — no hint that
+reveals secrets; optional retry without leaking vault contents.
+
+
+
+Secret entry and display
+
+\- Masked entry for passwords and tokens; save once
+through engine coordinator.
+
+\- After save: copy-only access — value not shown on
+screen again; replace/remove flows use confirmation when policy requires.
+
+\- Sensitive identifiers (bank, routing, IBAN, payout
+IDs) blocked from plain JSON saves where product policy requires vault.
+
+
+
+Vault lock and scope
+
+\- Vault lock timeout behavior documented in Help or
+security copy when product auto-locks.
+
+\- Unlock scope honest: what requires master password
+vs what remains readable plain text in project folders.
+
+\- Clipboard copy of secrets auto-clears after short
+timeout when platform supports it; user sees one-line notice.
+
+
+
+Order relative to legal gate
+
+\- Document and keep consistent: first-run Terms
+acceptance vs master-password setup vs first secret save — same order on all
+platforms for the product.
+
+
+
+
+
+\================================================================================
+
+ERROR, EMPTY, AND LOADING STATES — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Utility apps fail often (validation, I/O, locked
+tiers, vault locked). Every major screen handles non-happy paths without
+looking broken.
+
+
+
+Error messages
+
+\- Plain language — what went wrong and what to do
+next; one primary action when possible.
+
+\- No stack traces, exception class names, or internal
+error codes on primary form rows or toasts.
+
+\- Distinguish validation block vs I/O failure vs
+policy block (tier locked, vault locked, offline) — different wording, not
+generic “Error.”
+
+\- Engine owns message text for business rules; UI
+displays engine message without paraphrase that weakens meaning.
+
+
+
+Empty states
+
+\- First-use and zero-data screens say what this page
+is for and the next visible step — not marketing hero copy.
+
+\- Empty checklist, empty project list, empty search
+results: actionable line + visible control (Create, Open, Clear filters).
+
+
+
+Loading states
+
+\- Long operations (save, export, load session) show
+in-progress guard — prevent double-submit.
+
+\- Loading does not look like success; failed load
+fails closed — never show false clean/empty workspace.
+
+
+
+Offline and optional network
+
+\- When network is required for user-initiated handoff
+(browser, KB, mailto compose): clear offline message — no infinite spinner.
+
+\- Optional online features labeled; offline core never
+blocked by optional network failure.
+
+
+
+
+
+\================================================================================
+
+DATA LIFECYCLE — BACKUP, RESTORE, AND LEAVE — EVERY
+APP
+
+\================================================================================
+
+
+
+Principle
+
+\- User data is theirs — portable backup, honest
+restore, and clear leave path are part of the product job, not an afterthought.
+
+
+
+Backup and export
+
+\- Encrypted backup (or product-equivalent portable
+archive) available without paid tier toll on finished work.
+
+\- Backup/export labels plain: what is included, what
+is excluded (e.g. secrets require vault password to restore).
+
+\- Backup artifact named clearly (product, context,
+date/version).
+
+
+
+Restore
+
+\- Restore path documented in Help; user selects file;
+confirm before overwrite when existing data would be replaced.
+
+\- Restore failure reports honestly — partial restore
+rolled back where policy requires; no false success.
+
+
+
+Leave and uninstall
+
+\- Privacy policy and Help state what remains on disk
+after uninstall vs what the app removes.
+
+\- User can export or backup before destructive remove
+flows — discoverable from settings or data security area.
+
+\- No vendor lock-in: core working data exportable in
+open or documented formats (JSON, CSV, PDF, encrypted bundle, etc.)
+
+  without
+requiring the app shell or a proprietary service to parse it
+(APP-DATA-OPEN-EXPORT, APP-DATA-PORTABILITY).
+
+
+
+Process restore (APP-LIFECYCLE-STATE-RESTORE)
+
+\- Engine persists active workflow state continuously.
+
+\- If the OS kills the process while backgrounded, the
+next cold start resumes the exact screen and draft state —
+
+  not a false
+empty workspace.
+
+
+
+
+
+\================================================================================
+
+SCHEMA VERSION AND MIGRATION — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Persisted data carries schema version; engine
+migrates forward or fails closed — UI never pretends empty when load failed.
+
+
+
+Versioning rules
+
+\- Every persisted JSON, vault file, and backup format
+declares schema version in engine — single source of truth.
+
+\- Load path: detect version → migrate in engine when
+supported → or block with plain message when not.
+
+\- Migration logic lives in engine packages — not in
+Composables.
+
+
+
+Fail closed
+
+\- Corrupt or unreadable session file: show
+operator-facing error — do not silently reset to blank workspace that looks
+saved.
+
+\- Partial save failure: report which parts failed; do
+not mark all clean when engine reports partial failure.
+
+\- Reload from disk after Cancel uses same engine load
+path — same failure semantics as cold start.
+
+
+
+Testing
+
+\- Engine tests cover migration from prior schema
+version and corrupt-file handling on critical stores
+(APP-DATA-SCHEMA-MIGRATION).
+
+\- Pair with Error detection and recovery.txt and Data
+integrity.txt text tests when changing persistence.
+
+
+
+
+
+\================================================================================
+
+ARCHITECTURE AND DATA INTEGRITY RULE IDS
+
+\================================================================================
+
+
+
+APP-ARCH-CLEAN-ENGINE [STATIC]
+
+\- Logic, validation, persistence, calculations, data
+handling, export, and vault live in the engine
+
+  (commonMain /
+Clean Engine). UI (Compose, SwiftUI, desktop) handles only trivial view state.
+
+
+
+APP-ARCH-NO-PLATFORM-APIS [STATIC]
+
+\- No platform APIs in shared engine (android.\*,
+java.awt.\*, UIKit, Win32, OS env).
+
+  Use
+expect/actual or injected abstractions.
+
+
+
+APP-ARCH-NEUTRAL-PATHS [STATIC]
+
+\- Neutral file paths in engine (okio.Path or
+equivalent).
+
+
+
+APP-ARCH-CODE-INTEGRITY [STATIC]
+
+\- Complete compilable sources — never truncate,
+“cleanup,” or omit logic in shipped paths. No stub TODOs.
+
+
+
+APP-ARCH-ONE-JOB [QA]
+
+\- One real job per product — not an everything
+platform.
+
+
+
+APP-UI-EXPLAIN-JARGON [QA]
+
+\- No “Registry Tweak” or Windows jargon in shared copy
+— Logic Update or Internal Settings.
+
+  No unexplained
+jargon on Help or primary form rows.
+
+
+
+APP-DATA-NO-TELEMETRY [GATE]
+
+\- Core workflows 100% offline. Do not transmit
+business data to Nivo78 servers except when the user
+
+  explicitly
+sends support/feedback email. Network only for user-initiated handoffs.
+
+
+
+APP-DATA-BLOCK-SECRETS [STATIC]
+
+\- Block bank / routing / IBAN (and similar) from plain
+saves where policy forbids it.
+
+  Auto-clear copied
+secrets from clipboard after a short timeout when supported.
+
+
+
+
+
+\================================================================================
+
+APPLICATION SECURITY (APP-SEC-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-SEC-THREAT-MODEL [QA]
+
+\- Each product must maintain a concise threat model
+identifying protected assets, relevant threats,
+
+  trust
+boundaries, and the controls used to reduce material risks.
+
+\- Review before first release and when material
+architecture or data-handling changes occur.
+
+
+
+APP-SEC-CRYPTOGRAPHY [GATE]
+
+\- Use established, currently supported cryptographic
+algorithms and platform-approved cryptographic
+
+ 
+implementations. Do not implement proprietary encryption algorithms or
+custom cryptographic primitives.
+
+
+
+APP-SEC-KEY-DERIVATION [GATE]
+
+\- Passwords used to protect application secrets must
+be processed with a modern password-based
+
+  key-derivation
+function using a unique salt and parameters appropriate to current security
+guidance.
+
+\- Never use a raw password or simple hash as an
+encryption key.
+
+
+
+APP-SEC-RANDOMNESS [GATE]
+
+\- Security-sensitive tokens, salts, nonces, recovery
+material, and identifiers requiring unpredictability
+
+  must use a
+cryptographically secure random source.
+
+
+
+APP-SEC-SECRET-LIFETIME [QA]
+
+\- Minimize the lifetime of secrets in memory, logs,
+temporary files, clipboard contents, crash artifacts,
+
+  and exported
+diagnostics. Do not intentionally retain secrets longer than required for the
+operation.
+
+
+
+APP-SEC-IMPORT-VALIDATION [GATE]
+
+\- Treat imported files, pasted structured data, deep
+links, external content, and user-supplied paths
+
+  as untrusted
+input. Validate size, structure, encoding, type, ranges, and expected schema
+before processing.
+
+
+
+APP-SEC-PATH-SAFETY [GATE]
+
+\- File operations must prevent path traversal and
+unintended access outside the application's permitted
+
+  data
+locations. Never construct security-sensitive paths directly from unvalidated
+user input.
+
+
+
+APP-SEC-EXTERNAL-CONTENT [GATE]
+
+\- External URLs, files, intents, browser handoffs, and
+other external content must be validated and
+
+  handled
+explicitly. Do not execute or interpret external content merely because it was
+supplied by
+
+  a user or
+imported file.
+
+
+
+APP-SEC-FAIL-CLOSED [GATE]
+
+\- Security-sensitive failures must fail closed. Do not
+silently continue using invalid credentials,
+
+  corrupted
+security metadata, unsupported encryption parameters, or unverifiable protected
+data.
+
+
+
+APP-SEC-RELEASE-DEBUG [GATE]
+
+\- Release builds must not contain development-only
+authentication bypasses, debug unlocks, test credentials,
+
+  verbose secret
+logging, development endpoints, or other intentional security bypasses.
+
+
+
+
+
+\================================================================================
+
+TESTING AND QUALITY (APP-TEST-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-TEST-UNIT [GATE]
+
+\- Critical business logic, calculations, validation,
+transformations, and state transitions must have
+
+  automated unit
+tests appropriate to their risk.
+
+
+
+APP-TEST-INTEGRATION [GATE]
+
+\- Critical interactions between engine components,
+persistence, vault/security storage, import/export,
+
+  and migrations
+must have automated integration coverage.
+
+
+
+APP-TEST-UI-CRITICAL [GATE]
+
+\- Critical user workflows must have repeatable UI
+tests or documented equivalent verification, including
+
+  Save,
+Back/Cancel, validation, recovery, and core task completion.
+
+
+
+APP-TEST-RECOVERY [GATE]
+
+\- Critical data stores must be tested for interrupted
+writes, corrupt data, unsupported versions,
+
+  failed
+migrations, and application restart after abnormal termination.
+
+
+
+APP-TEST-OFFLINE [GATE]
+
+\- Core workflows designated as offline-capable must be
+tested with network access unavailable, including
+
+  verification
+that user work is not lost.
+
+
+
+APP-TEST-REGRESSION [GATE]
+
+\- Every release must run the applicable regression
+suite. A release-blocking test failure must be
+
+  resolved or
+formally covered by an approved override before release.
+
+
+
+APP-TEST-FRESH-UPGRADE [QA]
+
+\- Before release, verify both a clean installation and
+an upgrade from at least the immediately preceding
+
+  supported
+production version.
+
+
+
+APP-TEST-REAL-DATA-SAFETY [QA]
+
+\- Test procedures must distinguish disposable test
+data from real customer/business data.
+
+\- Test automation must not transmit or expose real
+business data.
+
+
+
+
+
+\================================================================================
+
+RELEASE ENGINEERING AND SUPPLY CHAIN (APP-RELEASE-\*,
+APP-DEPENDENCY-\*, APP-SUPPLY-CHAIN-\*)
+
+\================================================================================
+
+
+
+APP-RELEASE-DEFINITION-OF-DONE [GATE]
+
+\- A product is release-ready only when required
+builds, static checks, automated tests, security checks,
+
+  accessibility
+checks, documentation, migration tests, and release verification have passed.
+
+
+
+APP-RELEASE-VERSION-CONSISTENCY [GATE]
+
+\- Application version, package/build version,
+displayed version, release metadata, and required
+
+  documentation
+must be synchronized before release.
+
+
+
+APP-RELEASE-SIGNING [GATE]
+
+\- Production signing keys must be protected from
+ordinary development use.
+
+\- Release artifacts must be signed using the
+authorized production signing process.
+
+
+
+APP-RELEASE-DEBUG-CLEAN [GATE]
+
+\- Production artifacts must be verified to exclude
+debug-only code, test data, test credentials,
+
+  development
+endpoints, and development-only configuration.
+
+
+
+APP-DEPENDENCY-INVENTORY [QA]
+
+\- Each product must maintain an inventory of direct
+and material transitive dependencies used in the
+
+  shipped
+product.
+
+
+
+APP-DEPENDENCY-VULNERABILITY [GATE]
+
+\- Dependencies must be checked for known material
+security vulnerabilities before release.
+
+\- Release-blocking vulnerabilities require remediation
+or a documented approved exception.
+
+
+
+APP-DEPENDENCY-LICENSE [GATE]
+
+\- Dependencies must have license terms reviewed for
+compatibility with the product's distribution
+
+  and commercial
+use.
+
+
+
+APP-SUPPLY-CHAIN-SOURCE [QA]
+
+\- Dependencies and build tools should come from
+trusted, documented sources.
+
+\- Unnecessary or unmaintained dependencies should not
+be introduced.
+
+
+
+APP-RELEASE-ARTIFACT-INTEGRITY [GATE]
+
+\- The artifact submitted for distribution must be the
+same verified artifact produced by the release
+
+  process; do
+not rebuild an unverified variant after final QA.
+
+
+
+APP-RELEASE-PUBLISH-SPINE [GATE]
+
+\- Every Nivo78 product repository MUST be registered in the
+family publish catalog (N78-Ops/tools/maintain/N78-PublishCatalog.ps1)
+before its first store or Play upload.
+
+\- New utilities stamped from N78-Kit MUST receive a publish-spine
+registration (catalog row + tools/launchers/N78-{Name}-Publish.bat +
+Desktop Apps twin) in the same stamp pass as cleanscript and updocs.
+
+\- Store-distributed products MUST NOT ship their first upload until
+the catalog lists a real ArtifactKind (Msix, MsixApa, PlayAab, or
+AndroidAab), version bump metadata, pack script paths, and Desktop
+artifact naming. ArtifactKind None is permitted only while packaging
+is still being wired.
+
+\- Operators use one spine: N78-Ops/tools/maintain/run-publish.ps1
+(-ListProducts lists ids). Products do not maintain separate publish
+pipelines.
+
+\- Reference: N78-Ops/reference/NIVO78_PUBLISH_SPINE.txt and
+tools/maintain/PUBLISH_PIPELINE.md.
+
+
+
+
+
+\================================================================================
+
+ACCESSIBILITY EXPANSION (APP-A11Y-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-A11Y-WCAG-FLOOR [QA]
+
+\- Where web content or standards applicability requires
+it, target WCAG 2.2 AA.
+
+\- Native platform accessibility requirements must also
+be met.
+
+\- Complements APP-UI-A11Y-FLOOR (44×44 dp, contrast,
+Dynamic Type / Large Text).
+
+
+
+APP-A11Y-SEMANTICS [QA]
+
+\- Interactive controls must expose meaningful labels, roles,
+states, and values to supported
+
+  accessibility
+services.
+
+
+
+APP-A11Y-KEYBOARD [QA]
+
+\- Desktop interfaces must support logical keyboard
+navigation, visible focus, and activation of
+
+  core actions
+without requiring a pointer.
+
+
+
+APP-A11Y-NO-COLOR-ONLY [QA]
+
+\- Do not communicate required information, errors,
+status, or actions through color alone.
+
+
+
+APP-A11Y-TEXT-SCALING [QA]
+
+\- Display Resolution Awareness & Full UI Scalability: Every application MUST be
+display resolution aware and render sharply and correctly on high-resolution (HiDPI / 4K / Retina)
+displays. Large text, system text scaling, display zoom percentage changes (100%, 125%, 150%, 175%,
+200%, 250%, 300%+), and dynamic per-monitor DPI transitions must scale the entire application appropriately.
+
+\- High-DPI Startup Contract: On desktop platforms, high-DPI awareness (e.g. PerMonitorV2) must be
+explicitly declared at startup prior to any UI font or control creation, preventing low-DPI bitmap
+blurriness and scaling distortion.
+
+\- Critical controls, inputs, numeric spinners, dropdowns, buttons, sliders/trackbars, labels,
+validation messages, and navigation must remain fully visible, readable, and operable without
+text truncation, squashed heights, or clipping.
+
+\- Fixed 96-DPI pixel heights and widths on interactive chrome are prohibited. Input heights and
+bounds must adapt dynamically to font metrics and DPI scale factors (e.g. using preferred heights
+or DPI-scaled dimensions).
+
+\- Vector Glyphs & Assets: Render UI icons, history arrows, and visual markers as vector paths
+or multi-density assets scaled to the active DPI rather than fixed unscaled raster bitmaps.
+
+\- Grouped controls (such as a label, slider groove, and value readout) must be encapsulated to
+wrap and move together as atomic units rather than fragmenting across line breaks.
+
+\- Dialogs, help hubs, and legal gates must support dynamic font/DPI auto-scaling.
+
+
+
+APP-UI-UNIFORM-SURFACE-VIEWPORT [GATE]
+
+\- Applies to Nivo78 desktop workstation applications with dense fixed-layout surfaces
+(worksheets, grids, takeoff, quoting). Complements APP-A11Y-TEXT-SCALING; mobile fluid
+layouts and approved product overrides (documented WinForms exceptions) are out of scope.
+
+\- Canonical logical design surface: BaseWidth 1920 × BaseHeight 1080 at 100%. Scaled
+surface dimensions = base × ScaleFactor where ScaleFactor = deviceDpi / 96 (single global
+scale for layout — one ScaleLogical / ScalePx path; WinForms AutoScaleMode.None on main shell).
+
+\- One primary main viewport per top-level window onto the scaled surface. Use explicit
+horizontal and vertical scrollbars with manual content offset (family reference:
+CompactMainViewportHost in N78-Estimate). Do NOT use ScrollableControl.AutoScroll as the
+primary host for the full application surface (AutoScroll drift causes left/top gutters at scroll home).
+
+\- Scroll home: when scrollbars are at minimum, origin (0,0) of the scaled surface MUST align
+flush with the viewport top-left (no large empty margin). Mouse wheel handling MUST parse
+WM_MOUSEWHEEL delta as signed 16-bit (no Option Strict overflow on unsigned high word).
+
+\- Pane layout: inner split/worksheet hosts MUST NOT size to the full scaled canvas width
+inside a narrow pane in ways that clip totals; outer main viewport owns horizontal pan.
+Nested hosts in compact mode MUST NOT compete with duplicate horizontal AutoScroll.
+
+\- New desktop-dense products MUST port AppUiScaling + CompactMainViewportHost (or shared
+extract) per N78Kit — do not invent a one-off DPI or scroll scheme.
+
+\- Canonical spec: reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md. GATE evidence:
+acceptance checklist in that document plus product guardrail/unit tests where applicable.
+
+
+
+APP-A11Y-MOTION [QA]
+
+\- Nonessential animation must not interfere with
+operation, and supported reduced-motion preferences
+
+  should be
+respected.
+
+
+
+
+
+\================================================================================
+
+INTERNATIONALIZATION AND LOCALIZATION (APP-I18N-\*) —
+EVERY APP
+
+\================================================================================
+
+
+
+APP-I18N-NO-HARDCODED-UI [STATIC]
+
+\- User-visible strings must be stored through the
+platform/application localization mechanism rather
+
+  than embedded
+directly in business or UI logic where localization is expected.
+
+
+
+APP-I18N-DATE-NUMBER [QA]
+
+\- Dates, times, numbers, currencies, and units must
+use explicit, locale-aware formatting where applicable.
+
+
+
+APP-I18N-TEXT-EXPANSION [QA]
+
+\- Layouts must tolerate reasonable text expansion
+without clipping, overlap, or loss of required actions.
+
+
+
+APP-I18N-RTL-READY [QA]
+
+\- Shared UI architecture must avoid assumptions that
+prevent right-to-left presentation if localization
+
+  is added
+later.
+
+
+
+
+
+\================================================================================
+
+PERFORMANCE (APP-PERF-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-PERF-BUDGET [QA]
+
+\- Each product must define reasonable performance
+budgets for startup, core interaction responsiveness,
+
+  memory,
+storage, and—on mobile—battery impact, appropriate to the product's job.
+
+
+
+APP-PERF-NO-BLOCKING-UI [STATIC]
+
+\- Long-running calculations, file operations,
+encryption, migrations, imports, exports, and network
+
+  operations
+must not unnecessarily block the UI thread.
+
+
+
+APP-PERF-LARGE-DATA [QA]
+
+\- Critical workflows must be tested with realistic
+large datasets where the product can reasonably
+
+  accumulate
+substantial data.
+
+
+
+
+
+\================================================================================
+
+BACKUP, RESTORE, AND RECOVERY INTEGRITY (APP-BACKUP-\*,
+APP-RESTORE-\*) — EVERY APP
+
+\================================================================================
+
+
+
+(Complements DATA LIFECYCLE — BACKUP, RESTORE, AND
+LEAVE above; does not replace it.)
+
+
+
+APP-DATA-DOCUMENTS-ROOT [GATE]
+
+- Desktop applications MUST store all user data, databases, business profiles, price books, templates, job libraries, blueprints, session settings, and exports under a dedicated, user-visible folder in the user's standard Documents directory (e.g. `Documents\N78-<AppName>\`), never hidden inside `AppData`, `LocalApplicationData`, `Roaming`, or hidden dot-directories.
+
+- Standard consumer and enterprise backup systems (OneDrive, Windows File History, Time Machine, Carbonite, external drive sync) intentionally exclude `AppData`. Placing persistent application data or settings in `AppData` creates an unacceptable risk of silent data loss during system resets or PC migrations.
+
+- Sibling desktop apps MUST include automatic migration on startup from legacy `AppData` locations into the `Documents` directory without data loss or user friction.
+
+
+
+APP-BACKUP-ATOMIC [GATE]
+
+\- A backup must be generated as an internally
+consistent snapshot.
+
+\- A failed or interrupted backup must not be presented
+as a valid completed backup.
+
+
+
+APP-BACKUP-INTEGRITY [GATE]
+
+\- Backups must include sufficient integrity protection
+to detect corruption or unauthorized modification
+
+  before
+restore.
+
+
+
+APP-RESTORE-VALIDATE-FIRST [GATE]
+
+\- Validate backup structure, version, integrity, and
+required security metadata before replacing or
+
+  modifying
+current application data.
+
+
+
+APP-RESTORE-NO-DATA-LOSS [GATE]
+
+\- A failed restore must not unnecessarily destroy the
+user's existing valid data.
+
+
+
+APP-RESTORE-RECOVERY [QA]
+
+\- Products supporting restore must document recovery
+behavior for wrong credentials, corrupt backups,
+
+  unsupported
+versions, and interrupted restore operations.
+
+
+
+
+
+\================================================================================
+
+UPGRADES AND SCHEMA MIGRATION HARDENING
+(APP-UPGRADE-\*) — EVERY APP
+
+\================================================================================
+
+
+
+(Complements SCHEMA VERSION AND MIGRATION above; does
+not replace it.)
+
+
+
+APP-UPGRADE-SUPPORTED-PATH [QA]
+
+\- Each release must identify the supported upgrade
+paths from prior production versions and verify
+
+  those paths
+before release.
+
+
+
+APP-UPGRADE-INTERRUPTION [GATE]
+
+\- Critical migrations and upgrades must be designed so
+that interruption does not leave the application
+
+  in an
+unrecoverable state.
+
+
+
+APP-UPGRADE-BACKUP [GATE]
+
+\- Before destructive or materially irreversible
+migration operations, create or preserve an appropriate
+
+  recovery point
+when technically feasible.
+
+
+
+APP-UPGRADE-DOWNGRADE [QA]
+
+\- Document whether downgrade is supported. If
+downgrade is unsafe, the application must prevent or
+
+  clearly warn
+against it rather than silently corrupting data.
+
+
+
+
+
+\================================================================================
+
+DATA LIFECYCLE HONESTY (APP-DATA-LIFECYCLE / DELETION
+/ TEMPORARY / EXPORT-TRUTH)
+
+\================================================================================
+
+
+
+(Complements DATA LIFECYCLE — BACKUP, RESTORE, AND
+LEAVE and APP-DATA-PORTABILITY / OPEN-EXPORT.)
+
+
+
+APP-DATA-LIFECYCLE [QA]
+
+\- Each product must document the lifecycle of material
+user data: creation, storage, use, export,
+
+  backup,
+retention, and deletion.
+
+
+
+APP-DATA-DELETION [QA]
+
+\- User-facing deletion operations must clearly
+identify what is deleted and must not falsely imply
+
+  deletion of
+copies that remain in user-controlled exports or backups.
+
+
+
+APP-DATA-TEMPORARY [GATE]
+
+\- Temporary files, caches, intermediate exports, and
+working copies must not retain sensitive data
+
+  indefinitely.
+
+
+
+APP-DATA-EXPORT-TRUTH [QA]
+
+\- Export documentation and UI must accurately state
+what data is included, excluded, transformed, or omitted.
+
+
+
+
+
+\================================================================================
+
+ANALYTICS AND THIRD-PARTY DATA COLLECTION
+(APP-PRIVACY-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-PRIVACY-NO-AD-ID [GATE]
+
+\- Do not use advertising identifiers, fingerprinting,
+session replay, or behavioral profiling in N78
+
+  applications
+unless a product-specific policy explicitly permits it.
+
+
+
+APP-PRIVACY-THIRD-PARTY-SDK [GATE]
+
+\- Third-party SDKs that collect, transmit, or analyze
+user or device data require explicit review
+
+  before
+inclusion.
+
+
+
+APP-PRIVACY-ANALYTICS-CONSENT [QA]
+
+\- If optional analytics are ever introduced, the
+collection purpose, data collected, destination,
+
+  retention, and
+user choice must be explicitly documented.
+
+
+
+
+
+\================================================================================
+
+VULNERABILITY AND INCIDENT RESPONSE
+(APP-SEC-RESPONSE-\*) — FAMILY
+
+\================================================================================
+
+
+
+APP-SEC-VULNERABILITY-RESPONSE [QA]
+
+\- Maintain a documented process for receiving,
+assessing, prioritizing, fixing, and communicating
+
+  material
+security vulnerabilities affecting released products.
+
+
+
+APP-SEC-CRITICAL-FIX [QA]
+
+\- Material vulnerabilities affecting released products
+must receive an explicit severity, owner,
+
+  remediation
+decision, and target action.
+
+
+
+APP-SEC-RELEASE-RECALL [QA]
+
+\- The product family must have a documented response
+path for a release that must be withdrawn,
+
+  replaced, or
+urgently patched.
+
+
+
+
+
+\================================================================================
+
+OVERRIDE GOVERNANCE (APP-OVERRIDE-\*) — EVERY PRODUCT
+
+\================================================================================
+
+
+
+(Complements STANDARD OVERRIDES — ACCEPTED DEVIATIONS
+PER PRODUCT above; does not replace it.)
+
+
+
+APP-OVERRIDE-OWNER [QA]
+
+\- Every active override must identify the product,
+rule ID, reason, approving owner, date approved,
+
+  and
+compensating control where applicable.
+
+
+
+APP-OVERRIDE-REVIEW [QA]
+
+\- Every active override must have a defined review
+date or review trigger.
+
+\- Overrides must not become permanent merely because
+they were once approved.
+
+
+
+APP-OVERRIDE-RISK [QA]
+
+\- Overrides that weaken security, privacy, data
+integrity, or release controls must identify the
+
+  associated
+risk and why the exception is acceptable.
+
+
+
+APP-OVERRIDE-CLEANUP [QA]
+
+\- When a product no longer requires an override, the
+override must be revoked and the affected
+
+  standard rule
+restored.
+
+
+
+
+
+\================================================================================
+
+NIVO78 WEBSITE STANDARDS — SAME PROMISE, SAME PLACES,
+SAME LOOK
+
+\================================================================================
+
+
+
+Through-line on the web (matches app)
+
+\- Utility-first, plain language — legal and support
+pages are scannable reference, not marketing fluff.
+
+\- Same local-first promise visible on support and
+privacy pages unless the product explicitly requires an account.
+
+\- No trackers, behavioral analytics, or silent data
+collection on product legal/support pages unless disclosed in privacy policy.
+
+\- Web copy matches shipped app behavior in the current
+build — updocs keeps app, in-repo HTML, and hosted KB aligned.
+
+\- Comprehensive SEO on every public page: title, meta
+description (\~160 characters), canonical URL, Open Graph, and Twitter cards —
+mandatory in the same pass as any web copy change (see WEB SEO section).
+
+
+
+Required pages per product (in-repo staging under
+code/Website/{product}/)
+
+\- index.html          
+— product legal & support hub (links to privacy, terms, support
+center)
+
+\- privacy/index.html  
+— full privacy policy (Partner Center / store listing URL target)
+
+\- terms/index.html    
+— terms of use (effective date + version)
+
+\- support/index.html  
+— support center landing (security overview, contact, legal links, KB
+entry)
+
+\- legal.css           
+— shared Nivo78 legal-page stylesheet (imports
+code/Website/\_shared/n78\_legal\_privacy\_header.css; do not one-off per page)
+
+
+
+Privacy policy first two lines (ALL products —
+mandatory)
+
+\- Every privacy policy page (in-repo HTML, hosted PHP,
+store listing URL target) MUST open with exactly these two lines:
+
+  1. h1 — text
+must be “Privacy Policy” (document title; never the product name alone).
+
+  2.
+p.policy-product-name — full public product title (e.g. App Publishing
+Assistant, N78-Ops).
+
+\- Typography contract (shared CSS — do not duplicate
+with one-off sizes):
+
+  - Canonical
+sheet: code/Website/\_shared/n78\_legal\_privacy\_header.css (N78APA in-repo).
+
+  - Hosted
+mirror: Website/assets/css/n78\_legal\_privacy\_header.css.
+
+  - In-repo
+product legal.css MUST @import the shared sheet (APA:
+../\_shared/n78\_legal\_privacy\_header.css).
+
+  - Hosted PHP
+MUST link the shared sheet and call
+n78\_render\_privacy\_policy\_header($productTitle)
+
+    from
+Website/include/n78\_privacy\_policy\_header.php.
+
+\- Tokens (--privacy-h1-size 1.75rem;
+\--privacy-product-name-size calc(1.5rem - 4pt); --privacy-tagline-size 1rem):
+
+  - Line 1 and
+line 2 use the same font-weight (600) and letter-spacing (-0.01em) as the
+Privacy Policy h1.
+
+  - Line 2 is
+sized between the h1 and the Local-first philosophy-tagline (line 3 when
+present).
+
+\- Product-specific colors may override on hosted theme
+pages; size and weight MUST NOT drift per product.
+
+
+
+Hosted URLs (must match in-app support URL registry
+and store listings)
+
+\- Product hub: 
+https\://nivo78.com/{product}/
+
+\- Privacy:     
+https\://nivo78.com/{product}/privacy/
+
+\- Terms:       
+https\://nivo78.com/{product}/terms/
+
+\- Support:     
+https\://nivo78.com/{product}/support/
+
+\- Help KB:     
+articles under support path when the product exports a knowledge base
+(sibling Website repo)
+
+
+
+
+
+\================================================================================
+
+WEB FAMILY IDENTITY — LOOK, FEEL, AND READ THE SAME
+
+\================================================================================
+
+
+
+Shared visual system (legal.css contract)
+
+\- Every product legal/support site uses legal.css with
+the same design tokens:
+
+  - Max content
+width \~760px, centered; system font stack (Segoe UI, system-ui).
+
+  - CSS
+variables: --bg, --panel, --text, --muted, --border, --link.
+
+  - .panel —
+white card with border and 8px radius; .legal-prose for body copy.
+
+  -
+.philosophy-banner — highlighted local-first callout (support page).
+
+  - .site-footer
+— minimal copyright footer; not a wall of links on every page.
+
+\- Utility-first density: short sections, h2 headings,
+bullet lists — easy to scan on phone and desktop.
+
+\- No hero images, animation, or decorative marketing
+layouts on privacy, terms, or support pages.
+
+\- philosophy-tagline on key pages when accurate:
+“Local-first · No Nivo78 account · No cloud sync · No analytics”
+
+  (adapt only
+when the product’s job explicitly requires an account or optional sync — state
+the exception plainly).
+
+
+
+Shared page structure (every legal/support HTML page)
+
+\- \<html lang="en">, charset UTF-8,
+viewport meta for mobile.
+
+\- \<head> SEO (mandatory): unique title; meta
+description (\~160 characters); meta robots; meta author;
+
+  link
+rel="canonical" (exact page URL); Open Graph (title, description,
+url, site\_name, locale);
+
+  Twitter card
+(summary or summary\_large\_image). See WEB SEO section for hosted PHP
+(n78\_seo\_head.php).
+
+\- \<main class="app"> wrapper.
+
+\- Header: optional eyebrow back link (← {Product}
+Support or ← Nivo78) → h1 page title → subtitle.
+
+\- Privacy page header (required on every privacy
+policy — in-repo HTML and hosted equivalent):
+
+  - MUST match
+the Privacy policy first two lines contract above (shared CSS + markup).
+
+  - Line 3 when
+present: Local-first philosophy-tagline below the product name.
+
+\- Body: one or more \<article class="panel
+legal-prose"> (support may add philosophy-banner panel first).
+
+\- Footer: \<footer class="site-footer">
+with © Nivo78 Mobile Apps, LLC — on support, privacy, and terms pages.
+
+\- link rel="stylesheet"
+href="../legal.css" (or ./legal.css on index as appropriate).
+
+
+
+
+
+\================================================================================
+
+WEB NAVIGATION, FOOTERS, AND LEGAL PLACEMENT
+
+\================================================================================
+
+
+
+Same five destinations as the app (labels and URLs
+must match)
+
+\- Help         
+— support center / knowledge base at https\://nivo78.com/{product}/support/
+
+\- Feedback     
+— support page explains Help → Feedback in app;
+mailto\:feedback\@nivo78.com with subject hint
+
+\- Support center — support/index.html (and hosted KB
+when exported)
+
+\- Privacy      
+— privacy/index.html
+
+\- Terms        
+— terms/index.html
+
+
+
+Placement rules (web)
+
+\- Product index (code/Website/{product}/index.html):
+Legal & support section lists Privacy, Terms, Support center.
+
+\- Support page: Contact block (support, feedback,
+contact mailto links) + Legal section (Privacy, Terms links).
+
+\- Privacy page: cross-link to Support for
+user-friendly security overview; link to Terms in contact block.
+
+\- Privacy page header: h1 “Privacy Policy” + prominent
+p.policy-product-name (public product name).
+
+\- Terms page: link to Privacy in agreement section;
+eyebrow back to Support.
+
+\- Store listings (Partner Center, Play Console, App
+Store Connect) use the same privacy and terms URLs as in-app links.
+
+
+
+Voluntary Tip Jar for free utilities (WEB-FREE-APP-TIP-JAR)
+
+- Mandatory for all free Nivo78 apps (utilities with no paid tier, license, or in-app billing):
+
+  1. Product hub (index.html / index.php): "Support Nivo78 (Voluntary Tip Jar)" entry in Legal & support list, plus a dedicated .n78-tip-jar-panel card with standard Nivo78 blue highlight stripe (border-top: 4px solid var(--n78-accent)), synergy badge, and "☕ Buy the developer a coffee" button (https://buymeacoffee.com/nivo78).
+
+  2. Support center (support/index.html / support/index.php): dedicated .n78-tip-jar-panel section immediately above Contact, plus a bullet under Contact ("Voluntary support: Buy the developer a coffee (Tip Jar)").
+
+- Hard rule — NO in-app donation or tip links:
+
+  - Do NOT place tip jar, coffee, or donation buttons inside the store application binary. Out-of-band payment links inside store apps violate app store commerce policies (Microsoft Store, Google Play, Apple App Store) and risk store certification rejection.
+
+  - The tip jar lives exclusively on the website, discoverable naturally through Support center web navigation.
+
+- Honest scope guarantee: The app remains 100% free with no locked features, no paywalls, and no nags. Tips are strictly voluntary.
+
+
+
+Mandatory website typography and minimum text sizes (WEB-TYPOGRAPHY-MIN-SIZE)
+
+- Mandatory across all public nivo78.com web properties (product pages, hubs, support, docs, legal, footer):
+
+  1. Base body and card blurbs: >= 0.95rem (~15.2px), with 1.0rem (16px) preferred and line-height >= 1.55 (.app-card-blurb, .app-description, .panel-sub, .n78-on-device-card p).
+
+  2. Lists, callouts, feature bullets, and footers: >= 0.92rem (~14.7px) with comfortable line-height >= 1.45 (.app-card-on-device-callout, .app-card-on-device-list, .app-card-synergy, .app-card-foot, .n78-help-card-summary).
+
+  3. Badges, tags, status pills, fine print, and navigation chips: Absolute minimum floor >= 0.85rem (~13.6px) (.n78-site-nav-badge, .n78-site-nav-dropdown-subtitle, .app-status, .n78-synergy-badge, .spec-line, .n78-utility-chip-name, .n78-install-pill, .n78-help-tier, .n78-help-cat, table headers, metadata notes).
+
+  4. Strict ban on micro-text: Zero text below 0.85rem (13.6px) anywhere on Nivo78 web surfaces. All previous micro-text declarations (0.68rem, 0.70rem, 0.72rem, 0.75rem, 0.78rem, 0.80rem, 0.82rem) are strictly prohibited.
+
+
+
+Footer content (web)
+
+\- site-footer: copyright line only on legal pages — “©
+{year} Nivo78 Mobile Apps, LLC. All rights reserved.”
+
+  (no city on
+the web site-footer copyright line; workflow-style clutter belongs on product
+marketing pages, not privacy/terms).
+
+\- Entity block on privacy/terms/support contact
+sections: Nivo78 Mobile Apps, LLC, then Tyler, Texas (city lives here on the
+web).
+
+\- Do not embed web forms that upload user project
+data, attachments, or diagnostics — contact is mailto-only.
+
+
+
+
+
+\================================================================================
+
+WEB CONTACT, FEEDBACK, AND SUPPORT — SAME INTERFACE
+CONTRACT
+
+\================================================================================
+
+
+
+Support page Contact section (required)
+
+\- Support:  
+mailto\:support\@nivo78.com — general help and licensing
+
+\- Feedback: 
+MUST state bug reports use Help → Feedback in the app (only path with
+automatic diagnostics);
+
+             MAY
+offer mailto\:feedback\@nivo78.com for Help and feature ideas — plain note that
+web email
+
+            
+includes only what the user writes (no automatic version, page, or audit
+context)
+
+\- Contact:  
+mailto\:contact\@nivo78.com — business and general contact, not primary
+bug triage
+
+
+
+Copy must match app Feedback contract and
+device-vs-web routing (v1.6)
+
+\- Web email contains only what the user writes — no
+automatic attachment of project files, vault, passwords, or diagnostics.
+
+\- Bug reports: support page and KB MUST direct users
+to in-app Help → Feedback; explain why (version, active page, checklist
+context, redacted audit lines).
+
+\- Help and feature request: web mailto is acceptable;
+KB may mention support@ or feedback@ with subject prefix.
+
+\- Do not promise web-based bug submission, silent log
+upload, or contact forms that collect diagnostics — web stays mailto or points
+to in-app Feedback for bugs.
+
+\- Verify script or release gate SHOULD check support
+HTML for in-app bug-report routing markers (see product verify script).
+
+
+
+Support center vs marketing product page
+
+\- support/index.html — security overview, platforms,
+encrypted vs plain summary, contact, legal links.
+
+\- Hosted product page (nivo78.com/{product}/) may
+carry audience and feature copy — must still agree with support/privacy on data
+handling and limits.
+
+\- Help KB articles (when used) export from
+engine/registry copy via updocs — same plain language as in-app Help.
+
+
+
+
+
+\================================================================================
+
+WEB PRODUCT SUPPORT CTA — BOTTOM OF EVERY PRODUCT
+MARKETING PAGE
+
+\================================================================================
+
+
+
+Required placement
+
+\- Every hosted product marketing page
+(nivo78.com/{product}/) MUST render the “Support and updates” card
+
+  immediately
+before the site footer — last content block on the page.
+
+\- Legal pages (privacy, terms, in-repo support/index.html)
+do NOT use this card — they use legal.css footers instead.
+
+
+
+Shared implementation (Website repo)
+
+\- include/n78\_product\_support\_updates\_cta.php —
+n78\_product\_render\_support\_updates\_cta()
+
+\- Per-product wrappers (e.g.
+n78\_apa\_render\_support\_updates\_cta(), n78\_ops\_render\_support\_updates\_cta())
+pass
+
+  product label,
+public product name, support href, privacy href, and /contact/ link.
+
+
+
+Card structure (required markers)
+
+\- section.n78-product-support-cta.logic-card with
+aria-labelledby heading
+
+\- h2 “Support and updates”
+
+\- Body copy: each Nivo78 app has its own support
+center; visit {product} support; contact page for launch updates —
+
+  choose
+{product label} ({public product name}) as primary interest
+
+\- div.n78-product-support-cta-actions with three links
+— ALL use btn-cta-single (solid accent, pill shape):
+
+  1. Support
+center → product support/KB URL
+
+  2. Privacy
+Policy → product privacy URL
+
+  3. Contact →
+/contact/
+
+\- Do NOT mix btn-cta-outline on this card — all three
+actions share the same primary button style.
+
+
+
+Visual contract (nivo78\_theme.css)
+
+\- Flex row, centered, wrap on narrow screens; gap
+\~0.75rem
+
+\- .n78-product-support-cta-actions .btn-cta-single:
+margin-top 0, min-width \~11rem, border-radius 999px (pill)
+
+\- Same logic-card styling as other product sections
+(accent underline on h2, max-width \~52rem)
+
+
+
+
+
+\================================================================================
+
+MARKETING AND SCOPE COPY — CANONICAL SOURCE FOR EVERY
+PRODUCT
+
+\================================================================================
+
+
+
+Principle
+
+\- This standard is the parent source for
+customer-facing philosophy, audience, and honest scope copy — not a separate
+marketing playbook that can drift.
+
+\- Product-specific wording lives in
+reference/MARKETING\_COPY.txt (or {Product}/MARKETING\_COPY.txt when products
+split repos) — derived from sections in this file, then adapted to the
+product’s one job.
+
+\- In-app About, upgrade panels, Help summaries, store
+listings, and web pages pull from the same will/won’t lists — updocs keeps them
+aligned.
+
+
+
+What to derive from this standard (mapping)
+
+\- Through-line + Brand Philosophy stamp → philosophy
+tagline, hub hero, About, and philosophy-banner.
+
+\- Brand Philosophy principles → support local-first
+callouts; must stay aligned with nivo78.com/about/.
+
+\- One job, done well + Handoff honesty + What a good
+Nivo78 app will do → “What {Product} will do for you”
+
+  bullets
+(product-specific tasks + validate + hand off).
+
+\- Expectation honesty + Transparent → will/won’t
+lists, Help limits, and About copy that prevent
+
+  post-install
+surprise (capabilities and boundaries together).
+
+\- Local-first and trustworthy data → philosophy-banner
+and local-first callout on support and product pages.
+
+\- What a good Nivo78 app will not do + Brand
+Philosophy avoid-list + Handoff honesty limits → family-wide
+
+  “won’t do”
+bullets (no cloud login, no silent upload, no nags, no trackers, etc.).
+
+\- Commercial honesty + Fair Business Model → tier
+lines, subscription justification, good-fit / skip-if, device restrictions.
+
+\- Trust sections (v1.3+) → security summaries on
+support; don’t duplicate full vault spec on marketing pages.
+
+
+
+Per-product marketing copy file (required for shipped
+products)
+
+\- Maintain reference/MARKETING\_COPY.txt (APA:
+reference/MARKETING\_COPY.txt) with:
+
+  - Core pitch
+(short + long)
+
+  - What
+{Product} will do for you (bullets — shipped behavior only)
+
+  - What
+{Product} won’t do for you (bullets — permanent boundaries; say “won’t,” not
+“not yet”)
+
+  - Good fit if
+you / Skip if (optional but recommended)
+
+  - FAQ snippets
+aligned with web and in-app copy
+
+  - Pointers to
+engine copy constants and hosted website PHP when applicable
+
+\- When standard or shipped behavior changes, update
+MARKETING\_COPY.txt first, then web HTML, in-app registries, and Help KB via updocs.
+
+
+
+Voice rules (marketing derived from standard)
+
+\- Plain language for everyday users — no pitch-deck
+superlatives unless literally true.
+
+\- Will-do bullets describe actions the app performs
+today; won’t-do bullets describe boundaries the code and policy enforce.
+
+\- Aim every webpage and Help sentence at trust: if a
+limit would disappoint a reasonable buyer,
+
+  put it in
+won’t-do (or adjacent plain language) before they purchase or depend on the
+feature.
+
+\- No “coming soon,” “planned,” or roadmap language — deferred
+capability belongs in “won’t do,” not “will do later.”
+
+\- Good-fit / skip-if describe audience and situation —
+not insults; skip-if is optional when good-fit is enough.
+
+
+
+
+
+\================================================================================
+
+WEB WILL DO / WON’T DO — REQUIRED ON EVERY PRODUCT WEB
+PAGE
+
+\================================================================================
+
+
+
+Principle
+
+\- Every Nivo78 product web presence states plainly
+what the product will do for the user and what it will not do — before download
+or store install.
+
+\- The goal is trust: a customer who reads the page
+should not hit a negative surprise about scope,
+
+  automation,
+sync, tiers, or handoffs after they install.
+
+\- Same promise on in-repo hub, hosted product page,
+and support scope summary; legal pages link here instead of duplicating full
+lists.
+
+
+
+Required pages and sections
+
+
+
+Product hub — code/Website/{product}/index.html (and
+hosted https\://nivo78.com/{product}/)
+
+\- philosophy-tagline when accurate (local-first, account,
+sync, analytics — adapt with plain exceptions).
+
+\- h2: “What {Product} will do for you” — bullet list
+from MARKETING\_COPY.txt (minimum 4 bullets covering core job,
+validation/handoff, offline/local, collect-once or equivalent when applicable).
+
+\- h2: “What {Product} won’t do for you” — bullet list
+from MARKETING\_COPY.txt (minimum 4 bullets including handoff honesty — e.g. no
+store upload when preparation-only; plus family boundaries that apply).
+
+\- Recommended: “Good fit if you” and/or “Skip if”
+short blocks for audience clarity.
+
+\- Legal & support links panel unchanged (Privacy,
+Terms, Support center).
+
+
+
+Support center — support/index.html
+
+\- philosophy-banner (local-first / data-on-device) —
+already required.
+
+\- h2: “What {Product} will and won’t do” — condensed
+won’t-do boundaries (minimum 3 bullets) plus one-line will-do summary OR
+explicit link to product page full lists.
+
+\- Must not contradict product page will/won’t lists.
+
+
+
+Privacy and terms
+
+\- No full marketing will/won’t sections required —
+link to support or product page for product scope when mentioning capabilities.
+
+
+
+In-app alignment
+
+\- About, first-run scope, or upgrade copy should
+reflect the same will/won’t boundaries as web — TRUTH text test traces claims
+across surfaces.
+
+
+
+Verify and audit
+
+\- Website verify script checks index.html for will-do
+and won’t-do section headings (or equivalent labeled headings).
+
+\- Nivo78 app.txt SCOPE-WEB vector audits product hub
+and support scope sections.
+
+\- COVERAGE vector checks bidirectional completeness —
+every shipped capability in will-do; every won’t-do boundary enforced in code.
+
+
+
+
+
+\================================================================================
+
+WEB COPY, HONESTY, AND APP ALIGNMENT
+
+\================================================================================
+
+
+
+Copy–code parity (mandatory)
+
+\- Privacy policy describes what the engine actually
+stores: plain vs encrypted vs blocked vs never stored.
+
+\- Terms effective date and version match in-app
+ApaLegalCopy (or product equivalent) and acceptance gate.
+
+\- Platform scope on web matches shipped binaries
+(desktop vs mobile companion vs unsupported form factors).
+
+\- “What the product does / does not do” on web matches
+in-app Help and export/handoff behavior — no implied upload, sync, or
+automation.
+
+\- No “coming soon,” “planned,” or roadmap language on
+legal/support pages unless capability is shipped in this build.
+
+
+
+Will do / won’t do on product web pages (mandatory —
+see MARKETING AND SCOPE COPY section)
+
+\- Every product ships scannable “will do for you” and
+“won’t do for you” sections on the product hub and hosted product page — not
+optional marketing fluff.
+
+\- Support page includes at least a won’t-do boundary
+summary or link to the full scope on the product page.
+
+\- Privacy and terms pages do not need full marketing
+lists — they cross-link to support or product page for scope.
+
+
+
+Security and privacy content layering
+
+\- Support page: plain-language “what is encrypted vs
+plain” and “blocked from plain saves.”
+
+\- Privacy page: full policy including optional technical
+specifications section (crypto detail belongs here, not primary Help hub rows).
+
+\- In-app Data security / Help summaries must not
+contradict privacy HTML — run updocs after engine security copy changes.
+
+
+
+Last updated / effective dates
+
+\- Engine legal copy object is the source of truth
+(APA: ApaLegalCopy.kt — PRIVACY\_LAST\_UPDATED, EFFECTIVE\_DATE, TERMS\_VERSION;
+product title from ApaProductIdentity.PRODUCT\_TITLE).
+
+\- Privacy: “Last updated” at top MUST equal
+ApaLegalCopy.PRIVACY\_LAST\_UPDATED (or product equivalent); bump both when
+privacy policy changes.
+
+\- Terms: “Effective date” and “Version” at top MUST
+equal ApaLegalCopy.EFFECTIVE\_DATE and ApaLegalCopy.TERMS\_VERSION; bump
+TERMS\_VERSION when terms change materially and re-run legal gate.
+
+\- Privacy policy-product-name text MUST equal the
+public product title constant in engine code.
+
+\- Release verify (verify-apa-website.ps1 WEB LEGAL
+SYNC + ApaInRepoLegalSecurityCopyTest) fails when HTML dates, version, or
+product name drift from engine constants.
+
+\- Privacy changes section explains re-consent when
+terms reference updated policy.
+
+
+
+
+
+\================================================================================
+
+WEB SEO — COMPREHENSIVE SEARCH AND SHARING METADATA
+(MANDATORY)
+
+\================================================================================
+
+
+
+Principle
+
+\- Every public product web surface must be
+discoverable and shareable with accurate titles and summaries.
+
+\- SEO copy must match shipped product behavior — same
+honesty rules as marketing and legal pages.
+
+\- Any website change that adds or edits a public page
+MUST include SEO review in the same pass (not a later task).
+
+
+
+In-repo static legal HTML (code/Website/{product}/)
+
+\- Every public HTML page (\<html
+lang="en">) MUST include in \<head>:
+
+  - Unique \<title>
+(product name + page purpose; \~70 characters max)
+
+  - meta
+name="description" (plain-language summary; \~160 characters max)
+
+  - meta
+name="robots" content="index, follow" (unless a deliberate
+noindex exception is documented)
+
+  - meta
+name="author" content="Nivo78 Mobile Apps, LLC"
+
+  - link
+rel="canonical" href="https\://nivo78.com/{product}/…"
+(exact URL for that page)
+
+  - Open Graph:
+og\:type, og\:site\_name, og\:title, og\:description, og\:url, og\:locale
+
+  - Twitter:
+twitter\:card, twitter\:title, twitter\:description (summary or
+summary\_large\_image)
+
+\- Canonical URLs MUST match in-app support URL
+registry and store listing URLs.
+
+\- Legal pages use article or website og\:type as
+appropriate; product marketing pages use website.
+
+
+
+Hosted PHP pages (sibling Website repo — nivo78.com)
+
+\- Product marketing and support hub pages MUST call
+n78\_seo\_render\_head() from include/n78\_seo\_head.php.
+
+\- Each product MUST have SEO profiles registered in
+n78\_seo\_head.php (e.g. apa, apa\_help, apa\_help\_article)
+
+  with title,
+description, canonical\_path, robots, og\_type, and json\_ld kinds.
+
+\- n78\_seo\_render\_head emits: title, description,
+robots, author, canonical, theme-color, favicon/apple-touch-icon,
+
+  Open Graph,
+Twitter cards, and JSON-LD (@graph with Organization, WebSite, WebPage, product
+SoftwareApplication when applicable).
+
+\- FAQ JSON-LD on product pages when FAQ content exists
+(apa profile uses marketing FAQ).
+
+\- Help KB articles override
+title/description/canonical per article via article.php.
+
+
+
+When SEO is required (checklist — same pass as copy
+edit)
+
+\- New product web page or new public route → add full
+SEO head (static meta or n78\_seo\_head profile).
+
+\- Marketing, pricing, privacy, terms, or support copy
+change → review title and description still accurate.
+
+\- URL or path change → update canonical in static HTML
+and n78\_seo\_head profile canonical\_path.
+
+\- New hosted PHP shell → wire n78\_seo\_render\_head
+before ship.
+
+
+
+Automated verify (release gate)
+
+\- tools/verify/verify-apa-website.ps1 runs WEB SEO
+checks after WEB standard checks:
+
+  - In-repo:
+WEB-SEO-\* markers on index.html, privacy/, terms/, support/index.html
+
+  - Hosted (when
+sibling Website/apa exists): n78\_seo\_head.php profiles, index.php and
+support/index.php render calls
+
+\- Rule IDs: reference/NIVO78\_STANDARD\_RULE\_IDS.txt
+(WEB-SEO-\* family).
+
+\- Failures block release gate unless covered by an
+active standard override with documented reason.
+
+
+
+
+
+\================================================================================
+
+WEB TECHNICAL AND RELEASE REQUIREMENTS
+
+\================================================================================
+
+
+
+In-repo staging
+
+\- Maintain HTML under code/Website/{product}/ in the
+product repository (for example, code/Website/{product}/).
+
+\- Sibling Website repo hosts live nivo78.com — deploy
+is separate; updocs verifies in-repo pages and exports Help KB when present.
+
+
+
+Release verify (before ship)
+
+\- tools/verify/verify-{product}-website.ps1 (or product-equivalent) confirms required files exist and contain standard markers:
+
+  legal.css,
+site-footer, local-first / data-on-device language, support mailto, privacy
+policy-product-name header, privacy and terms cross-links,
+
+  will-do and
+won’t-do section headings on product index.html, scope summary on
+support/index.html,
+
+  and
+comprehensive SEO markers (meta description, canonical, Open Graph, Twitter) on
+every in-repo public HTML page plus hosted n78\_seo\_head wiring,
+
+  and WEB LEGAL
+SYNC (privacy Last updated, terms effective date/version, policy-product-name
+text vs engine legal copy).
+
+\- Release gates run the applicable product website verifier for every product
+that ships web pages; products without web pages do not run a website gate.
+
+\- ApaInRepoLegalSecurityCopyTest runs in
+desktopRegressionVerify — same legal sync contract as WEB LEGAL SYNC.
+
+
+
+Updocs workflow (when copy changes)
+
+\- Engine security/legal copy → in-repo privacy/terms/support
+HTML → Website Help KB PHP → export script.
+
+\- Run: pwsh -NoProfile -File
+tools/maintain/run-updocs.ps1
+
+
+
+
+
+\================================================================================
+
+PRE-SHIP BAR (WEB — FAMILY CONSISTENCY)
+
+\================================================================================
+
+
+
+\- code/Website/{product}/ contains index.html,
+privacy/, terms/, support/, legal.css before store listing.
+
+\- Hosted URLs live at
+nivo78.com/{product}/privacy|terms|support/ and match in-app support URL
+registry.
+
+\- Support page: philosophy callout, contact block
+(support/feedback/contact), bug reports → in-app Feedback callout, legal links,
+entity footer, will/won’t scope summary.
+
+\- Product index: will do for you + won’t do for you
+sections aligned with reference/MARKETING\_COPY.txt.
+
+\- Privacy and terms: last updated / effective date,
+cross-links, copy aligned with engine security/legal registries.
+
+\- No web trackers or upload forms on legal/support
+pages; contact is mailto-only.
+
+\- Partner Center / store listing privacy URL equals
+in-app Privacy link.
+
+\- verify-apa-website.ps1 (or product script) green
+including WEB SEO checks; Legal.txt text test run when consent or policy
+changes.
+
+\- Every public web page change includes SEO
+title/description/canonical review in the same pass.
+
+
+
+Legal gating and acknowledgement (app)
+
+\- First-run modal with unchecked acceptance checkbox;
+Accept disabled until checked; Terms and Privacy linked before accept.
+
+\- Decline behavior matches button label on every
+platform; re-consent when terms version bumps.
+
+\- Versioned acceptance record persisted; core
+workflows gated until accepted.
+
+\- Legal.txt text test green when consent or
+TERMS\_VERSION changes.
+
+
+
+
+
+\================================================================================
+
+MAKING THIS A STANDARD TO LIVE BY
+
+\================================================================================
+
+
+
+1\. Canonical document (this file)
+
+   - Version
+with a short changelog when rules change; products declare compliance in
+release notes only when the standard changes affect ship criteria.
+
+
+
+2\. Binding agent and developer rules
+
+   - Mirror the
+focused standard projections under .cursor/rules/ so AI and humans get the
+same bar. The canonical standard remains in N78Ops.
+
+   - New
+products copy the rule set on day one — no renegotiation per app.
+
+
+
+3\. Shared libraries (implementation spine)
+
+   -
+nivo78-theme: visual components and tokens — no duplicate buttons or fields in
+product repos.
+
+   -
+nivo78-breadcrumbs: debug-only 10,000-event ring buffer; expect/actual
+isDebugBuild + MutexLock;
+
+     export
+utility in androidDebug/debug source sets only (APP-BREADCRUMB-DEBUG-ONLY).
+
+   -
+nivo78-support (recommended shared module): Feedback page contract, diagnostics
+snapshot builder, privacy redactor, mailto composer, support URL registry —
+products inject product-specific snapshot fields only.
+
+   - Engine
+packages own validation, help article ids, and export naming — UI wires, does
+not reinvent.
+
+
+
+4\. New product checklist
+
+   -
+reference/NIVO78\_NEW\_PRODUCT\_CHECKLIST.txt — run before first public build.
+
+
+
+5\. Release gate extensions
+
+   - Support
+menu destinations registered; Feedback diagnostics redactor unit tests; legal
+URLs in support URL registry.
+
+   - Text tests:
+grep user strings for banned jargon, “coming soon,” and implied automation;
+verify ? help on new non-trivial fields.
+
+
+
+6\. Cross-product review
+
+   - When
+shipping a UI change in one app, ask: “Should this move to nivo78-theme or
+nivo78-support?”
+
+   - Quarterly
+pass: open shipped Nivo78 apps side by side — menu labels, Feedback flow, field
+error placement, save bar — fix drift in the shared layer first.
+
+
+
+7\. Help and website sync (updocs)
+
+   - Privacy,
+Terms, Support HTML, and Help KB stay aligned with shipped app behavior.
+
+   - Feedback
+intro and support page state the same data-on-device story as the privacy page.
+
+   - Run
+tools/maintain/run-updocs.ps1 after security, legal, or help copy changes.
+
+
+
+8\. Website verify in release gate
+
+   - Required
+in-repo pages under code/Website/{product}/; verify script checks files and
+standard content markers.
+
+   - WEB SEO
+checks (meta description, canonical, Open Graph, Twitter; hosted n78\_seo\_head.php
+when sibling Website repo present) run with WEB standard checks — failures
+block release unless overridden.
+
+   - Store
+listing privacy/terms URLs must equal in-app and in-repo paths.
+
+
+
+9\. Training heuristic for designers and contributors
+
+   - “Would a
+user of another Nivo78 app know where to click without relearning?”
+
+   - If no, fix
+chrome or naming in the shared standard — not a one-off in a single product.
+
+
+
+10\. Compliance statement per release (internal)
+
+   - Short
+checklist in release gate log: engine/UI separation, offline core path,
+Feedback diagnostics opt-in, legal links, website verify green (WEB standard +
+WEB SEO), regression green.
+
+
+
+
+
+\================================================================================
+
+PRE-SHIP BAR (EXTENDED — FAMILY CONSISTENCY)
+
+\================================================================================
+
+
+
+\- Shared theme components used for all primary inputs
+and buttons; no one-off form controls on critical paths.
+
+\- Structured fields format and validate on blur / Done
+/ leave / Save only — not on every keystroke (APP-INPUT-FORMAT-ON-COMMIT).
+
+\- Blur-only drafts flush before Save / Lock / Next /
+Finish / leave (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+  Persist from
+inner committed text; live editor state after flush — not a leftover parent
+copy or
+
+  leftover
+composed snapshot.
+
+\- Text fields focus for in-place edit — never
+select-all or clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Save inactive vs last registry-verified values;
+persist valid on leave, block invalid leave (APP-SAVE-VERIFIED-INACTIVE,
+APP-LEAVE-DIRTY-PROMPT).
+
+\- Accessibility floor on mobile (APP-UI-A11Y-FLOOR).
+
+\- Help, Feedback, Support center, Privacy, Terms
+reachable from main chrome without completing a workflow.
+
+\- Feedback page matches report types, contact fields,
+mailto handoff, diagnostics checkbox contract, and device-vs-web routing (bugs
+in-app only; no extended diagnostics on feature requests).
+
+\- Diagnostics snapshot built in engine/support layer
+with redaction tests; no PII or secrets in default payload.
+
+\- Debug-only breadcrumb ring buffer present;
+debug-only breadcrumb verification green; export not in main/release.
+
+\- Privacy and Terms URLs registered in one support URL
+object; same URLs linked from menu and Feedback footer.
+
+\- Export and copy actions use plain labels and
+consistent success/error feedback.
+
+\- Cross-check against another shipped Nivo78 app for
+menu order, save bar placement, and field error pattern — document intentional
+differences only.
+
+\- Web: code/Website/{product}/ pages present; legal.css
+shared template; support/privacy/terms copy aligned with app; product index
+will/won’t sections; comprehensive SEO on every public page;
+verify-apa-website.ps1 green including WEB SEO checks.
+
+\- Legal gate: consent dialog, decline integrity,
+versioned acceptance, re-consent on terms bump; Legal.txt green when legal
+surfaces change.
+
+\- Trust: destructive confirms, vault/recovery
+warnings, schema migration tests, backup/restore path documented.
+
+
+
+
+
+\================================================================================
+
+RELEASE CERTIFICATION (FINAL GATE CHECKLIST)
+
+\================================================================================
+
+
+
+Use as the final release gate. Compact checklist for
+existing verify / release-gate tooling.
+
+A product is not release-ready until every applicable
+item is checked or covered by an approved override.
+
+
+
+[ ] Build succeeds from the approved source state.
+
+[ ] Static N78 rules pass.
+
+[ ] Required automated tests pass.
+
+[ ] Critical recovery and migration tests pass.
+
+[ ] Security / dependency checks pass.
+
+[ ] Release contains no development-only bypasses or
+credentials.
+
+[ ] Accessibility floor has been verified.
+
+[ ] Offline behavior has been verified for
+offline-capable workflows.
+
+[ ] Backup / export / restore behavior has been
+verified where applicable.
+
+[ ] Version and release metadata are consistent.
+
+[ ] Required Help, Privacy, Terms, and release
+documentation are present.
+
+[ ] Active overrides have been reviewed.
+
+[ ] The exact release artifact has been verified and approved.
+
+
+
+Rule ids: APP-RELEASE-DEFINITION-OF-DONE,
+APP-RELEASE-ARTIFACT-INTEGRITY, APP-TEST-REGRESSION,
+
+APP-SEC-RELEASE-DEBUG, APP-RELEASE-DEBUG-CLEAN, and
+related APP-TEST-\*, APP-BACKUP-\*, APP-A11Y-\*,
+
+APP-OVERRIDE-REVIEW.
+
+---
+
+*End
+of Nivo78 Family Rules — Complete List.*
+
+================================================================================
+
+NIVO78 RULE REGISTRY AND ENFORCEMENT COVERAGE — v1.37
+
+================================================================================
+
+Every registered rule ID is represented below with an explicit enforcement class
+and a primary Cursor projection. IDs that previously existed only in the catalog
+are conservatively classified as [QA] until a canonical rule body explicitly
+assigns a stronger class.
+
+Registry format:
+ID | CLASS | PRIMARY CURSOR PROJECTION
+
+APP-A11Y-KEYBOARD | [QA] | 13-accessibility-i18n-performance.mdc
+APP-A11Y-MOTION | [QA] | 13-accessibility-i18n-performance.mdc
+APP-A11Y-NO-COLOR-ONLY | [QA] | 13-accessibility-i18n-performance.mdc
+APP-A11Y-SEMANTICS | [QA] | 13-accessibility-i18n-performance.mdc
+APP-A11Y-TEXT-SCALING | [QA] | 13-accessibility-i18n-performance.mdc
+APP-UI-UNIFORM-SURFACE-VIEWPORT | [GATE] | uniform-ui-surface-viewport.mdc
+APP-A11Y-WCAG-FLOOR | [QA] | 13-accessibility-i18n-performance.mdc
+APP-ARCH-CLEAN-ENGINE | [STATIC] | 04-input-architecture.mdc
+APP-ARCH-CODE-INTEGRITY | [STATIC] | 04-input-architecture.mdc
+APP-ARCH-NEUTRAL-PATHS | [STATIC] | 04-input-architecture.mdc
+APP-ARCH-NO-PLATFORM-APIS | [STATIC] | 04-input-architecture.mdc
+APP-ARCH-ONE-JOB | [QA] | 04-input-architecture.mdc
+APP-BACKUP-ATOMIC | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-BACKUP-INTEGRITY | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-BRAND-PHILOSOPHY | [QA] | 01-product-philosophy.mdc
+APP-BREADCRUMB-DEBUG-ONLY | [QA] | 19-operating-model-release-certification.mdc
+APP-DATA-BLOCK-SECRETS | [STATIC] | 19-operating-model-release-certification.mdc
+APP-DATA-DELETION | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-DATA-EXPORT-TRUTH | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-DATA-LIFECYCLE | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-DATA-NO-TELEMETRY | [GATE] | 19-operating-model-release-certification.mdc
+APP-DATA-OPEN-EXPORT | [QA] | 19-operating-model-release-certification.mdc
+APP-DATA-PORTABILITY | [QA] | 19-operating-model-release-certification.mdc
+APP-DATA-SCHEMA-MIGRATION | [QA] | 19-operating-model-release-certification.mdc
+APP-DATA-TEMPORARY | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-DEPENDENCY-INVENTORY | [QA] | 12-release-supply-chain.mdc
+APP-DEPENDENCY-LICENSE | [GATE] | 12-release-supply-chain.mdc
+APP-DEPENDENCY-VULNERABILITY | [GATE] | 12-release-supply-chain.mdc
+APP-DESKTOP-MODERN-STYLE | [QA] | 03-family-identity.mdc
+APP-DESKTOP-CHROME-VERTICAL-ORDER | [QA] | 03-family-identity.mdc
+APP-FEEDBACK-BUG-NARRATIVE | [QA] | 06-output-support.mdc
+APP-FEEDBACK-DIAGNOSTICS | [QA] | 06-output-support.mdc
+APP-FEEDBACK-ROUTING | [QA] | 06-output-support.mdc
+APP-FEEDBACK-TYPES | [QA] | 06-output-support.mdc
+APP-I18N-DATE-NUMBER | [QA] | 13-accessibility-i18n-performance.mdc
+APP-I18N-NO-HARDCODED-UI | [STATIC] | 13-accessibility-i18n-performance.mdc
+APP-I18N-RTL-READY | [QA] | 13-accessibility-i18n-performance.mdc
+APP-I18N-TEXT-EXPANSION | [QA] | 13-accessibility-i18n-performance.mdc
+APP-INPUT-COMMIT | [QA] | 04-input-architecture.mdc
+APP-INPUT-FLUSH-BEFORE-PERSIST | [QA] | 04-input-architecture.mdc
+APP-INPUT-FOCUS-EDIT-ONLY | [QA] | 04-input-architecture.mdc
+APP-INPUT-FORMAT-ON-COMMIT | [QA] | 04-input-architecture.mdc
+APP-LEAVE-DIRTY-PROMPT | [QA] | 04-input-architecture.mdc
+APP-LEGAL-GATE | [QA] | 07-overrides-legal.mdc
+APP-MOBILE-PHONE-INPUT | [QA] | 02-ui-input-save.mdc
+APP-OVERRIDE-CLEANUP | [QA] | 19-operating-model-release-certification.mdc
+APP-OVERRIDE-OWNER | [QA] | 19-operating-model-release-certification.mdc
+APP-OVERRIDE-REVIEW | [QA] | 19-operating-model-release-certification.mdc
+APP-OVERRIDE-RISK | [QA] | 19-operating-model-release-certification.mdc
+APP-PERF-BUDGET | [QA] | 13-accessibility-i18n-performance.mdc
+APP-PERF-LARGE-DATA | [QA] | 13-accessibility-i18n-performance.mdc
+APP-PERF-NO-BLOCKING-UI | [STATIC] | 13-accessibility-i18n-performance.mdc
+APP-PRIVACY-ANALYTICS-CONSENT | [QA] | 15-privacy-incident-override.mdc
+APP-PRIVACY-NO-AD-ID | [GATE] | 15-privacy-incident-override.mdc
+APP-PRIVACY-THIRD-PARTY-SDK | [GATE] | 15-privacy-incident-override.mdc
+APP-RELEASE-ARTIFACT-INTEGRITY | [GATE] | 12-release-supply-chain.mdc
+APP-RELEASE-DEBUG-CLEAN | [GATE] | 12-release-supply-chain.mdc
+APP-RELEASE-DEFINITION-OF-DONE | [GATE] | 12-release-supply-chain.mdc
+APP-RELEASE-SIGNING | [GATE] | 12-release-supply-chain.mdc
+APP-RELEASE-VERSION-CONSISTENCY | [GATE] | 12-release-supply-chain.mdc
+APP-RELEASE-PUBLISH-SPINE | [GATE] | 12-release-supply-chain.mdc
+APP-RESTORE-NO-DATA-LOSS | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-RESTORE-RECOVERY | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-RESTORE-VALIDATE-FIRST | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-SAVE-BAR | [QA] | 04-input-architecture.mdc
+APP-SAVE-VERIFIED-INACTIVE | [QA] | 04-input-architecture.mdc
+APP-SEC-CRITICAL-FIX | [QA] | 10-security.mdc
+APP-SEC-CRYPTOGRAPHY | [GATE] | 10-security.mdc
+APP-SEC-EXTERNAL-CONTENT | [GATE] | 10-security.mdc
+APP-SEC-FAIL-CLOSED | [GATE] | 10-security.mdc
+APP-SEC-IMPORT-VALIDATION | [GATE] | 10-security.mdc
+APP-SEC-KEY-DERIVATION | [GATE] | 10-security.mdc
+APP-SEC-PATH-SAFETY | [GATE] | 10-security.mdc
+APP-SEC-RANDOMNESS | [GATE] | 10-security.mdc
+APP-SEC-RELEASE-DEBUG | [GATE] | 10-security.mdc
+APP-SEC-RELEASE-RECALL | [QA] | 10-security.mdc
+APP-SEC-SECRET-LIFETIME | [QA] | 10-security.mdc
+APP-SEC-THREAT-MODEL | [QA] | 10-security.mdc
+APP-SEC-VULNERABILITY-RESPONSE | [QA] | 10-security.mdc
+APP-SUPPLY-CHAIN-SOURCE | [QA] | 12-release-supply-chain.mdc
+APP-SUPPORT-MENU-ORDER | [QA] | 06-output-support.mdc
+APP-SUPPORT-CHECK-FOR-UPDATES | [QA] | 06-output-support.mdc
+APP-TEST-FRESH-UPGRADE | [QA] | 11-testing-quality.mdc
+APP-TEST-INTEGRATION | [GATE] | 11-testing-quality.mdc
+APP-TEST-OFFLINE | [GATE] | 11-testing-quality.mdc
+APP-TEST-REAL-DATA-SAFETY | [QA] | 11-testing-quality.mdc
+APP-TEST-RECOVERY | [GATE] | 11-testing-quality.mdc
+APP-TEST-REGRESSION | [GATE] | 11-testing-quality.mdc
+APP-TEST-UI-CRITICAL | [GATE] | 11-testing-quality.mdc
+APP-TEST-UNIT | [GATE] | 11-testing-quality.mdc
+APP-UI-A11Y-FLOOR | [QA] | 05-accessibility-i18n.mdc
+APP-UI-EXPLAIN-JARGON | [QA] | 05-accessibility-i18n.mdc
+APP-UPGRADE-BACKUP | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-UPGRADE-DOWNGRADE | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-UPGRADE-INTERRUPTION | [GATE] | 14-backup-upgrade-lifecycle.mdc
+APP-UPGRADE-SUPPORTED-PATH | [QA] | 14-backup-upgrade-lifecycle.mdc
+APP-VAULT-CONTRACT | [QA] | 08-destructive-vault-errors.mdc
+AUDIT-VECTOR-FEEDBACK | [QA] | 06-output-support.mdc
+AUDIT-VECTOR-LEGAL-GATE | [QA] | 07-overrides-legal.mdc
+AUDIT-VECTOR-WEB | [QA] | 16-web-standards-a.mdc
+KB-COPY-DRIFT | [QA] | 17-web-marketing.mdc
+KB-FEEDBACK-ROUTING | [QA] | 06-output-support.mdc
+LEGAL-GATE | [QA] | 07-overrides-legal.mdc
+MARKETING-HUB-WILL-DRIFT | [QA] | 17-web-marketing.mdc
+MARKETING-HUB-WONT-DRIFT | [QA] | 17-web-marketing.mdc
+WEB-ABOUT-BRAND-PHILOSOPHY | [QA] | 16-web-standards-a.mdc
+WEB-HUB-BRAND-PHILOSOPHY | [QA] | 16-web-standards-a.mdc
+WEB-INDEX-NAV-LINKS | [QA] | 16-web-standards-a.mdc
+WEB-INDEX-WILL-DO | [QA] | 16-web-standards-a.mdc
+WEB-INDEX-WONT-DO | [QA] | 16-web-standards-a.mdc
+WEB-LEGAL-CSS-TOKENS | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-DATE-SYNC | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-FOOTER | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-LAST-UPDATED | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-PRODUCT-NAME | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-PRODUCT-NAME-STYLE | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-PRODUCT-NAME-SYNC | [QA] | 16-web-standards-a.mdc
+WEB-PRIVACY-SUPPORT-MAIL | [QA] | 16-web-standards-a.mdc
+WEB-PRODUCT-SUPPORT-CTA | [QA] | 16-web-standards-a.mdc
+WEB-REQUIRED-FILE | [QA] | 16-web-standards-a.mdc
+WEB-SEO-AUTHOR | [QA] | 18-web-seo-release.mdc
+WEB-SEO-CANONICAL | [QA] | 18-web-seo-release.mdc
+WEB-SEO-DESCRIPTION | [QA] | 18-web-seo-release.mdc
+WEB-SEO-DESCRIPTION-LENGTH | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-HEAD | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-JSON-LD | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-PROFILE-APA | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-PROFILE-APA-HELP | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-PROFILE-CANONICAL | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-RENDER-PRODUCT | [QA] | 18-web-seo-release.mdc
+WEB-SEO-HOSTED-RENDER-SUPPORT | [QA] | 18-web-seo-release.mdc
+WEB-SEO-LANG | [QA] | 18-web-seo-release.mdc
+WEB-SEO-OG-DESCRIPTION | [QA] | 18-web-seo-release.mdc
+WEB-SEO-OG-SITE-NAME | [QA] | 18-web-seo-release.mdc
+WEB-SEO-OG-TITLE | [QA] | 18-web-seo-release.mdc
+WEB-SEO-OG-URL | [QA] | 18-web-seo-release.mdc
+WEB-SEO-ROBOTS | [QA] | 18-web-seo-release.mdc
+WEB-SEO-TWITTER-CARD | [QA] | 18-web-seo-release.mdc
+WEB-SEO-TWITTER-TITLE | [QA] | 18-web-seo-release.mdc
+WEB-SEO-VIEWPORT | [QA] | 18-web-seo-release.mdc
+WEB-SUPPORT-BUG-IN-APP | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-FEEDBACK-ROUTE | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-FOOTER | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-LEGAL-LINKS | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-LOCAL-FIRST | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-MAILTO-CONTACT | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-MAILTO-SUPPORT | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-NO-SERVER-FORM | [QA] | 16-web-standards-a.mdc
+WEB-SUPPORT-WILL-WONT | [QA] | 16-web-standards-a.mdc
+WEB-TERMS-DATE-SYNC | [QA] | 16-web-standards-a.mdc
+WEB-TERMS-EFFECTIVE | [QA] | 16-web-standards-a.mdc
+WEB-TERMS-PRIVACY-LINK | [QA] | 16-web-standards-a.mdc
+WEB-TERMS-VERSION-SYNC | [QA] | 16-web-standards-a.mdc
+WEB-FREE-APP-TIP-JAR | [QA] | 16-web-standards-a.mdc
+WEB-TYPOGRAPHY-MIN-SIZE | [QA] | 16-web-standards-a.mdc
+APP-WEBSITE-LINKS-STANDARD | [QA] | 06-output-support.mdc

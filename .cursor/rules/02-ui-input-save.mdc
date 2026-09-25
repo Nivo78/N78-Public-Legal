@@ -1,0 +1,487 @@
+---
+description: "UI consistency, input behavior, save/leave semantics, lifecycle UI state, and shared interaction rules."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,xml,json}"]
+---
+
+# Nivo78 Rule Projection — 02-ui-input-save
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+Technical bar for a good Nivo78 app (engineering — not
+customer marketing)
+
+\- Shared outlined fields on critical paths; engine
+validation; Enter/IME and blur commit (APP-INPUT-COMMIT).
+
+\- Required format/validate on blur / Done / leave /
+Save only (APP-INPUT-FORMAT-ON-COMMIT).
+
+\- Flush blur-only drafts before same-screen persist
+(Save / Lock / Next / Finish) and before
+
+  page-leave
+persist — a control that does not steal focus still writes what is on screen
+
+ 
+(APP-INPUT-FLUSH-BEFORE-PERSIST). Persist from the inner field commit
+(the text just typed).
+
+  Do not persist
+a leftover parent copy, and do not persist a leftover composed snapshot of the
+
+  form after
+that flush.
+
+\- Save is inactive when the on-screen draft matches
+the last registry-verified values; active
+
+  when dirty;
+inactive again only after flush + write + read-back
+(APP-SAVE-VERIFIED-INACTIVE).
+
+  Confirmation
+is inactive Save, not a success toast. Failed write keeps Save active.
+
+\- Home / Back from a typed Save page: when the draft
+differs from last verified values,
+
+  flush and
+persist when engine validation passes, then leave (APP-LEAVE-DIRTY-PROMPT).
+
+  Invalid draft
+or failed write blocks leave with field errors or failure toast. Say on the
+
+  page: Valid
+changes save when you leave. Instant controls (toggles, chips) MAY persist
+
+  immediately.
+Optional Save / Don't save / Stay dialog only with accepted override.
+
+\- Focus places caret for in-place edit — never select-all
+or clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Minimum 44×44 dp touch targets on mobile; contrast
+and Dynamic Type / Large Text (APP-UI-A11Y-FLOOR).
+
+\- Universal UI, HiDPI Resolution, and Display Scaling Awareness: Every application MUST be
+display resolution aware and fully operational on high-resolution displays (HiDPI / 4K / Retina).
+Apps must be fully scalable across all screen zoom levels, display DPI scaling (100% to
+300%+), and per-monitor dynamic DPI transitions. Desktop apps must configure per-monitor
+high-DPI mode at startup before font or UI creation. No fixed 96-DPI pixel constraints
+on input heights, button dimensions, sliders, spinners, or container bounds. Every control,
+text string, icon, glyph, and dialog must scale dynamically with font metrics and DPI factors
+without blurriness, clipping, squashing, overlapping, or text truncation (APP-A11Y-TEXT-SCALING).
+
+\- No silent remount or sibling-field wipe while the
+operator is editing related rows (e.g. profile revision
+
+  bumps that
+discard in-progress drafts on the same screen).
+
+\- Dirty / required / Save UI must not lie while the
+user is typing — use live draft when storage commits on blur.
+
+\- One shared field component family on critical form
+paths — no one-off Material fields that drift from the standard.
+
+\- These rules are build/QA requirements. Do not put
+them in Brand Philosophy, About, store, or product will/won’t marketing copy.
+
+\- Debug-only breadcrumb troubleshooting (engineering —
+not customer marketing): every Nivo78 app
+
+  MUST keep a
+10,000-event local ring buffer in DEBUG builds (UI events, function calls,
+navigation,
+
+  text-input
+\*length\* only). Release builds MUST no-op \`log()\` on the first line (\`if
+(!isDebugBuild)
+
+  return\`) with
+zero ring-buffer allocation. The file export \`attachBreadcrumbsToBugReport\`
+MUST live
+
+  only in
+\`src/debug\` / \`src/androidDebug\` — never main, androidMain, or release. MUST
+NOT log raw
+
+  field text,
+secrets, or PII. MUST NOT appear in store listings or customer will/won’t copy.
+
+
+
+What a good Nivo78 app will do
+
+\- Present the right data at the right step — field,
+screen, and time aligned to the user’s job.
+
+\- Guided checklists someone can finish without
+memorizing external manuals.
+
+\- Let the operator finish a real task in one sitting —
+no “come back later” traps (forced tours, account gates,
+
+  or walls that
+demand unrelated fields). Optional facts (e.g. full address) stay optional
+until the job needs them.
+
+\- Use honest defaults for a real solo day — empty or
+zero where empty is true; not demo theater or fake sample data.
+
+\- Make Cancel, Discard, Decline, and Exit match their
+labels — the safe choice is always the labeled safe choice.
+
+\- Edit-until-handoff; validate before save, not only
+at export.
+
+\- Persist what is on the screen when the user taps
+Save, Lock, Next, or Finish — including a
+
+  field that is
+still focused. The operator does not have to tap away first. Reopen the record
+
+  and see the
+same values that were on screen (duration, line items, settings rows).
+
+\- Keep Save inactive until the draft differs from the
+last registry-verified values; after Save,
+
+  keep it active
+until a read-back confirms those values are stored, then make it inactive
+
+ 
+(APP-SAVE-VERIFIED-INACTIVE).
+
+\- On Home or Back with typed changes next to Save: valid
+drafts persist on leave; invalid or
+
+  failed save
+blocks leave (APP-LEAVE-DIRTY-PROMPT). Valid changes save when you leave.
+
+\- If the OS kills the process while backgrounded, the
+next cold start resumes the exact screen
+
+  and draft —
+not a false empty workspace (APP-LIFECYCLE-STATE-RESTORE).
+
+\- Core business data exportable in an openly readable
+standard (SQLite, JSON, CSV) without the
+
+  app shell or a
+proprietary service (APP-DATA-OPEN-EXPORT).
+
+\- Keep Help, website will/won’t (or equivalent
+limits), and the screen in agreement — if they disagree, the product is wrong.
+
+\- Fail closed with a plain next step (corrupt file,
+bad restore, unsupported schema) — never a blank workspace that looks empty.
+
+\- On handoffs, state what the app produced, what the
+user still does externally, and what was not sent
+
+  (did not email
+the client, did not upload, did not charge) unless that action truly shipped.
+
+\- Keep screens dense but scannable in a few seconds:
+title → status → next action.
+
+\- Prepare and check; the user owns the last mile
+(portal, bank, calendar, mail app) unless the product
+
+  explicitly
+ships and labels that mile.
+
+\- Scannable progress so gaps are obvious before
+external handoff.
+
+\- Collect once, reuse everywhere; portable exports
+(PDF, CSV, encrypted backup, copy sheets).
+
+\- Let the user leave with their data (export/backup)
+without calling support.
+
+\- Fully offline everyday work; optional online
+features user-initiated and labeled.
+
+\- Remain useful for years offline even if a cloud
+side-project ends.
+
+\- ? help on non-trivial fields + searchable Help hub +
+nivo78.com support articles.
+
+\- Native handoffs for send (email, SMS, calendar,
+browser) — user confirms send; app never silently transmits.
+
+\- Honest free tiers with real limits, not demo timers.
+
+\- Look and operate like other Nivo78 apps — shared
+theme, menu contract, input/output patterns
+
+  (learn one
+app, know the chrome of the next: Help → Feedback → Support center → Privacy →
+Terms → Check for updates → About, save bar, ? help).
+
+\- Phone, tablet, and desktop may look different; business
+rules and validation stay the same.
+
+\- Family utilities (the /tools/ catalog: Estimate,
+Measure, and the rest) are designed to run on
+
+  Windows, Mac,
+Android phones and tablets, iPhone, and iPad. One business-rules engine. Do not
+
+  stamp a new
+utility as phone-only or Windows-only unless the job itself requires it (APA:
+
+  store listing
+prep on a Windows PC) and an accepted override records that exception.
+
+  Website and
+Help MUST say Not yet / in development until a public install exists — never
+Yes
+
+  without a
+channel, and never No for a surface that is still in the family design.
+
+\- Interruptions are rare; when they appear they are
+consequential (legal gate, vault, overwrite) — not nags.
+
+\- Embody Brand Philosophy: local-first, respectful,
+transparent, fast/reliable, built to last.
+
+\- Earn trust with honest scope — website and Help name
+capabilities and limitations so there are
+
+  no negative
+surprises after install.
+
+\- Issue a one-time recovery key when the master
+password is created (and a new key after a
+
+  recovery-key
+reset). Tell the user to store it off the device and why. The key sets a new
+
+  master
+password; it does not reveal the old password. Nivo78 cannot recover either
+secret.
+
+\- In DEBUG builds only, keep a local 10,000-event
+breadcrumb ring buffer (UI, navigation, function
+
+  calls, input
+length — never raw text) so in-app bug reports can attach a troubleshooting
+file.
+
+  Release builds
+discard every event with zero ring-buffer allocation.
+
+
+
+What a good Nivo78 app will not do
+
+Access and money
+
+\- No required host login (Nivo78 account or cloud
+sign-in) for core offline work.
+
+\- No nags, sponsored rows, or “watch this to continue.”
+
+\- No tolls on using the app without valid maintenance,
+development, or infrastructure costs. This is one of the ways we keep your
+costs low.
+
+\- No toll on finished offline work that does not need
+our servers (open old projects, export, print,
+
+  backup) merely
+because a subscription lapsed — charge for ongoing support, updates, or real
+
+ 
+infrastructure, not for opening the user’s own data.
+
+\- No dark-pattern upgrade walls mid-task (“pay to save
+what you already typed”).
+
+\- No hidden pricing or surprise microtransactions.
+
+
+
+Data and network
+
+\- No background upload of the business database or
+project folder.
+
+\- No selling data, advertising profiles, or silent
+behavioral tracking for resale.
+
+\- No internet required merely to open or use the core
+offline job.
+
+\- No silent email, SMS, calendar, or payment sends.
+
+\- No silent diagnostics collection or background bug
+reporting.
+
+\- No breadcrumb logger, UI-event ring buffer, or debug
+breadcrumb export in any \*\*release\*\* build
+
+  (debug-only
+troubleshooting is mandatory; shipping it in release is a defect).
+
+
+
+Trust and control
+
+\- No silent or pre-checked legal acceptance.
+
+\- No delete or overwrite without a clear confirm.
+
+\- No false empty workspace after a failed load,
+corrupt file, or unsupported schema.
+
+\- No proprietary-only lock-in — exports and backups
+stay portable.
+
+\- No “AI will handle it” (or similar automation)
+unless that capability is shipped and labeled
+
+  in the current
+build.
+
+\- No stack traces or internal error codes on primary
+user-facing rows.
+
+\- No email, SMS, or support reset of the master
+password. No Nivo78 account to recover it.
+
+  A recovery key
+the user stored off-device is the only emergency path to set a new master
+password.
+
+
+
+Attention and scope
+
+\- No nag screens, review spam, or engagement feeds.
+
+\- No second product inside the product (social, news,
+unrelated tools).
+
+\- No forced tours or account gates before a usable
+first pass.
+
+\- No walls that demand unrelated optional fields
+before the operator can finish setup.
+
+\- No jargon walls on primary form rows.
+
+\- No decorative hero screens inside the core job.
+
+\- No excessive permissions unrelated to the job.
+
+\- No “everything platform” scope creep.
+
+
+
+Honesty
+
+\- No Help / website / in-app disagreement about the
+same capability or limit.
+
+\- No “coming soon,” “planned,” or roadmap language
+sold as shipped.
+
+\- No mislabelled Cancel, Discard, Decline, or Exit
+that does not match what the button does.
+
+\- No dishonest defaults or demo theater that pretends
+real data was already entered.
+
+\- No overselling features or burying material limits
+so customers discover the gap only after
+
+  they rely on
+the product.
+
+\- No persist of a stale stored value while a focused
+field still holds a newer draft
+
+  (operator must
+not have to tap away before Save, Lock, Next, or Finish).
+
+\- No persist of a leftover composed form snapshot that
+drops what is on screen.
+
+
+
+Pre-ship bar (minimum)
+
+\- Engine and UI separation verified; no platform
+leakage in shared logic.
+
+\- User-facing strings scanned for jargon and honesty;
+help updated for new fields and tasks —
+
+  including
+limits and handoffs that prevent negative surprises.
+
+\- Shared profile fields not duplicated; validation
+before save on critical paths.
+
+\- Input focus is in-place edit only — no select-all or
+clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Save/Lock/Next/Finish persist inner committed text
+and live form fields (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+\- Save inactive vs verified registry values; persist
+valid on leave, block invalid leave (APP-SAVE-VERIFIED-INACTIVE,
+APP-LEAVE-DIRTY-PROMPT).
+
+\- Accessibility floor on mobile: 44×44 dp targets,
+contrast, Dynamic Type (APP-UI-A11Y-FLOOR).
+
+\- No silent remount wiping sibling drafts;
+dirty/required UI honest while typing (live draft when blur-commit).
+
+\- Offline core path works; vault and secret rules
+honored.
+
+\- Destructive actions confirmed; load/migrate fail
+closed; empty/error states on major screens.
+
+\- Setup path finishes a usable first pass without
+traps; optional fields stay optional; Cancel/Decline match labels.
+
+\- Handoff screens state what was produced, what the
+user still does, and what was not sent.
+
+\- Engine tests and product regression verify green
+before release.
+
+\- Copy voice: plain, practical, respectful — written
+for a person doing real work, not for a pitch deck.
+
+\- Web and Help will/won’t (or equivalent limit
+statements) match shipped behavior — trust test passed.
+
+\- Public web pages: comprehensive SEO head
+(description, canonical, Open Graph, Twitter) on every page touched; website
+verify green including WEB SEO checks.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-MOBILE-PHONE-INPUT.

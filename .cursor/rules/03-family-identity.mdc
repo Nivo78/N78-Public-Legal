@@ -1,0 +1,136 @@
+---
+description: "Shared Nivo78 visual identity, component reuse, modern desktop style, and cross-platform family consistency."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,vb,java,xml,css,scss,html,ts,tsx,js,jsx}"]
+---
+
+# Nivo78 Rule Projection — 03-family-identity
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+NIVO78 FAMILY IDENTITY — LOOK, FEEL, AND OPERATE THE
+SAME
+
+================================================================================
+
+
+
+Shared visual system
+
+- Every Nivo78 app uses the shared nivo78-theme
+package — typography, color roles, spacing tokens, and component shapes — not
+one-off styling per product.
+
+- Density is utility-first: compact vertical rhythm,
+scannable sections, no hero banners or decorative animation inside core
+workflows.
+
+- Primary actions use the same button hierarchy
+everywhere: primary (solid), secondary (outlined/text), destructive (labeled
+and confirmed).
+
+- Page titles follow one pattern: destination name,
+optional subtitle in muted body text — no marketing headlines on form screens.
+
+- Status and progress use the same vocabulary and
+colors: not started / needs attention / complete (or product-equivalent labels
+mapped to those three states).
+
+- Icons and affordances are consistent: ? opens Help
+for that field or task; never a mystery icon with no label.
+
+
+
+Shared navigation chrome
+
+- Desktop (APP-DESKTOP-MODERN-STYLE — reference/NIVO78_DESKTOP_MENU_BAR.txt):
+  - Standard top menu on every PC/Mac window: File (at least Exit), product menus, Help in canonical order.
+  - Optional action toolbar below the header for high-frequency commands only; MUST NOT duplicate top-menu commands (no parallel File/Help on the bar).
+  - Keyboard shortcuts wired to menu commands; context menus for row/selection edits; ~80px logo header; accent stripe on primary bar buttons when a bar is used.
+
+- Mobile: a visible support row or drawer section with
+the same five links; never bury Privacy or Terms only on the website.
+
+- Back navigation preserves unsaved form state until
+the user saves or explicitly cancels/reverts — except when Save failed
+validation: Back, Cancel, and discard navigation stay blocked until items are fixed
+or the user chooses Save anyway on acknowledgement warnings.
+
+- Current location is obvious: active tab, breadcrumb,
+or page title matches engine destination id (useful for diagnostics and Help
+deep links).
+
+
+
+Shared page structure
+
+- Top: page title + optional one-line intro (plain
+language, no paragraph essays).
+
+- Body: grouped sections with short section headers;
+fields in consistent layout per form factor (see Mobile phone input chrome —
+phone-only).
+
+- Bottom (when editing): save/cancel bar in the same
+place and behavior across apps — visible when dirty, disabled when invalid,
+never hidden until the user discovers a gesture.
+
+- Critical warnings stay inline near the control they
+protect; everything else goes behind ?.
+
+
+
+================================================================================
+
+MODERN DESKTOP STYLE STANDARD (APP-DESKTOP-MODERN-STYLE) [QA]
+
+================================================================================
+
+All Nivo78 desktop applications (Windows, macOS, Linux desktop shells, Compose
+Multiplatform Desktop, WinForms, WPF, etc.) must adhere to the Modern Desktop Style.
+Detail: reference/NIVO78_DESKTOP_MENU_BAR.txt.
+
+1. Standard Top Menu Bar (required)
+- Family top menu on every desktop window (File, product menus, Help canonical order).
+- MUST NOT ship toolbar-only chrome without this menu.
+
+2. Optional Action Toolbar (high-frequency only)
+- Below brand header when used; MUST NOT duplicate top-menu commands with the same outcome.
+
+3. Global Keyboard Shortcut Preservation
+- Shortcuts wired to menu commands (ProcessCmdKey / desktop key dispatcher).
+
+4. Contextual In-Place Menus
+- Row-level and selection-level operations (cut, copy, paste, delete row, insert
+  from catalog/price book, move up/down) MUST be accessible via right-click
+  context menus (ContextMenuStrip / Compose context menu) directly on the
+  workspace data grid or list.
+
+5. Brand Banner & Standard 80px Logo
+- Desktop header features the product logo with standard 80px target height
+  (targetHeightPx = 80 / 80.dp), scaled proportionally with high-quality rendering
+  (preserving aspect ratio, anti-aliased, transparent background).
+- Prominent bold product title (e.g. N78-Estimate, N78-Ops) alongside the clear
+  one-line plain-language product utility subtitle/tagline.
+
+6. High-Density Workspace & Docked Utility Panels
+- Full-width workspace expansion with high-density data grids, compact inputs,
+  alternating row shading, and clear financial/summary cards.
+- Docked tool/viewer panels (CAD blueprint viewer, document viewer, preview panel)
+  feature dark canvas theme, dedicated mini-toolbar controls (+, -, Fit, Float, X),
+  and live zoom/pan status.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-DESKTOP-MODERN-STYLE.

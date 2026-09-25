@@ -1,0 +1,31 @@
+NIVO78 FAMILY STANDARDS — HOME
+===============================
+
+Canonical home (edit here):
+
+  Desktop/Nivo78/N78Ops/reference/NIVO78_APP_STANDARD.txt
+  Desktop/Nivo78/N78Ops/reference/NIVO78_STANDARD_RULE_IDS.txt
+  Desktop/Nivo78/N78Ops/reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md
+  Desktop/Nivo78/N78Ops/reference/NIVO78_NEW_PRODUCT_CHECKLIST.txt
+  Desktop/Nivo78/N78Ops/reference/CURSOR_STANDARDS_ENFORCEMENT.txt
+  Desktop/Nivo78/N78Ops/reference/NIVO78_CURSOR_RULE_MAP_1.31.md
+
+Cursor enforcement (layout 1.31):
+
+  Desktop/Nivo78/N78Ops/.cursor/rules/nivo78-core.mdc          (alwaysApply)
+  Desktop/Nivo78/N78Ops/.cursor/rules/01-…19-….mdc             (focused + globs)
+  Desktop/Nivo78/N78Ops/.cursor/rules/nivo78-app-standards.mdc (DEPRECATED stub)
+  (+ anticipate-before-implementing, fix-propagation-audit, desktop-launcher-bats)
+
+Install / sync:
+
+  pwsh -NoProfile -File tools/maintain/install-n78-cursor-standards.ps1
+  pwsh -NoProfile -File tools/maintain/run-updocs.ps1 -SyncMirrors
+  tools/launchers/N78-Install-Cursor-Standards.bat
+
+Override registry (portfolio DB, not in product git):
+
+  Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json
+
+N78APA is a consumer only. If APA still has copies under reference/, treat them as
+mirrors refreshed from N78Ops (-SyncMirrors). Do not edit APA as the source of truth.

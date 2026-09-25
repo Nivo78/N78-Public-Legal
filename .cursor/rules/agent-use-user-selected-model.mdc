@@ -1,0 +1,33 @@
+---
+description: HARD RULE — Every spawned subagent/new agent must use Composer 2.5 (composer-2.5). Never inherit or substitute another model.
+alwaysApply: true
+---
+
+**Rank:** Operator hard directive. Applies to all Cursor Agent chats that load Nivo78 global rules. Do not weaken, skip, or silently bypass this rule.
+
+# Agent model — Composer 2.5 for every new agent (no exceptions)
+
+Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\agent-use-user-selected-model.mdc` — family mirror under `Business\N78-Kit\.cursor\rules\` (sync with `install-n78-cursor-standards.ps1` or repo `run-updocs.ps1 -SyncMirrors` where applicable).
+
+**Rule:** Whenever this chat spawns a **new agent** — Task tool subagents (`explore`, `generalPurpose`, `Bugbot`, `Security Review`, `best-of-n-runner`, or any other spawned agent) — the model **must** be **`composer-2.5`** (Cursor UI label: **Composer 2.5**).
+
+This applies **every time** the operator asks for a new agent, a subagent, parallel agents, or background agent work. **No exceptions.** Never ignore this rule for speed, cost, or capability guesses.
+
+## Required behavior
+
+1. **Task tool:** Always pass **`model`: `composer-2.5`** on every subagent `Task` invocation. Never omit `model` hoping for a default.
+2. **Never `inherit`:** Do not use `inherit` for subagents even when the parent chat uses a different model in the picker.
+3. **Never substitute:** Do not use `composer-2.5-fast`, Flash, Mini, Sol, Claude, Gemini, Grok, or any other slug unless this rule file is explicitly revised by the operator.
+4. **Transparency:** In the task description, state that the subagent model is **Composer 2.5** (`composer-2.5`).
+5. **Parent chat:** The operator may use any model in the main chat picker; this rule applies only to **spawned** agents.
+
+## Forbidden
+
+- Spawning a subagent without `model: composer-2.5`.
+- Using `inherit` or the parent chat's model for subagents.
+- Picking a different model because the task "seems simple" or "needs more reasoning."
+- Mixing models across parallel subagents (all spawns use **Composer 2.5**).
+
+## Conflict resolution
+
+This rule **replaces** all prior "subagents use inherit / user's selected model" instructions. If another rule or system default disagrees, **Composer 2.5 for new agents wins.**

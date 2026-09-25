@@ -1,0 +1,52 @@
+---
+description: When adding a new runnable app, script, or dev util, also add a Desktop .bat launcher.
+alwaysApply: true
+---
+
+**Rank:** Operating workflow rule. Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Do not weaken, skip, or silently bypass a family rule to satisfy this one. Conflicts require an approved override.
+
+# Desktop launcher bats (Mike workflow)
+
+Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\desktop-launcher-bats.mdc` — edit the repo file, then `run-updocs.ps1 -SyncMirrors` (or install-n78-cursor-standards.ps1).
+
+When you add a **new runnable** artifact the user will use more than once — desktop app entry, dev utility, maintain script with a launcher, test helper, etc. — **always** ship **two** launch paths in the **same turn**:
+
+1. **Canonical launcher** in the repo (e.g. `tools/launchers/{Name}.bat` or `code/tools/launchers/…`) — relative paths, portable within the clone.
+2. **Apps twin** at `%USERPROFILE%\Desktop\Apps\{same path as under Desktop\Nivo78}\{Name}.bat` — store apps at `Desktop\Apps\N78-APA\`, business apps at `Desktop\Apps\Business\N78-Foo\`. Create the folder if it is missing.
+
+Skip the Apps twin only when the user explicitly says no desktop shortcut, or the tool is clearly one-off / internal with no user-facing run intent.
+
+Do **not** drop twins on the Desktop root or into `Desktop\Bats`.
+
+## Desktop bat template (N78-APA on this PC)
+
+```bat
+@echo off
+rem Desktop Apps launcher — {one-line purpose}
+setlocal
+set "REPO=C:\Users\Mike\Desktop\Nivo78\N78-APA"
+set "LAUNCHER=%REPO%\tools\launchers\{CanonicalName}.bat"
+if not exist "%LAUNCHER%" (
+    echo Could not find %LAUNCHER%
+    echo Update REPO in this bat file if your N78-APA folder moved.
+    pause
+    exit /b 1
+)
+call "%LAUNCHER%" %*
+set "ERR=%ERRORLEVEL%"
+if %ERR% NEQ 0 pause
+endlocal & exit /b %ERR%
+```
+
+For PowerShell-only tools, call the `.ps1` under `tools/maintain/` instead of a repo `.bat`, same `REPO` block and error `pause`.
+
+## Naming
+
+- **User-facing / solo-operator tools:** plain names inside `Desktop\Apps\N78-{Product}\` (e.g. `APA-View-Backup.bat`) — no extra `N78-` on the bat unless the product name includes it.
+- **Repo maintainers / release:** keep existing `N78-APA-*` names under `tools/launchers/` when that matches repo convention.
+
+## Checklist when closing
+
+- [ ] Canonical launcher exists and was tested once from repo path
+- [ ] Apps twin `.bat` created or updated under `Desktop\Apps\{N78-Product}\` with correct `REPO` and target
+- [ ] Closing summary mentions both paths

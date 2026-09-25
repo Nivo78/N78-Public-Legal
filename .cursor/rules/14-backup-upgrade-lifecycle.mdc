@@ -1,0 +1,199 @@
+---
+description: "Backup/restore integrity, upgrades/migrations, data lifecycle honesty, deletion, temporary data, and export truth."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,sql,json,xml,gradle}"]
+---
+
+# Nivo78 Rule Projection — 14-backup-upgrade-lifecycle
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+BACKUP, RESTORE, AND RECOVERY INTEGRITY (APP-BACKUP-\*,
+APP-RESTORE-\*) — EVERY APP
+
+\================================================================================
+
+
+
+(Complements DATA LIFECYCLE — BACKUP, RESTORE, AND
+LEAVE above; does not replace it.)
+
+
+
+APP-DATA-DOCUMENTS-ROOT [GATE]
+
+- Desktop applications MUST store all user data, databases, business profiles, price books, templates, job libraries, blueprints, session settings, and exports under a dedicated, user-visible folder in the user's standard Documents directory (e.g. `Documents\N78-<AppName>\`), never hidden inside `AppData`, `LocalApplicationData`, `Roaming`, or hidden dot-directories.
+
+- Standard consumer and enterprise backup systems (OneDrive, Windows File History, Time Machine, Carbonite, external drive sync) intentionally exclude `AppData`. Placing persistent application data or settings in `AppData` creates an unacceptable risk of silent data loss during system resets or PC migrations.
+
+- Sibling desktop apps MUST include automatic migration on startup from legacy `AppData` locations into the `Documents` directory without data loss or user friction.
+
+
+
+APP-BACKUP-ATOMIC [GATE]
+
+\- A backup must be generated as an internally
+consistent snapshot.
+
+\- A failed or interrupted backup must not be presented
+as a valid completed backup.
+
+
+
+APP-BACKUP-INTEGRITY [GATE]
+
+\- Backups must include sufficient integrity protection
+to detect corruption or unauthorized modification
+
+  before
+restore.
+
+
+
+APP-RESTORE-VALIDATE-FIRST [GATE]
+
+\- Validate backup structure, version, integrity, and
+required security metadata before replacing or
+
+  modifying
+current application data.
+
+
+
+APP-RESTORE-NO-DATA-LOSS [GATE]
+
+\- A failed restore must not unnecessarily destroy the
+user's existing valid data.
+
+
+
+APP-RESTORE-RECOVERY [QA]
+
+\- Products supporting restore must document recovery
+behavior for wrong credentials, corrupt backups,
+
+  unsupported
+versions, and interrupted restore operations.
+
+
+
+
+
+\================================================================================
+
+UPGRADES AND SCHEMA MIGRATION HARDENING
+(APP-UPGRADE-\*) — EVERY APP
+
+\================================================================================
+
+
+
+(Complements SCHEMA VERSION AND MIGRATION above; does
+not replace it.)
+
+
+
+APP-UPGRADE-SUPPORTED-PATH [QA]
+
+\- Each release must identify the supported upgrade
+paths from prior production versions and verify
+
+  those paths
+before release.
+
+
+
+APP-UPGRADE-INTERRUPTION [GATE]
+
+\- Critical migrations and upgrades must be designed so
+that interruption does not leave the application
+
+  in an
+unrecoverable state.
+
+
+
+APP-UPGRADE-BACKUP [GATE]
+
+\- Before destructive or materially irreversible
+migration operations, create or preserve an appropriate
+
+  recovery point
+when technically feasible.
+
+
+
+APP-UPGRADE-DOWNGRADE [QA]
+
+\- Document whether downgrade is supported. If
+downgrade is unsafe, the application must prevent or
+
+  clearly warn
+against it rather than silently corrupting data.
+
+
+
+
+
+\================================================================================
+
+DATA LIFECYCLE HONESTY (APP-DATA-LIFECYCLE / DELETION
+/ TEMPORARY / EXPORT-TRUTH)
+
+\================================================================================
+
+
+
+(Complements DATA LIFECYCLE — BACKUP, RESTORE, AND
+LEAVE and APP-DATA-PORTABILITY / OPEN-EXPORT.)
+
+
+
+APP-DATA-LIFECYCLE [QA]
+
+\- Each product must document the lifecycle of material
+user data: creation, storage, use, export,
+
+  backup,
+retention, and deletion.
+
+
+
+APP-DATA-DELETION [QA]
+
+\- User-facing deletion operations must clearly
+identify what is deleted and must not falsely imply
+
+  deletion of
+copies that remain in user-controlled exports or backups.
+
+
+
+APP-DATA-TEMPORARY [GATE]
+
+\- Temporary files, caches, intermediate exports, and
+working copies must not retain sensitive data
+
+  indefinitely.
+
+
+
+APP-DATA-EXPORT-TRUTH [QA]
+
+\- Export documentation and UI must accurately state
+what data is included, excluded, transformed, or omitted.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-BACKUP-ATOMIC, APP-BACKUP-INTEGRITY, APP-DATA-DELETION, APP-DATA-EXPORT-TRUTH, APP-DATA-LIFECYCLE, APP-DATA-TEMPORARY, APP-RESTORE-NO-DATA-LOSS, APP-RESTORE-RECOVERY, APP-RESTORE-VALIDATE-FIRST, APP-UPGRADE-BACKUP, APP-UPGRADE-DOWNGRADE, APP-UPGRADE-INTERRUPTION, APP-UPGRADE-SUPPORTED-PATH.

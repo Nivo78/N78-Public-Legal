@@ -1,0 +1,138 @@
+---
+description: "Release engineering, signing, dependency inventory/vulnerability/license checks, supply chain, and artifact integrity."
+alwaysApply: false
+globs: ["**/*.{gradle,kts,xml,json,yml,yaml,ps1,sh,properties,txt}"]
+---
+
+# Nivo78 Rule Projection — 12-release-supply-chain
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+RELEASE ENGINEERING AND SUPPLY CHAIN (APP-RELEASE-\*,
+APP-DEPENDENCY-\*, APP-SUPPLY-CHAIN-\*)
+
+\================================================================================
+
+
+
+APP-RELEASE-DEFINITION-OF-DONE [GATE]
+
+\- A product is release-ready only when required
+builds, static checks, automated tests, security checks,
+
+  accessibility
+checks, documentation, migration tests, and release verification have passed.
+
+
+
+APP-RELEASE-VERSION-CONSISTENCY [GATE]
+
+\- Application version, package/build version,
+displayed version, release metadata, and required
+
+  documentation
+must be synchronized before release.
+
+
+
+APP-RELEASE-SIGNING [GATE]
+
+\- Production signing keys must be protected from
+ordinary development use.
+
+\- Release artifacts must be signed using the
+authorized production signing process.
+
+
+
+APP-RELEASE-DEBUG-CLEAN [GATE]
+
+\- Production artifacts must be verified to exclude
+debug-only code, test data, test credentials,
+
+  development
+endpoints, and development-only configuration.
+
+
+
+APP-DEPENDENCY-INVENTORY [QA]
+
+\- Each product must maintain an inventory of direct
+and material transitive dependencies used in the
+
+  shipped
+product.
+
+
+
+APP-DEPENDENCY-VULNERABILITY [GATE]
+
+\- Dependencies must be checked for known material
+security vulnerabilities before release.
+
+\- Release-blocking vulnerabilities require remediation
+or a documented approved exception.
+
+
+
+APP-DEPENDENCY-LICENSE [GATE]
+
+\- Dependencies must have license terms reviewed for
+compatibility with the product's distribution
+
+  and commercial
+use.
+
+
+
+APP-SUPPLY-CHAIN-SOURCE [QA]
+
+\- Dependencies and build tools should come from
+trusted, documented sources.
+
+\- Unnecessary or unmaintained dependencies should not
+be introduced.
+
+
+
+APP-RELEASE-ARTIFACT-INTEGRITY [GATE]
+
+\- The artifact submitted for distribution must be the
+same verified artifact produced by the release
+
+  process; do
+not rebuild an unverified variant after final QA.
+
+
+
+APP-RELEASE-PUBLISH-SPINE [GATE]
+
+\- Every Nivo78 product repository MUST be registered in the
+family publish catalog (N78-Ops/tools/maintain/N78-PublishCatalog.ps1)
+before its first store or Play upload.
+
+\- New utilities stamped from N78-Kit MUST receive publish-spine
+registration (catalog row + N78-{Name}-Publish.bat + Desktop Apps twin)
+in the same stamp pass as cleanscript and updocs.
+
+\- Store products MUST NOT ship first upload until the catalog lists a
+real ArtifactKind (Msix, MsixApa, PlayAab, AndroidAab) plus version and
+pack metadata. ArtifactKind None only while packaging is being wired.
+
+\- One spine only: N78-Ops/tools/maintain/run-publish.ps1. See
+reference/NIVO78_PUBLISH_SPINE.txt.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-DEPENDENCY-INVENTORY, APP-DEPENDENCY-LICENSE, APP-DEPENDENCY-VULNERABILITY, APP-RELEASE-ARTIFACT-INTEGRITY, APP-RELEASE-DEBUG-CLEAN, APP-RELEASE-DEFINITION-OF-DONE, APP-RELEASE-PUBLISH-SPINE, APP-RELEASE-SIGNING, APP-RELEASE-VERSION-CONSISTENCY, APP-SUPPLY-CHAIN-SOURCE.

@@ -1,0 +1,104 @@
+NIVO78 DESKTOP MENU BAR & ACTION TOOLBAR — PC and Mac
+
+Scope
+-----
+Every Nivo78 desktop utility on Windows and macOS (WinForms MenuStrip, Compose Desktop
+MenuBar, WPF, or equivalent). Android-only products are excluded. Internal tools (N78-Track)
+still expose the Help block; update behavior may explain non-Store builds.
+
+Authority
+---------
+This file is the detailed companion to APP-DESKTOP-MODERN-STYLE and
+APP-DESKTOP-CHROME-VERTICAL-ORDER in reference/NIVO78_APP_STANDARD.txt. The top menu is
+the complete command catalog; optional action bars are frequency shortcuts only.
+
+Required vertical chrome order (APP-DESKTOP-CHROME-VERTICAL-ORDER)
+------------------------------------------------------------------
+Top to bottom on the main window (mandatory on every desktop app):
+
+  1. Standard top menu (MenuStrip / MenuBar) — File, product menus, Help.
+  2. Brand header row — logo, bold title, tagline, and/or the product’s branded action bar
+     (e.g. WinForms command bar with logo; Compose MachiningTopBar; Estimate _topChrome row 0).
+  3. Optional secondary chrome — customer/meta row, tab strip, or high-frequency toolbar
+     ONLY when it is not already row 2 and is not a duplicate of the top menu.
+  4. Primary worksheet / viewport — scrollable work surface.
+
+Rules:
+- Menu MUST NOT sit below the brand header or inside the worksheet viewport.
+- WinForms: parent menu + brand into a top TableLayoutPanel (_formHeaderHost) with
+  AutoSize rows. Do not rely on Controls.Add order, BringToFront, or SetChildIndex alone.
+- Compose Desktop: MenuBar { } is the first composable inside Window { }; brand composable
+  is the first row of the root Column below the menu (not above it).
+- Compact / scroll hosts: menu stays in the fixed header; brand + worksheet may scroll
+  together (N78-Estimate EnsureFormHeaderLayout pattern).
+
+Required top menu bar
+---------------------
+1. A visible standard top menu on the main window. Do not ship toolbar-only or
+   banner-only chrome without this menu.
+2. File — at minimum Exit with Ctrl+Q (Cmd+Q on Mac). Document-centric apps add
+   Open, Save, New, Close, and related commands here (full list), not only on a bar.
+3. Product menus (View, Navigation, Settings, Finance, etc.) as needed — same
+   complete catalog rule: if it is a primary window command, it lives in a menu.
+4. Help — canonical family order (APP-SUPPORT-*):
+   - Help topics (F1 when in-app help exists)
+   - Feedback
+   - Support center (https://nivo78.com/{product}/support/ in the system browser)
+   - Privacy
+   - Terms
+   - separator
+   - Check for updates (user-initiated only; no startup nag)
+   - About {customer-facing product name}
+5. macOS: same logical menus and order; rendering may use the system menu bar or an
+   in-window MenuBar per stack, but operators must not lose File or Help.
+
+Optional action toolbar (modern buttons)
+----------------------------------------
+Products MAY also use a horizontal action bar (icon+text buttons) on or below the brand row.
+
+Rules:
+1. High-frequency only — actions the operator repeats many times per session while
+   working (e.g. Save, Open, Undo, Lock vault, common tab jump).
+2. No menu duplication — if a command is already on the top menu with the same
+   outcome, do not add a toolbar button or toolbar dropdown that repeats it.
+   Do not mirror the full File menu or full Help menu on the action bar.
+3. Allowed toolbar patterns:
+   - One Save that runs the default save path while File → Save lists every format.
+   - Workspace mode toggles (zoom, DRO, active tab) that are not duplicated as
+     identical top-level menu rows.
+   - A single ? or Help-topics control that opens F1 help only (not Feedback,
+     Privacy, Terms, updates, or About — those stay under Help).
+4. Shared implementation — if both menu and bar exist during migration, wire the
+   same handler; target end state is one visible control per command on the bar.
+5. Keyboard accelerators (Ctrl+S, F1, etc.) attach to menu items; they do not
+   require a toolbar duplicate.
+
+Store-distributed desktop apps
+------------------------------
+- Help → Check for updates uses official store APIs when the MSIX family is active
+  (N78-StoreUpdateCheck.exe beside the app when StageStoreUpdateHelper is true).
+- Program Files / Gradle distributable / dev builds: CannotDetermine → Store listing
+  (expected).
+- Google Play–only desktop (N78-Ops): Check for updates may open the Play listing URL.
+
+Implementation notes
+--------------------
+- WinForms: MainMenuStrip + MenuStrip in _formHeaderHost row 0; brand/action bar row 1.
+- Compose Desktop: MenuBar inline inside Window { } (not a separate @Composable file).
+- Do not wire Help → Cancel or Exit to process kill; use File → Exit.
+- Context menus remain for row/selection operations; they do not replace the top menu.
+
+Reference implementations
+-------------------------
+- WinForms header host: N78-Estimate (_formHeaderHost), N78-Frame (_formHeaderHost),
+  N78-Track (_formHeaderHost), N78-StlLite (MenuMain dock top above worksheet).
+- Compose: N78-Machining, N78-Electrical, N78-Ops, N78-APA, N78-Life (MenuBar before brand).
+
+New utilities
+-------------
+N78-Kit: ship File + Help top menu and correct vertical order before first desktop handoff;
+add action bar only for justified high-frequency commands.
+
+Related
+-------
+N78-Ops/reference/NIVO78_DESKTOP_LAUNCH.txt — build, install, shortcuts, update helper.

@@ -1,0 +1,393 @@
+---
+description: "Website family identity, navigation, legal/support placement, and contact/feedback/support contract."
+alwaysApply: false
+globs: ["**/Website/**/*.{php,html,css,scss,js,ts,md,txt,json}"]
+---
+
+# Nivo78 Rule Projection — 16-web-standards-a
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+NIVO78 WEBSITE STANDARDS — SAME PROMISE, SAME PLACES,
+SAME LOOK
+
+\================================================================================
+
+
+
+Through-line on the web (matches app)
+
+\- Utility-first, plain language — legal and support
+pages are scannable reference, not marketing fluff.
+
+\- Same local-first promise visible on support and
+privacy pages unless the product explicitly requires an account.
+
+\- No trackers, behavioral analytics, or silent data
+collection on product legal/support pages unless disclosed in privacy policy.
+
+\- Web copy matches shipped app behavior in the current
+build — updocs keeps app, in-repo HTML, and hosted KB aligned.
+
+\- Comprehensive SEO on every public page: title, meta
+description (\~160 characters), canonical URL, Open Graph, and Twitter cards —
+mandatory in the same pass as any web copy change (see WEB SEO section).
+
+
+
+Required pages per product (in-repo staging under
+code/Website/{product}/)
+
+\- index.html          
+— product legal & support hub (links to privacy, terms, support
+center)
+
+\- privacy/index.html  
+— full privacy policy (Partner Center / store listing URL target)
+
+\- terms/index.html    
+— terms of use (effective date + version)
+
+\- support/index.html  
+— support center landing (security overview, contact, legal links, KB
+entry)
+
+\- legal.css           
+— shared Nivo78 legal-page stylesheet (imports
+code/Website/\_shared/n78\_legal\_privacy\_header.css; do not one-off per page)
+
+
+
+Privacy policy first two lines (ALL products —
+mandatory)
+
+\- Every privacy policy page (in-repo HTML, hosted PHP,
+store listing URL target) MUST open with exactly these two lines:
+
+  1. h1 — text
+must be “Privacy Policy” (document title; never the product name alone).
+
+  2.
+p.policy-product-name — full public product title (e.g. App Publishing
+Assistant, N78-Ops).
+
+\- Typography contract (shared CSS — do not duplicate
+with one-off sizes):
+
+  - Canonical
+sheet: code/Website/\_shared/n78\_legal\_privacy\_header.css (N78APA in-repo).
+
+  - Hosted
+mirror: Website/assets/css/n78\_legal\_privacy\_header.css.
+
+  - In-repo
+product legal.css MUST @import the shared sheet (APA:
+../\_shared/n78\_legal\_privacy\_header.css).
+
+  - Hosted PHP
+MUST link the shared sheet and call
+n78\_render\_privacy\_policy\_header($productTitle)
+
+    from
+Website/include/n78\_privacy\_policy\_header.php.
+
+\- Tokens (--privacy-h1-size 1.75rem;
+\--privacy-product-name-size calc(1.5rem - 4pt); --privacy-tagline-size 1rem):
+
+  - Line 1 and
+line 2 use the same font-weight (600) and letter-spacing (-0.01em) as the
+Privacy Policy h1.
+
+  - Line 2 is
+sized between the h1 and the Local-first philosophy-tagline (line 3 when
+present).
+
+\- Product-specific colors may override on hosted theme
+pages; size and weight MUST NOT drift per product.
+
+
+
+Hosted URLs (must match in-app support URL registry
+and store listings)
+
+\- Product hub: 
+https\://nivo78.com/{product}/
+
+\- Privacy:     
+https\://nivo78.com/{product}/privacy/
+
+\- Terms:       
+https\://nivo78.com/{product}/terms/
+
+\- Support:     
+https\://nivo78.com/{product}/support/
+
+\- Help KB:     
+articles under support path when the product exports a knowledge base
+(sibling Website repo)
+
+
+
+
+
+\================================================================================
+
+WEB FAMILY IDENTITY — LOOK, FEEL, AND READ THE SAME
+
+\================================================================================
+
+
+
+Shared visual system (legal.css contract)
+
+\- Every product legal/support site uses legal.css with
+the same design tokens:
+
+  - Max content
+width \~760px, centered; system font stack (Segoe UI, system-ui).
+
+  - CSS
+variables: --bg, --panel, --text, --muted, --border, --link.
+
+  - .panel —
+white card with border and 8px radius; .legal-prose for body copy.
+
+  -
+.philosophy-banner — highlighted local-first callout (support page).
+
+  - .site-footer
+— minimal copyright footer; not a wall of links on every page.
+
+\- Utility-first density: short sections, h2 headings,
+bullet lists — easy to scan on phone and desktop.
+
+\- No hero images, animation, or decorative marketing
+layouts on privacy, terms, or support pages.
+
+\- philosophy-tagline on key pages when accurate:
+“Local-first · No Nivo78 account · No cloud sync · No analytics”
+
+  (adapt only
+when the product’s job explicitly requires an account or optional sync — state
+the exception plainly).
+
+
+
+Shared page structure (every legal/support HTML page)
+
+\- \<html lang="en">, charset UTF-8,
+viewport meta for mobile.
+
+\- \<head> SEO (mandatory): unique title; meta
+description (\~160 characters); meta robots; meta author;
+
+  link
+rel="canonical" (exact page URL); Open Graph (title, description,
+url, site\_name, locale);
+
+  Twitter card
+(summary or summary\_large\_image). See WEB SEO section for hosted PHP
+(n78\_seo\_head.php).
+
+\- \<main class="app"> wrapper.
+
+\- Header: optional eyebrow back link (← {Product}
+Support or ← Nivo78) → h1 page title → subtitle.
+
+\- Privacy page header (required on every privacy
+policy — in-repo HTML and hosted equivalent):
+
+  - MUST match
+the Privacy policy first two lines contract above (shared CSS + markup).
+
+  - Line 3 when
+present: Local-first philosophy-tagline below the product name.
+
+\- Body: one or more \<article class="panel
+legal-prose"> (support may add philosophy-banner panel first).
+
+\- Footer: \<footer class="site-footer">
+with © Nivo78 Mobile Apps, LLC — on support, privacy, and terms pages.
+
+\- link rel="stylesheet"
+href="../legal.css" (or ./legal.css on index as appropriate).
+
+
+
+
+
+\================================================================================
+
+WEB NAVIGATION, FOOTERS, AND LEGAL PLACEMENT
+
+\================================================================================
+
+
+
+Same five destinations as the app (labels and URLs
+must match)
+
+\- Help         
+— support center / knowledge base at https\://nivo78.com/{product}/support/
+
+\- Feedback     
+— support page explains Help → Feedback in app;
+mailto\:feedback\@nivo78.com with subject hint
+
+\- Support center — support/index.html (and hosted KB
+when exported)
+
+\- Privacy      
+— privacy/index.html
+
+\- Terms        
+— terms/index.html
+
+
+
+Placement rules (web)
+
+\- Product index (code/Website/{product}/index.html):
+Legal & support section lists Privacy, Terms, Support center.
+
+\- Support page: Contact block (support, feedback,
+contact mailto links) + Legal section (Privacy, Terms links).
+
+\- Privacy page: cross-link to Support for
+user-friendly security overview; link to Terms in contact block.
+
+\- Privacy page header: h1 “Privacy Policy” + prominent
+p.policy-product-name (public product name).
+
+\- Terms page: link to Privacy in agreement section;
+eyebrow back to Support.
+
+\- Store listings (Partner Center, Play Console, App
+Store Connect) use the same privacy and terms URLs as in-app links.
+
+
+
+Voluntary Tip Jar for free utilities (WEB-FREE-APP-TIP-JAR)
+
+\- Mandatory for all free Nivo78 apps (utilities with no paid tier, license, or in-app billing):
+
+  1. Product hub (index.html / index.php): "Support Nivo78 (Voluntary Tip Jar)" entry in Legal & support list, plus a dedicated .n78-tip-jar-panel card with standard Nivo78 blue highlight stripe (border-top: 4px solid var(--n78-accent)), synergy badge, and "☕ Buy the developer a coffee" button (https\://buymeacoffee.com/nivo78).
+
+  2. Support center (support/index.html / support/index.php): dedicated .n78-tip-jar-panel section immediately above Contact, plus a bullet under Contact ("Voluntary support: Buy the developer a coffee (Tip Jar)").
+
+\- Hard rule — NO in-app donation or tip links:
+
+  - Do NOT place tip jar, coffee, or donation buttons inside the store application binary. Out-of-band payment links inside store apps violate app store commerce policies (Microsoft Store, Google Play, Apple App Store) and risk store certification rejection.
+
+  - The tip jar lives exclusively on the website, discoverable naturally through Support center web navigation.
+
+\- Honest scope guarantee: The app remains 100% free with no locked features, no paywalls, and no nags. Tips are strictly voluntary.
+
+
+
+Footer content (web)
+
+\- site-footer: copyright line only on legal pages — “©
+{year} Nivo78 Mobile Apps, LLC. All rights reserved.”
+
+  (no city on
+the web site-footer copyright line; workflow-style clutter belongs on product
+marketing pages, not privacy/terms).
+
+\- Entity block on privacy/terms/support contact
+sections: Nivo78 Mobile Apps, LLC, then Tyler, Texas (city lives here on the
+web).
+
+\- Do not embed web forms that upload user project
+data, attachments, or diagnostics — contact is mailto-only.
+
+
+
+
+
+\================================================================================
+
+WEB CONTACT, FEEDBACK, AND SUPPORT — SAME INTERFACE
+CONTRACT
+
+\================================================================================
+
+
+
+Support page Contact section (required)
+
+\- Support:  
+mailto\:support\@nivo78.com — general help and licensing
+
+\- Feedback: 
+MUST state bug reports use Help → Feedback in the app (only path with
+automatic diagnostics);
+
+             MAY
+offer mailto\:feedback\@nivo78.com for Help and feature ideas — plain note that
+web email
+
+            
+includes only what the user writes (no automatic version, page, or audit
+context)
+
+\- Contact:  
+mailto\:contact\@nivo78.com — business and general contact, not primary
+bug triage
+
+
+
+Copy must match app Feedback contract and
+device-vs-web routing (v1.6)
+
+\- Web email contains only what the user writes — no
+automatic attachment of project files, vault, passwords, or diagnostics.
+
+\- Bug reports: support page and KB MUST direct users
+to in-app Help → Feedback; explain why (version, active page, checklist
+context, redacted audit lines).
+
+\- Help and feature request: web mailto is acceptable;
+KB may mention support@ or feedback@ with subject prefix.
+
+\- Do not promise web-based bug submission, silent log
+upload, or contact forms that collect diagnostics — web stays mailto or points
+to in-app Feedback for bugs.
+
+\- Verify script or release gate SHOULD check support
+HTML for in-app bug-report routing markers (see product verify script).
+
+
+
+Support center vs marketing product page
+
+\- support/index.html — security overview, platforms,
+encrypted vs plain summary, contact, legal links.
+
+\- Hosted product page (nivo78.com/{product}/) may
+carry audience and feature copy — must still agree with support/privacy on data
+handling and limits.
+
+\- Help KB articles (when used) export from
+engine/registry copy via updocs — same plain language as in-app Help.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: AUDIT-VECTOR-WEB, WEB-ABOUT-BRAND-PHILOSOPHY, WEB-HUB-BRAND-PHILOSOPHY, WEB-INDEX-NAV-LINKS, WEB-INDEX-WILL-DO, WEB-INDEX-WONT-DO, WEB-LEGAL-CSS-TOKENS, WEB-PRIVACY-DATE-SYNC, WEB-PRIVACY-FOOTER, WEB-PRIVACY-LAST-UPDATED, WEB-PRIVACY-PRODUCT-NAME, WEB-PRIVACY-PRODUCT-NAME-STYLE, WEB-PRIVACY-PRODUCT-NAME-SYNC, WEB-PRIVACY-SUPPORT-MAIL, WEB-PRODUCT-SUPPORT-CTA, WEB-REQUIRED-FILE, WEB-SUPPORT-BUG-IN-APP, WEB-SUPPORT-FEEDBACK-ROUTE, WEB-SUPPORT-FOOTER, WEB-SUPPORT-LEGAL-LINKS, WEB-SUPPORT-LOCAL-FIRST, WEB-SUPPORT-MAILTO-CONTACT, WEB-SUPPORT-MAILTO-SUPPORT, WEB-SUPPORT-NO-SERVER-FORM, WEB-SUPPORT-WILL-WONT, WEB-TERMS-DATE-SYNC, WEB-TERMS-EFFECTIVE, WEB-TERMS-PRIVACY-LINK, WEB-TERMS-VERSION-SYNC, WEB-FREE-APP-TIP-JAR.

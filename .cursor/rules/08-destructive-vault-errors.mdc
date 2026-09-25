@@ -1,0 +1,253 @@
+---
+description: "Destructive actions, vault/master-password contract, error/empty/loading states."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,xml}"]
+---
+
+# Nivo78 Rule Projection — 08-destructive-vault-errors
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+DESTRUCTIVE ACTIONS AND IRREVERSIBLE WARNINGS — EVERY
+APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Anything that deletes, overwrites, or cannot be
+undone gets explicit confirmation — never a single misclick away.
+
+\- Critical warnings stay inline near the control;
+confirmation dialogs use plain consequence language, not jargon.
+
+
+
+Requires confirmation (examples — adapt labels to
+product)
+
+\- Delete or remove workspace, project, profile, or
+stored record
+
+\- Clear vault entry or rotate master password when
+data loss is possible
+
+\- Overwrite export or replace file on disk when prior
+artifact would be lost
+
+\- Discard unsaved changes when leaving a screen
+(Cancel/revert — same family wording everywhere)
+
+\- Remove store account, destination, or irreversible
+identifier
+
+
+
+Confirmation pattern (same across apps)
+
+\- State what will happen and what cannot be undone in
+one or two plain sentences.
+
+\- Destructive confirm uses labeled destructive button
+(e.g. “Delete project”) — not generic “OK.”
+
+\- Safe default is Cancel / Keep; primary destructive
+action is never the default focused button unless platform requires explicit
+tab.
+
+\- No hidden gestures or long-press as the only guard
+for destructive work.
+
+
+
+Never silently
+
+\- Auto-delete user data on upgrade, tier change, or
+trial expiry.
+
+\- Remove files from disk without user-initiated
+confirm (except explicit temp/cache cleanup documented in privacy policy).
+
+
+
+
+
+\================================================================================
+
+VAULT AND MASTER-PASSWORD CONTRACT — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Secrets and vault behavior are identical in promise
+across Nivo78 apps: encrypt at rest, copy-only after save, user holds the keys.
+
+
+
+Master password and recovery
+
+\- Master password (or product-equivalent vault key) is
+never stored in plain project files or transmitted to Nivo78.
+
+\- When a product uses a master password, it MUST
+generate a high-entropy one-time recovery key at first set
+
+  (APA pattern:
+grouped unambiguous characters). Show it once with a critical warning: store it
+off the device,
+
+  not in the
+same place as the master password; Nivo78 never receives it; there is no
+email/phone/support reset.
+
+\- The recovery key MUST let the user set a new master
+password. It MUST NOT reveal the old password.
+
+ 
+Password-protected files already sealed with the old password stay tied
+to that password unless the product
+
+  also wraps
+those files with a data key (document that limit honestly).
+
+\- Using the recovery key MUST issue a new recovery key
+and invalidate the old one. Confirm the user saved the
+
+  new key before
+the reveal dialog can close.
+
+\- Existing installs that already have a master
+password MUST issue a recovery key the next time the user
+
+  enters that
+password — never from biometric unlock alone, and never from an unlocked phone
+with no secret.
+
+\- Recovery key / recovery mechanism loss is warned
+inline — critical, plain language: if both the master
+
+  password and
+the recovery key are lost, encrypted secrets and old password-protected files
+cannot be recovered.
+
+\- Failed unlock shows honest message — no hint that
+reveals secrets; optional retry without leaking vault contents.
+
+
+
+Secret entry and display
+
+\- Masked entry for passwords and tokens; save once
+through engine coordinator.
+
+\- After save: copy-only access — value not shown on
+screen again; replace/remove flows use confirmation when policy requires.
+
+\- Sensitive identifiers (bank, routing, IBAN, payout
+IDs) blocked from plain JSON saves where product policy requires vault.
+
+
+
+Vault lock and scope
+
+\- Vault lock timeout behavior documented in Help or
+security copy when product auto-locks.
+
+\- Unlock scope honest: what requires master password
+vs what remains readable plain text in project folders.
+
+\- Clipboard copy of secrets auto-clears after short
+timeout when platform supports it; user sees one-line notice.
+
+
+
+Order relative to legal gate
+
+\- Document and keep consistent: first-run Terms
+acceptance vs master-password setup vs first secret save — same order on all
+platforms for the product.
+
+
+
+
+
+\================================================================================
+
+ERROR, EMPTY, AND LOADING STATES — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Utility apps fail often (validation, I/O, locked
+tiers, vault locked). Every major screen handles non-happy paths without
+looking broken.
+
+
+
+Error messages
+
+\- Plain language — what went wrong and what to do
+next; one primary action when possible.
+
+\- No stack traces, exception class names, or internal
+error codes on primary form rows or toasts.
+
+\- Distinguish validation block vs I/O failure vs
+policy block (tier locked, vault locked, offline) — different wording, not
+generic “Error.”
+
+\- Engine owns message text for business rules; UI
+displays engine message without paraphrase that weakens meaning.
+
+
+
+Empty states
+
+\- First-use and zero-data screens say what this page
+is for and the next visible step — not marketing hero copy.
+
+\- Empty checklist, empty project list, empty search
+results: actionable line + visible control (Create, Open, Clear filters).
+
+
+
+Loading states
+
+\- Long operations (save, export, load session) show
+in-progress guard — prevent double-submit.
+
+\- Loading does not look like success; failed load
+fails closed — never show false clean/empty workspace.
+
+
+
+Offline and optional network
+
+\- When network is required for user-initiated handoff
+(browser, KB, mailto compose): clear offline message — no infinite spinner.
+
+\- Optional online features labeled; offline core never
+blocked by optional network failure.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-VAULT-CONTRACT.

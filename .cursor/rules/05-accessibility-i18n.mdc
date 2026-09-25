@@ -1,0 +1,46 @@
+---
+description: "Accessibility floor and internationalization/localization requirements."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,xml,strings,stringsdict,json}"]
+---
+
+# Nivo78 Rule Projection — 05-accessibility-i18n
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+ACCESSIBILITY FLOOR (APP-UI-A11Y-FLOOR) [QA]
+
+\================================================================================
+
+
+
+\- Minimum touch target of 44×44 dp on mobile phone and
+tablet.
+
+\- Text and interactive elements meet standard contrast
+ratios.
+
+\- Layout and type respond gracefully to system Dynamic
+Type / Large Text.
+
+\- High-resolution display awareness & universal UI scalability:
+Applications must be display resolution aware and work seamlessly on
+high-resolution (HiDPI / 4K / Retina) screens. Layouts and controls must scale
+fluidly across all display zoom percentages and DPI scaling configurations
+(100% to 300%+), reflowing and wrapping properly while maintaining full accessibility
+and usability without clipping, blurriness, or overlapping.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-UI-A11Y-FLOOR, APP-UI-EXPLAIN-JARGON.

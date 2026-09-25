@@ -1,0 +1,289 @@
+---
+description: "How to make the standard live: canonical source, sync workflow, shared libraries, cross-product review, updocs, and release certification."
+alwaysApply: false
+globs: ["**/*.{md,txt,json,ps1,sh,yml,yaml,py}"]
+---
+
+# Nivo78 Rule Projection — 19-operating-model-release-certification
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+MAKING THIS A STANDARD TO LIVE BY
+
+\================================================================================
+
+
+
+1\. Canonical document (this file)
+
+   - Version
+with a short changelog when rules change; products declare compliance in
+release notes only when the standard changes affect ship criteria.
+
+
+
+2\. Binding agent and developer rules
+
+   - Mirror the
+focused standard projections under .cursor/rules/ so AI and humans get the
+same bar. The canonical standard remains in N78Ops.
+
+   - New
+products copy the rule set on day one — no renegotiation per app.
+
+
+
+3\. Shared libraries (implementation spine)
+
+   -
+nivo78-theme: visual components and tokens — no duplicate buttons or fields in
+product repos.
+
+   -
+nivo78-breadcrumbs: debug-only 10,000-event ring buffer; expect/actual
+isDebugBuild + MutexLock;
+
+     export
+utility in androidDebug/debug source sets only (APP-BREADCRUMB-DEBUG-ONLY).
+
+   -
+nivo78-support (recommended shared module): Feedback page contract, diagnostics
+snapshot builder, privacy redactor, mailto composer, support URL registry —
+products inject product-specific snapshot fields only.
+
+   - Engine
+packages own validation, help article ids, and export naming — UI wires, does
+not reinvent.
+
+
+
+4\. New product checklist
+
+   -
+reference/NIVO78\_NEW\_PRODUCT\_CHECKLIST.txt — run before first public build.
+
+
+
+5\. Release gate extensions
+
+   - Support
+menu destinations registered; Feedback diagnostics redactor unit tests; legal
+URLs in support URL registry.
+
+   - Text tests:
+grep user strings for banned jargon, “coming soon,” and implied automation;
+verify ? help on new non-trivial fields.
+
+
+
+6\. Cross-product review
+
+   - When
+shipping a UI change in one app, ask: “Should this move to nivo78-theme or
+nivo78-support?”
+
+   - Quarterly
+pass: open shipped Nivo78 apps side by side — menu labels, Feedback flow, field
+error placement, save bar — fix drift in the shared layer first.
+
+
+
+7\. Help and website sync (updocs)
+
+   - Privacy,
+Terms, Support HTML, and Help KB stay aligned with shipped app behavior.
+
+   - Feedback
+intro and support page state the same data-on-device story as the privacy page.
+
+   - Run
+tools/maintain/run-updocs.ps1 after security, legal, or help copy changes.
+
+
+
+8\. Website verify in release gate
+
+   - Required
+in-repo pages under code/Website/{product}/; verify script checks files and
+standard content markers.
+
+   - WEB SEO
+checks (meta description, canonical, Open Graph, Twitter; hosted n78\_seo\_head.php
+when sibling Website repo present) run with WEB standard checks — failures
+block release unless overridden.
+
+   - Store
+listing privacy/terms URLs must equal in-app and in-repo paths.
+
+
+
+9\. Training heuristic for designers and contributors
+
+   - “Would a
+user of another Nivo78 app know where to click without relearning?”
+
+   - If no, fix
+chrome or naming in the shared standard — not a one-off in a single product.
+
+
+
+10\. Compliance statement per release (internal)
+
+   - Short
+checklist in release gate log: engine/UI separation, offline core path,
+Feedback diagnostics opt-in, legal links, website verify green (WEB standard +
+WEB SEO), regression green.
+
+
+
+
+
+\================================================================================
+
+PRE-SHIP BAR (EXTENDED — FAMILY CONSISTENCY)
+
+\================================================================================
+
+
+
+\- Shared theme components used for all primary inputs
+and buttons; no one-off form controls on critical paths.
+
+\- Structured fields format and validate on blur / Done
+/ leave / Save only — not on every keystroke (APP-INPUT-FORMAT-ON-COMMIT).
+
+\- Blur-only drafts flush before Save / Lock / Next /
+Finish / leave (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+  Persist from
+inner committed text; live editor state after flush — not a leftover parent
+copy or
+
+  leftover
+composed snapshot.
+
+\- Text fields focus for in-place edit — never
+select-all or clear on focus (APP-INPUT-FOCUS-EDIT-ONLY).
+
+\- Save inactive vs last registry-verified values;
+persist valid on leave, block invalid leave (APP-SAVE-VERIFIED-INACTIVE,
+APP-LEAVE-DIRTY-PROMPT).
+
+\- Accessibility floor on mobile (APP-UI-A11Y-FLOOR).
+
+\- Help, Feedback, Support center, Privacy, Terms
+reachable from main chrome without completing a workflow.
+
+\- Feedback page matches report types, contact fields,
+mailto handoff, **APP-FEEDBACK-BUG-NARRATIVE** email section headers (doing /
+happened / expected, --- SETTINGS_FOR_SUPPORT ---), diagnostics checkbox
+contract, and device-vs-web routing (bugs in-app only; no extended diagnostics
+on feature requests).
+
+\- Diagnostics snapshot built in engine/support layer
+with redaction tests; no PII or secrets in default payload.
+
+\- Debug-only breadcrumb ring buffer present;
+debug-only breadcrumb verification green; export not in main/release.
+
+\- Privacy and Terms URLs registered in one support URL
+object; same URLs linked from menu and Feedback footer.
+
+\- Export and copy actions use plain labels and
+consistent success/error feedback.
+
+\- Cross-check against another shipped Nivo78 app for
+menu order, save bar placement, and field error pattern — document intentional
+differences only.
+
+\- Web: code/Website/{product}/ pages present; legal.css
+shared template; support/privacy/terms copy aligned with app; product index
+will/won’t sections; comprehensive SEO on every public page;
+verify-apa-website.ps1 green including WEB SEO checks.
+
+\- Legal gate: consent dialog, decline integrity,
+versioned acceptance, re-consent on terms bump; Legal.txt green when legal
+surfaces change.
+
+\- Trust: destructive confirms, vault/recovery
+warnings, schema migration tests, backup/restore path documented.
+
+
+
+
+
+\================================================================================
+
+RELEASE CERTIFICATION (FINAL GATE CHECKLIST)
+
+\================================================================================
+
+
+
+Use as the final release gate. Compact checklist for
+existing verify / release-gate tooling.
+
+A product is not release-ready until every applicable
+item is checked or covered by an approved override.
+
+
+
+[ ] Build succeeds from the approved source state.
+
+[ ] Static N78 rules pass.
+
+[ ] Required automated tests pass.
+
+[ ] Critical recovery and migration tests pass.
+
+[ ] Security / dependency checks pass.
+
+[ ] Release contains no development-only bypasses or
+credentials.
+
+[ ] Accessibility floor has been verified.
+
+[ ] Offline behavior has been verified for
+offline-capable workflows.
+
+[ ] Backup / export / restore behavior has been
+verified where applicable.
+
+[ ] Version and release metadata are consistent.
+
+[ ] Required Help, Privacy, Terms, and release
+documentation are present.
+
+[ ] Active overrides have been reviewed.
+
+[ ] The exact release artifact has been verified and approved.
+
+
+
+Rule ids: APP-RELEASE-DEFINITION-OF-DONE,
+APP-RELEASE-ARTIFACT-INTEGRITY, APP-TEST-REGRESSION,
+
+APP-SEC-RELEASE-DEBUG, APP-RELEASE-DEBUG-CLEAN, and
+related APP-TEST-\*, APP-BACKUP-\*, APP-A11Y-\*,
+
+APP-OVERRIDE-REVIEW.
+
+---
+
+*End
+of Nivo78 Family Rules — Complete List.*
+
+## Rule-ID coverage
+
+Primary attachment for: APP-BREADCRUMB-DEBUG-ONLY, APP-DATA-BLOCK-SECRETS, APP-DATA-NO-TELEMETRY, APP-DATA-OPEN-EXPORT, APP-DATA-PORTABILITY, APP-DATA-SCHEMA-MIGRATION, APP-OVERRIDE-CLEANUP, APP-OVERRIDE-OWNER, APP-OVERRIDE-REVIEW, APP-OVERRIDE-RISK.

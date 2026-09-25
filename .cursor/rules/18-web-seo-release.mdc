@@ -1,0 +1,265 @@
+---
+description: "Web SEO, technical web requirements, web pre-ship bar, and website release verification."
+alwaysApply: false
+globs: ["**/Website/**/*.{php,html,css,js,ts,json,txt,md}"]
+---
+
+# Nivo78 Rule Projection — 18-web-seo-release
+
+**Binding status:** Maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** Canonical standard and rule-ID catalog control if this projection differs.
+
+## Agent instructions
+- Apply whenever this scope is relevant.
+- Preserve canonical rule IDs.
+- Treat requirements as binding unless the canonical standard explicitly marks them `[QA]` or conditional.
+- Do not weaken requirements for convenience.
+- If a requirement cannot be met, stop and use the approved override process.
+
+---
+
+WEB SEO — COMPREHENSIVE SEARCH AND SHARING METADATA
+(MANDATORY)
+
+\================================================================================
+
+
+
+Principle
+
+\- Every public product web surface must be
+discoverable and shareable with accurate titles and summaries.
+
+\- SEO copy must match shipped product behavior — same
+honesty rules as marketing and legal pages.
+
+\- Any website change that adds or edits a public page
+MUST include SEO review in the same pass (not a later task).
+
+
+
+In-repo static legal HTML (code/Website/{product}/)
+
+\- Every public HTML page (\<html
+lang="en">) MUST include in \<head>:
+
+  - Unique \<title>
+(product name + page purpose; \~70 characters max)
+
+  - meta
+name="description" (plain-language summary; \~160 characters max)
+
+  - meta
+name="robots" content="index, follow" (unless a deliberate
+noindex exception is documented)
+
+  - meta
+name="author" content="Nivo78 Mobile Apps, LLC"
+
+  - link
+rel="canonical" href="https\://nivo78.com/{product}/…"
+(exact URL for that page)
+
+  - Open Graph:
+og\:type, og\:site\_name, og\:title, og\:description, og\:url, og\:locale
+
+  - Twitter:
+twitter\:card, twitter\:title, twitter\:description (summary or
+summary\_large\_image)
+
+\- Canonical URLs MUST match in-app support URL
+registry and store listing URLs.
+
+\- Legal pages use article or website og\:type as
+appropriate; product marketing pages use website.
+
+
+
+Hosted PHP pages (sibling Website repo — nivo78.com)
+
+\- Product marketing and support hub pages MUST call
+n78\_seo\_render\_head() from include/n78\_seo\_head.php.
+
+\- Each product MUST have SEO profiles registered in
+n78\_seo\_head.php (e.g. apa, apa\_help, apa\_help\_article)
+
+  with title,
+description, canonical\_path, robots, og\_type, and json\_ld kinds.
+
+\- n78\_seo\_render\_head emits: title, description,
+robots, author, canonical, theme-color, favicon/apple-touch-icon,
+
+  Open Graph,
+Twitter cards, and JSON-LD (@graph with Organization, WebSite, WebPage, product
+SoftwareApplication when applicable).
+
+\- FAQ JSON-LD on product pages when FAQ content exists
+(apa profile uses marketing FAQ).
+
+\- Help KB articles override
+title/description/canonical per article via article.php.
+
+
+
+When SEO is required (checklist — same pass as copy
+edit)
+
+\- New product web page or new public route → add full
+SEO head (static meta or n78\_seo\_head profile).
+
+\- Marketing, pricing, privacy, terms, or support copy
+change → review title and description still accurate.
+
+\- URL or path change → update canonical in static HTML
+and n78\_seo\_head profile canonical\_path.
+
+\- New hosted PHP shell → wire n78\_seo\_render\_head
+before ship.
+
+
+
+Automated verify (release gate)
+
+\- tools/verify/verify-apa-website.ps1 runs WEB SEO
+checks after WEB standard checks:
+
+  - In-repo:
+WEB-SEO-\* markers on index.html, privacy/, terms/, support/index.html
+
+  - Hosted (when
+sibling Website/apa exists): n78\_seo\_head.php profiles, index.php and
+support/index.php render calls
+
+\- Rule IDs: reference/NIVO78\_STANDARD\_RULE\_IDS.txt
+(WEB-SEO-\* family).
+
+\- Failures block release gate unless covered by an
+active standard override with documented reason.
+
+
+
+
+
+\================================================================================
+
+WEB TECHNICAL AND RELEASE REQUIREMENTS
+
+\================================================================================
+
+
+
+In-repo staging
+
+\- Maintain HTML under code/Website/{product}/ in the
+product repository (for example, code/Website/{product}/).
+
+\- Sibling Website repo hosts live nivo78.com — deploy
+is separate; updocs verifies in-repo pages and exports Help KB when present.
+
+
+
+Release verify (before ship)
+
+\- tools/verify/verify-apa-website.ps1 (or product
+equivalent) confirms required files exist and contain standard markers:
+
+  legal.css,
+site-footer, local-first / data-on-device language, support mailto, privacy
+policy-product-name header, privacy and terms cross-links,
+
+  will-do and
+won’t-do section headings on product index.html, scope summary on
+support/index.html,
+
+  and
+comprehensive SEO markers (meta description, canonical, Open Graph, Twitter) on
+every in-repo public HTML page plus hosted n78\_seo\_head wiring,
+
+  and WEB LEGAL
+SYNC (privacy Last updated, terms effective date/version, policy-product-name
+text vs engine legal copy).
+
+\- Release gates run the applicable product website verifier for every product
+that ships web pages; products without web pages do not run a website gate.
+
+\- ApaInRepoLegalSecurityCopyTest runs in
+desktopRegressionVerify — same legal sync contract as WEB LEGAL SYNC.
+
+
+
+Updocs workflow (when copy changes)
+
+\- Engine security/legal copy → in-repo privacy/terms/support
+HTML → Website Help KB PHP → export script.
+
+\- Run: pwsh -NoProfile -File
+tools/maintain/run-updocs.ps1
+
+
+
+
+
+\================================================================================
+
+PRE-SHIP BAR (WEB — FAMILY CONSISTENCY)
+
+\================================================================================
+
+
+
+\- code/Website/{product}/ contains index.html,
+privacy/, terms/, support/, legal.css before store listing.
+
+\- Hosted URLs live at
+nivo78.com/{product}/privacy|terms|support/ and match in-app support URL
+registry.
+
+\- Support page: philosophy callout, contact block
+(support/feedback/contact), bug reports → in-app Feedback callout, legal links,
+entity footer, will/won’t scope summary.
+
+\- Product index: will do for you + won’t do for you
+sections aligned with reference/MARKETING\_COPY.txt.
+
+\- Privacy and terms: last updated / effective date,
+cross-links, copy aligned with engine security/legal registries.
+
+\- No web trackers or upload forms on legal/support
+pages; contact is mailto-only.
+
+\- Partner Center / store listing privacy URL equals
+in-app Privacy link.
+
+\- verify-apa-website.ps1 (or product script) green
+including WEB SEO checks; Legal.txt text test run when consent or policy
+changes.
+
+\- Every public web page change includes SEO
+title/description/canonical review in the same pass.
+
+
+
+Legal gating and acknowledgement (app)
+
+\- First-run modal with unchecked acceptance checkbox;
+Accept disabled until checked; Terms and Privacy linked before accept.
+
+\- Decline behavior matches button label on every
+platform; re-consent when terms version bumps.
+
+\- Versioned acceptance record persisted; core
+workflows gated until accepted.
+
+\- Legal.txt text test green when consent or
+TERMS\_VERSION changes.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: WEB-SEO-AUTHOR, WEB-SEO-CANONICAL, WEB-SEO-DESCRIPTION, WEB-SEO-DESCRIPTION-LENGTH, WEB-SEO-HOSTED-HEAD, WEB-SEO-HOSTED-JSON-LD, WEB-SEO-HOSTED-PROFILE-APA, WEB-SEO-HOSTED-PROFILE-APA-HELP, WEB-SEO-HOSTED-PROFILE-CANONICAL, WEB-SEO-HOSTED-RENDER-PRODUCT, WEB-SEO-HOSTED-RENDER-SUPPORT, WEB-SEO-LANG, WEB-SEO-OG-DESCRIPTION, WEB-SEO-OG-SITE-NAME, WEB-SEO-OG-TITLE, WEB-SEO-OG-URL, WEB-SEO-ROBOTS, WEB-SEO-TWITTER-CARD, WEB-SEO-TWITTER-TITLE, WEB-SEO-VIEWPORT.

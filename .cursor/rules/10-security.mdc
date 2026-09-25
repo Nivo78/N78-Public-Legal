@@ -1,0 +1,150 @@
+---
+description: "Application security: threat modeling, cryptography, key derivation, randomness, secret lifetime, imports, paths, external content, fail-closed behavior, and release-debug separation."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,xml,json,gradle,properties}"]
+---
+
+# Nivo78 Rule Projection — 10-security
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+APPLICATION SECURITY (APP-SEC-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-SEC-THREAT-MODEL [QA]
+
+\- Each product must maintain a concise threat model
+identifying protected assets, relevant threats,
+
+  trust
+boundaries, and the controls used to reduce material risks.
+
+\- Review before first release and when material
+architecture or data-handling changes occur.
+
+
+
+APP-SEC-CRYPTOGRAPHY [GATE]
+
+\- Use established, currently supported cryptographic
+algorithms and platform-approved cryptographic
+
+ 
+implementations. Do not implement proprietary encryption algorithms or
+custom cryptographic primitives.
+
+
+
+APP-SEC-KEY-DERIVATION [GATE]
+
+\- Passwords used to protect application secrets must
+be processed with a modern password-based
+
+  key-derivation
+function using a unique salt and parameters appropriate to current security
+guidance.
+
+\- Never use a raw password or simple hash as an
+encryption key.
+
+
+
+APP-SEC-RANDOMNESS [GATE]
+
+\- Security-sensitive tokens, salts, nonces, recovery
+material, and identifiers requiring unpredictability
+
+  must use a
+cryptographically secure random source.
+
+
+
+APP-SEC-SECRET-LIFETIME [QA]
+
+\- Minimize the lifetime of secrets in memory, logs,
+temporary files, clipboard contents, crash artifacts,
+
+  and exported
+diagnostics. Do not intentionally retain secrets longer than required for the
+operation.
+
+
+
+APP-SEC-IMPORT-VALIDATION [GATE]
+
+\- Treat imported files, pasted structured data, deep
+links, external content, and user-supplied paths
+
+  as untrusted
+input. Validate size, structure, encoding, type, ranges, and expected schema
+before processing.
+
+
+
+APP-SEC-PATH-SAFETY [GATE]
+
+\- File operations must prevent path traversal and
+unintended access outside the application's permitted
+
+  data
+locations. Never construct security-sensitive paths directly from unvalidated
+user input.
+
+
+
+APP-SEC-EXTERNAL-CONTENT [GATE]
+
+\- External URLs, files, intents, browser handoffs, and
+other external content must be validated and
+
+  handled
+explicitly. Do not execute or interpret external content merely because it was
+supplied by
+
+  a user or
+imported file.
+
+
+
+APP-SEC-FAIL-CLOSED [GATE]
+
+\- Security-sensitive failures must fail closed. Do not
+silently continue using invalid credentials,
+
+  corrupted
+security metadata, unsupported encryption parameters, or unverifiable protected
+data.
+
+
+
+APP-SEC-RELEASE-DEBUG [GATE]
+
+\- Release builds must not contain development-only
+authentication bypasses, debug unlocks, test credentials,
+
+  verbose secret
+logging, development endpoints, or other intentional security bypasses.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: APP-SEC-CRITICAL-FIX, APP-SEC-CRYPTOGRAPHY, APP-SEC-EXTERNAL-CONTENT, APP-SEC-FAIL-CLOSED, APP-SEC-IMPORT-VALIDATION, APP-SEC-KEY-DERIVATION, APP-SEC-PATH-SAFETY, APP-SEC-RANDOMNESS, APP-SEC-RELEASE-DEBUG, APP-SEC-RELEASE-RECALL, APP-SEC-SECRET-LIFETIME, APP-SEC-THREAT-MODEL, APP-SEC-VULNERABILITY-RESPONSE.

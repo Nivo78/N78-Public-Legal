@@ -1,0 +1,109 @@
+---
+description: "Testing and quality requirements."
+alwaysApply: false
+globs: ["**/*Test.{kt,kts,swift,cs,java,ts,tsx,js,jsx}","**/*Tests.{kt,kts,swift,cs,java,ts,tsx,js,jsx}","**/*Guardrail*.kt","**/*Regression*.kt","**/test/**","**/tests/**","**/androidTest/**","**/commonTest/**","**/jvmTest/**","**/desktopTest/**","**/iosTest/**","shared/src/**/*.kt","app/src/**/*.kt","desktop/src/**/*.kt","iosApp/**","tools/verify/**","tools/launchers/**ReleaseGate*","docs/RELEASE_GATE.md","docs/ALL_TESTS.txt"]
+---
+
+# Nivo78 Rule Projection — 11-testing-quality
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- This projection attaches when production engine, app, desktop, iOS, or verify surfaces change — not only when a test file is open. Apply the APP-TEST-* GATEs to the behavior change, then add or update tests before handoff.
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+TESTING AND QUALITY (APP-TEST-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-TEST-UNIT [GATE]
+
+\- Critical business logic, calculations, validation,
+transformations, and state transitions must have
+
+  automated unit
+tests appropriate to their risk.
+
+
+
+APP-TEST-INTEGRATION [GATE]
+
+\- Critical interactions between engine components,
+persistence, vault/security storage, import/export,
+
+  and migrations
+must have automated integration coverage.
+
+
+
+APP-TEST-UI-CRITICAL [GATE]
+
+\- Critical user workflows must have repeatable UI
+tests or documented equivalent verification, including
+
+  Save,
+Back/Cancel, validation, recovery, and core task completion.
+
+
+
+APP-TEST-RECOVERY [GATE]
+
+\- Critical data stores must be tested for interrupted
+writes, corrupt data, unsupported versions,
+
+  failed
+migrations, and application restart after abnormal termination.
+
+
+
+APP-TEST-OFFLINE [GATE]
+
+\- Core workflows designated as offline-capable must be
+tested with network access unavailable, including
+
+  verification
+that user work is not lost.
+
+
+
+APP-TEST-REGRESSION [GATE]
+
+\- Every release must run the applicable regression
+suite. A release-blocking test failure must be
+
+  resolved or
+formally covered by an approved override before release.
+
+
+
+APP-TEST-FRESH-UPGRADE [QA]
+
+\- Before release, verify both a clean installation and
+an upgrade from at least the immediately preceding
+
+  supported
+production version.
+
+
+
+APP-TEST-REAL-DATA-SAFETY [QA]
+
+\- Test procedures must distinguish disposable test
+data from real customer/business data.
+
+\- Test automation must not transmit or expose real
+business data.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-TEST-FRESH-UPGRADE, APP-TEST-INTEGRATION, APP-TEST-OFFLINE, APP-TEST-REAL-DATA-SAFETY, APP-TEST-RECOVERY, APP-TEST-REGRESSION, APP-TEST-UI-CRITICAL, APP-TEST-UNIT.

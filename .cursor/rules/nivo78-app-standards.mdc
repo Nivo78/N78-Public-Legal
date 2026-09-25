@@ -1,0 +1,16 @@
+---
+description: "DEPRECATED — superseded by nivo78-core.mdc (alwaysApply) plus focused 01–19 projections. Not authoritative."
+alwaysApply: false
+---
+
+# Deprecated — do not use as family authority
+
+This file previously held a monolithic always-on copy of the Nivo78 product standard.
+
+**Current Cursor enforcement (standards home: N78Ops):**
+
+1. `nivo78-core.mdc` — always applied router
+2. `01-…` through `19-….mdc` — focused projections of `reference/NIVO78_APP_STANDARD.txt`
+3. Canonical policy: `reference/NIVO78_APP_STANDARD.txt` + `reference/NIVO78_STANDARD_RULE_IDS.txt`
+
+If this file and a projection disagree, the **canonical standard** wins. Prefer `nivo78-core.mdc` and the numbered focused rules.

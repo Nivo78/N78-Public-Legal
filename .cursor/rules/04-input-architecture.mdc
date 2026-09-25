@@ -1,0 +1,354 @@
+---
+description: "Input standardization, commit/flush behavior, architecture, engine/UI separation, platform abstraction, and data integrity."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,csproj,gradle}"]
+---
+
+# Nivo78 Rule Projection — 04-input-architecture
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+INPUT STANDARDIZATION — SAME INPUT STYLE IN EVERY APP
+
+\================================================================================
+
+
+
+Field components (mandatory for form rows)
+
+\- Single-line text, multi-line text, email, phone,
+URL, and numeric fields use the shared outlined field component — same border,
+label placement, focus ring, and error line placement.
+
+\- Typed fields (email, URL, phone, postal, clock
+times, money/duration with unit, application IDs) use shared input profiles
+where the product has them: validation messages from engine rules — not ad hoc
+regex in Composables.
+
+\- Password and secret fields use the vault pattern:
+masked entry, save once, copy-only after save — never re-display plaintext secrets.
+
+\- Dropdowns and filter chips for small fixed sets;
+free-text only when the value is truly open-ended.
+
+
+
+Format and validate on commit (mandatory — not while
+typing; internal engineering — not marketing)
+
+\- Required format and validation for structured fields
+run only on blur, IME Done / Enter commit, leave, or Save — never on every
+keystroke.
+
+\- Canonical rewrite (pad minutes, insert separators,
+snap to \`h\:mm AM/PM\`, phone mask completion, URL scheme fill, etc.) happens at
+those commit points only.
+
+\- While focused, leave the draft as typed. Do not
+fight mid-edit by rewriting partial values or jumping the cursor to the end
+after each character.
+
+\- Light mid-edit filters are allowed when they do not
+change structure or fight the caret: digit-only filters, paste-noise strip,
+case of AM/PM letters, keeping a live draft for dirty/required UI when storage
+commits on blur.
+
+\- Format errors stay under the field (and on the save
+bar when the page has one) after commit failure — not as a live “invalid” flash
+while the user is still typing a partial value.
+
+\- Do not put this rule in customer-facing will/won’t,
+Brand Philosophy, About, store, or Help marketing copy — it is build/QA
+guidance (APP-INPUT-FORMAT-ON-COMMIT; pairs with APP-INPUT-COMMIT).
+
+
+
+Flush blur-only drafts before persist (mandatory —
+APP-INPUT-FLUSH-BEFORE-PERSIST)
+
+\- When storage commits on blur / Done only, parent
+state can still hold the previous value while
+
+  the focused
+field shows a newer draft.
+
+\- Save, Lock, Next, Finish, customer handoff, and
+page-leave autosave MUST flush registered
+
+  field drafts
+first (\`commitAll\` or the product’s equivalent), then persist. A control that
+
+  does not steal
+focus is still required to persist what is on screen.
+
+\- The persist MUST use the inner field’s committed
+text. MUST NOT register a second persist that
+
+  reads a
+leftover parent copy (previous \`localValue\` / \`rememberUpdatedState\`) and runs
+before
+
+  the inner
+field flushes — that writes the old minutes/rate/name.
+
+\- Flush order: innermost field state first, then parent
+persist callbacks.
+
+\- After flush, Lock/Save MUST assemble from live
+editor fields (current line items, duration,
+
+  settings), not
+a \`remember {}\` derived snapshot from the last composition.
+
+\- IME Done / Enter remains a commit path; it is not a
+substitute for flushing on Lock/Save.
+
+\- Guardrail tests MUST cover every host of a blur-only
+outlined duration/money/clock/settings
+
+  row (or an
+equivalent structural scan), not only one screen.
+
+\- Customer-facing will/won’t uses the plain language
+above (persist what is on screen). Do not put
+
+  \`commitAll\`,
+commit registry, or blur jargon in Brand Philosophy, About, store, or Help
+marketing.
+
+
+
+Focus behavior (mandatory — all input fields; internal
+engineering — not marketing)
+
+\- When a text field receives focus, place the caret
+for in-place edit (tap position or platform default). Do nothing else to the
+value.
+
+\- MUST NOT select-all on focus (including “select all
+when not blank”).
+
+\- MUST NOT clear or erase the field on focus.
+
+\- Replace-all remains user-initiated (platform Select
+all / Ctrl+A / Cmd+A / long-press), never automatic on focus.
+
+\- Applies to profile, settings, quotes, search, and
+every other outlined or shared text input — same rule family-wide.
+
+\- Rule id: APP-INPUT-FOCUS-EDIT-ONLY. Not
+customer-facing will/won’t or Brand Philosophy copy.
+
+
+
+Field row layout
+
+\- Label on the primary form row; ? help icon aligned
+to the label when the field is non-trivial.
+
+\- Validation errors appear directly under the field in
+plain language; engine message wins over UI paraphrase.
+
+\- Required vs optional is explicit in the label or
+helper line — never implied only by validation failure on save.
+
+\- Placeholders supplement the label; they do not
+replace it.
+
+
+
+Commit and keyboard behavior
+
+\- Enter / IME Done commits the field and moves focus
+predictably (or triggers save when that is the established pattern for inline
+rows).
+
+\- Blur commits draft text to view model state; dirty
+tracking reflects engine comparison — not string equality in the Composable
+alone.
+
+\- Same-screen persist (Save / Lock / Next / Finish)
+and page-leave MUST flush those drafts even when the control does not steal
+focus (APP-INPUT-FLUSH-BEFORE-PERSIST).
+
+\- Commit is also when required formatting and field
+validation run (see Format and validate on commit above).
+
+\- Focus does not select-all or clear (see Focus
+behavior above).
+
+\- Long text areas cap length with visible feedback
+before send/save fails silently.
+
+
+
+Save and cancel semantics (same everywhere)
+
+\- Save validates through engine coordinators first; UI
+shows the first blocking message.
+
+\- Cancel on a dirty form reloads from disk or reverts
+draft — same wording (“Cancel changes” / “Discard”) per platform shell.
+
+\- Save bar: primary Save, secondary Cancel, optional
+status line for last save or error — pinned bottom on mobile, consistent strip
+on desktop. When Save fails engine validation, every message appears in error
+styling immediately above the save bar (not only at the top of a long page).
+Back and Cancel on that page are disabled until validation clears or the user
+chooses Save anyway where acknowledgement warnings apply (APP-SAVE-BAR).
+
+\- Save stays inactive when the draft matches last
+registry-verified values; enable when dirty;
+
+  after write,
+stay active until read-back matches, then inactive (APP-SAVE-VERIFIED-INACTIVE).
+
+  Failed write
+keeps Save active and uses Could not save — not a success toast.
+
+\- Home / Back with a typed Save draft
+(APP-LEAVE-DIRTY-PROMPT): flush; persist when valid;
+
+  block leave
+when invalid or save fails. Save = save now and stay. Hint: Valid changes save
+
+  when you
+leave. Optional Save / Don't save / Stay dialog only with accepted override.
+
+  Toggles /
+checkboxes / frequency chips MAY persist immediately.
+
+
+
+Pickers and file input
+
+\- File and folder pickers go through platform bridges;
+engine receives neutral paths (okio.Path or equivalent).
+
+\- After pick: show filename or path summary in the
+same read-only row pattern; user can replace, never edit path as raw text
+unless the product explicitly supports path entry.
+
+
+
+
+
+\================================================================================
+
+MOBILE PHONE INPUT CHROME — BORDERED FIELD WITH TITLE
+IN BORDER (PHONE ONLY)
+
+\================================================================================
+
+
+
+Principle
+
+\- On mobile \*\*phone\*\* shells only (Android phone,
+iPhone), primary form rows — especially \*\*profile\*\* and setup fields — use the
+Nivo78 phone field pattern inspired by N78-Ops profile: a visible border around
+the control, the field \*\*title in the border\*\* (attached notch label), and a
+\*\*placeholder hint inside the field\*\* that reads more prominently when the
+field is focused/active.
+
+\- \*\*Desktop\*\* (Windows, Mac, Linux), \*\*iPad\*\*, and
+\*\*Android tablet\*\* shells use the standard compact outlined field layout for
+utility density — \*\*not\*\* the phone notch-label variant. Do not force phone
+chrome onto tablet or desktop just because the build is “mobile.”
+
+\- Form-factor detection lives in platform/shell layer
+(product ClientFormFactor or equivalent) — not guessed from Composable tree
+alone.
+
+
+
+Phone field pattern (required on phone for profile +
+primary form rows)
+
+\- Outlined border in default state; border accent on
+focus (primary color).
+
+\- Title/label sits in the border notch (attached
+label) — always visible; required marker on label when applicable.
+
+\- Placeholder hint inside the field when empty —
+supplements the title; \*\*must not\*\* replace the title.
+
+\- Placeholder/hint visually strengthens when the field
+is focused (higher contrast or emphasis vs unfocused empty state).
+
+\- Validation error line directly under the field —
+same plain-language engine messages as other platforms.
+
+\- ? help on the label row when the field is
+non-trivial — same Help hub contract as desktop.
+
+
+
+Where to apply on phone (minimum)
+
+\- Publisher / organization / profile screens (company
+name, address, support contact, etc.).
+
+\- Setup and account fields that mirror profile density
+on phone.
+
+\- Any phone-only workflow screen with more than one
+editable primary row.
+
+
+
+Where NOT to apply
+
+\- Desktop, Mac, Linux desktop shells — standard Nivo78
+outlined field density.
+
+\- iPad and Android tablet — standard
+tablet/desktop-density outlined fields; wider layout, not phone thumb-zone
+chrome.
+
+\- Products that block phone installs may defer
+implementation until phone ships — but the standard applies when phone is
+supported.
+
+
+
+Implementation spine (nivo78-theme — recommended)
+
+\- Shared tokens: border, focused border,
+label-in-border, placeholder default, placeholder focused — one source in
+nivo78-theme (Nivo78InputDefaults family).
+
+\- Phone shell selects phone field composable;
+tablet/desktop shell selects standard outlined field — same engine validation
+and commit semantics either way.
+
+\- Reference: N78-Ops profile fields on phone; APA and
+other products adopt via theme + form-factor gate, not one-off TextField
+copy-paste.
+
+
+
+Audit
+
+\- UI Audit.txt MOBILE-PHONE-INPUT vector; Platform
+parity.txt distinguishes phone vs tablet field chrome.
+
+\- Text test: profile on phone uses bordered
+notch-label fields; same profile on tablet uses standard outlined rows without
+phone-only chrome.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-ARCH-CLEAN-ENGINE, APP-ARCH-CODE-INTEGRITY, APP-ARCH-NEUTRAL-PATHS, APP-ARCH-NO-PLATFORM-APIS, APP-ARCH-ONE-JOB, APP-INPUT-COMMIT, APP-INPUT-FLUSH-BEFORE-PERSIST, APP-INPUT-FOCUS-EDIT-ONLY, APP-INPUT-FORMAT-ON-COMMIT, APP-LEAVE-DIRTY-PROMPT, APP-SAVE-BAR, APP-SAVE-VERIFIED-INACTIVE.

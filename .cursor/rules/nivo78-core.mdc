@@ -1,0 +1,50 @@
+---
+description: Nivo78 family enforcement core. Applies to all Nivo78 repositories.
+alwaysApply: true
+---
+
+# Nivo78 Core Enforcement
+
+The canonical Nivo78 standard and rule-ID registry are authoritative.
+Cursor rule files are maintained enforcement projections of that policy.
+The canonical standard and registry must agree before implementation proceeds.
+
+## Rank — family vs product operating rules
+
+Family STATIC, GATE, and QA outrank product-specific always-on Cursor rules (Play shipping, feature lock, platform remount, branding, docs sync, hardening, and similar). Those files constrain how that product repo is run. They are not equal to the family registry and MUST NOT weaken, skip, or silently bypass a family rule. A conflict requires an approved override with required governance metadata.
+
+Nivo78 products are local-first utilities. Cloud is optional, never required. Do not add Nivo78 accounts, ads, or product telemetry for convenience. When changing brand, Help, marketing, or privacy copy, load `01-product-philosophy.mdc`. When changing production behavior (engine, persistence, UI, backup, restore, navigation), load `11-testing-quality.mdc` and the GATE evidence map even if no test file is open.
+
+Before changing code:
+1. Identify the applicable Nivo78 rule IDs.
+2. Determine each rule's enforcement class: STATIC, GATE, or QA.
+3. Use the focused rule projections auto-attached by their globs; if the changed surface is not covered, explicitly load the primary projection listed in the rule registry.
+4. Implement without weakening or silently bypassing requirements.
+5. Run applicable STATIC checks and GATE verifiers.
+6. Report QA requirements separately.
+7. Never claim a GATE passed without executable evidence from the Rule ID → verifier map.
+8. STOP when a blocking rule violation is found or when required GATE evidence is missing. Do not continue as though the requirement passed.
+
+Applicability:
+- A rule is NOT APPLICABLE only when its named capability/surface is absent.
+- If applicability or interpretation is uncertain, do not invent an answer;
+  report NOT VERIFIABLE and identify the missing evidence.
+
+Overrides:
+- Never create an informal exception.
+- Use the registered override mechanism.
+- Active overrides must include owner, rationale, accepted date, status, and review_by; include risk and compensating_control where required by the canonical standard.
+- Expired review_by or missing required governance is not an active valid override; treat it as a blocking finding.
+
+Authority:
+- Canonical standard > rule-ID registry > Cursor projection.
+- Product-specific rules do not override family rules unless formally
+  registered as an approved product-specific exception.
+- A missing verifier is NOT evidence of compliance.
+
+Certification:
+- Family-structure PASS proves only family infrastructure consistency.
+- Full certification requires family-structure PASS AND every applicable product GATE to PASS or be covered by a valid approved override.
+
+Do not modify standards, rule projections, or verification infrastructure
+unless explicitly instructed to work on the standards themselves.

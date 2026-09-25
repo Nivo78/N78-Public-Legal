@@ -1,0 +1,202 @@
+---
+description: "Expanded accessibility, internationalization, and performance budgets/requirements."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,xml,strings,stringsdict,json}"]
+---
+
+# Nivo78 Rule Projection — 13-accessibility-i18n-performance
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+ACCESSIBILITY EXPANSION (APP-A11Y-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-A11Y-WCAG-FLOOR [QA]
+
+\- Where web content or standards applicability requires
+it, target WCAG 2.2 AA.
+
+\- Native platform accessibility requirements must also
+be met.
+
+\- Complements APP-UI-A11Y-FLOOR (44×44 dp, contrast,
+Dynamic Type / Large Text).
+
+
+
+APP-A11Y-SEMANTICS [QA]
+
+\- Interactive controls must expose meaningful labels, roles,
+states, and values to supported
+
+  accessibility
+services.
+
+
+
+APP-A11Y-KEYBOARD [QA]
+
+\- Desktop interfaces must support logical keyboard
+navigation, visible focus, and activation of
+
+  core actions
+without requiring a pointer.
+
+
+
+APP-A11Y-NO-COLOR-ONLY [QA]
+
+\- Do not communicate required information, errors,
+status, or actions through color alone.
+
+
+
+APP-A11Y-TEXT-SCALING [QA]
+
+\- Display Resolution Awareness & Full UI Scalability: Every application MUST be
+display resolution aware and render sharply and correctly on high-resolution (HiDPI / 4K / Retina)
+displays. Large text, system text scaling, display zoom percentage changes (100%, 125%, 150%, 175%,
+200%, 250%, 300%+), and dynamic per-monitor DPI transitions must scale the entire application appropriately.
+
+\- High-DPI Startup Contract: On desktop platforms, high-DPI awareness (e.g. PerMonitorV2) must be
+explicitly declared at startup prior to any UI font or control creation, preventing low-DPI bitmap
+blurriness and scaling distortion.
+
+\- Critical controls, inputs, numeric spinners, dropdowns, buttons, sliders/trackbars, labels,
+validation messages, and navigation must remain fully visible, readable, and operable without
+text truncation, squashed heights, or clipping.
+
+\- Fixed 96-DPI pixel heights and widths on interactive chrome are prohibited. Input heights and
+bounds must adapt dynamically to font metrics and DPI scale factors (e.g. using preferred heights
+or DPI-scaled dimensions).
+
+\- Vector Glyphs & Assets: Render UI icons, history arrows, and visual markers as vector paths
+or multi-density assets scaled to the active DPI rather than fixed unscaled raster bitmaps.
+
+\- Grouped controls (such as a label, slider groove, and value readout) must be encapsulated to
+wrap and move together as atomic units rather than fragmenting across line breaks.
+
+\- Dialogs, help hubs, and legal gates must support dynamic font/DPI auto-scaling.
+
+
+
+APP-UI-UNIFORM-SURFACE-VIEWPORT [GATE]
+
+\- Desktop workstation apps with dense fixed layouts MUST follow
+reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md: 1920×1080 logical surface, single
+ScaleFactor, explicit main viewport scroll (CompactMainViewportHost — not primary
+AutoScroll), scroll home flush top-left, signed wheel delta. Port from N78-Estimate; do
+not rebuild per product. See also uniform-ui-surface-viewport.mdc.
+
+
+
+APP-A11Y-MOTION [QA]
+
+\- Nonessential animation must not interfere with
+operation, and supported reduced-motion preferences
+
+  should be
+respected.
+
+
+
+
+
+\================================================================================
+
+INTERNATIONALIZATION AND LOCALIZATION (APP-I18N-\*) —
+EVERY APP
+
+\================================================================================
+
+
+
+APP-I18N-NO-HARDCODED-UI [STATIC]
+
+\- User-visible strings must be stored through the
+platform/application localization mechanism rather
+
+  than embedded
+directly in business or UI logic where localization is expected.
+
+
+
+APP-I18N-DATE-NUMBER [QA]
+
+\- Dates, times, numbers, currencies, and units must
+use explicit, locale-aware formatting where applicable.
+
+
+
+APP-I18N-TEXT-EXPANSION [QA]
+
+\- Layouts must tolerate reasonable text expansion
+without clipping, overlap, or loss of required actions.
+
+
+
+APP-I18N-RTL-READY [QA]
+
+\- Shared UI architecture must avoid assumptions that
+prevent right-to-left presentation if localization
+
+  is added
+later.
+
+
+
+
+
+\================================================================================
+
+PERFORMANCE (APP-PERF-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-PERF-BUDGET [QA]
+
+\- Each product must define reasonable performance
+budgets for startup, core interaction responsiveness,
+
+  memory,
+storage, and—on mobile—battery impact, appropriate to the product's job.
+
+
+
+APP-PERF-NO-BLOCKING-UI [STATIC]
+
+\- Long-running calculations, file operations,
+encryption, migrations, imports, exports, and network
+
+  operations
+must not unnecessarily block the UI thread.
+
+
+
+APP-PERF-LARGE-DATA [QA]
+
+\- Critical workflows must be tested with realistic
+large datasets where the product can reasonably
+
+  accumulate
+substantial data.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-A11Y-KEYBOARD, APP-A11Y-MOTION, APP-A11Y-NO-COLOR-ONLY, APP-A11Y-SEMANTICS, APP-A11Y-TEXT-SCALING, APP-A11Y-WCAG-FLOOR, APP-I18N-DATE-NUMBER, APP-I18N-NO-HARDCODED-UI, APP-I18N-RTL-READY, APP-I18N-TEXT-EXPANSION, APP-PERF-BUDGET, APP-PERF-LARGE-DATA, APP-PERF-NO-BLOCKING-UI.

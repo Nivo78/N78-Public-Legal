@@ -1,0 +1,68 @@
+---
+description: After fixing a bug, search the codebase for the same root cause elsewhere before closing the task.
+alwaysApply: true
+---
+
+**Rank:** Operating workflow rule. Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Do not weaken, skip, or silently bypass a family rule to satisfy this one. Conflicts require an approved override.
+
+# Fix propagation audit
+
+Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\fix-propagation-audit.mdc` — edit the repo file, then `run-updocs.ps1 -SyncMirrors` (or install-n78-cursor-standards.ps1).
+
+A bug fix is **not complete** until you check whether the same failure mode exists elsewhere. Do this in the **same turn** as the fix — do not wait for the user to ask.
+
+Pairs with **anticipate-before-implementing** (pre-fix risks). This rule is the **post-fix** pass.
+
+## When this applies
+
+Any fix that addresses a **pattern**, not a one-off typo:
+
+- Shared components (`ApaTypedOutlinedField`, `ApaSaveChangesBar`, `ApaPageNavigationBar`, `Nivo78OutlinedField`, scroll shells)
+- Bottom action chrome (`ApaSaveChangesBar`, top-of-page Back buttons, inline Save/Cancel rows, vault mid-page save bars)
+- State/save semantics (blur-only commit, dirty flags, missing IME handlers)
+- Navigation or routing (tab vs menu, destination mapping)
+- Layout constraints (nested `verticalScroll`, infinite height)
+- Platform splits (`desktopMain` vs `commonMain` vs mobile router)
+
+Skip only for truly isolated changes (single string in one screen, no shared caller).
+
+## Required post-fix pass (2–5 minutes)
+
+1. **Name the root cause** in one line (e.g. “email fields commit on blur only; Enter unwired; save bar hidden when inactive”).
+2. **Search siblings** — grep for the same component, helper, or API across `code/shared`, `code/desktop`, mobile shells, and tests.
+3. **Fix or document** each hit:
+   - Same bug → apply the same fix in the same pass when reasonable.
+   - Intentionally different → one-line note in the closing summary.
+4. **Cross-surface check** — if fixed on desktop, scan `ApaMobileDestinationRouter`, `ApaMobileAppShell`, and shared UI used by both.
+5. **Regression** — add or update a test when the pattern is easy to re-break (navigation registry, input commit helper, etc.).
+
+## Blur-only / stale parent draft (APA — mandatory when this pattern is involved)
+
+Do **not** treat a single screen fix (e.g. Privacy policy URL) as isolated when the root cause is commit timing.
+
+**Root-cause template:** “Blur-only kinds leave parent state stale until blur; any parent that shows required / empty / dirty / Save from that state will lie while typing.”
+
+When the fix touches `commitsOnBlurOnly`, `onDraftDisplayChange`, `onStoredValueChange`, `ApaTypedOutlinedField`, or `ApaGuardedUrlField`, **in the same turn** grep and triage:
+
+| Search | Why |
+| ------ | --- |
+| `ApaGuardedUrlField(` | Shared Url wrapper — all callers inherit blur-only |
+| `ApaFieldInputKind.(Email\|Phone\|Postal\|Url\|WorkAccountEmail)` / `fromEngineFieldKey` | Blur-only profile resolution |
+| `onStoredValueChange` near `validationMessages` / `isBlank(` / `is required` / `No … yet` / `forceShowErrors` / `dirty` / `canSave` / `CollectDetailSaveBinding` | Parent UI driven by stored draft |
+| `guardAsUrl` / listing URL rows | Listing helper path through GuaranteedUrl |
+
+**Fix shape (prefer shared):** live draft via `onDraftDisplayChange` (or GuaranteedUrl → parent `onValueChange`), not one-off panel logic only. Do **not** push live keystrokes through aggressive `updateField` formatters that clear partial email/phone/URL.
+
+**Closing note must say:** which blur-only parents were grepped, which got live draft, which stayed blur-commit-only and why (e.g. Save bar already uses `hasPendingDrafts`).
+
+## Closing summary (when non-trivial)
+
+Include:
+
+- **Propagation audit:** what you searched, what else was fixed, what was checked and left unchanged (and why).
+
+Example: *Propagation audit: grepped `ApaTypedOutlinedField` and `onImeCommit` — wired Enter/save on Payment inline fields and Google merchant rows; Feedback fields use plain `Nivo78OutlinedField` (unchanged).*
+
+## Balance
+
+Fix **known siblings** in the same pass; do not boil the ocean. If scope explodes, fix the critical shared path first and list remaining call sites for the user.

@@ -1,0 +1,465 @@
+---
+description: "Exports, copy/handoffs, footers, legal/support placement, feedback, bug reports, diagnostics, and device-vs-web routing."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,xml,md,txt,html}"]
+---
+
+# Nivo78 Rule Projection — 06-output-support
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+OUTPUT STANDARDIZATION — EXPORTS, COPY, AND HANDOFFS
+
+\================================================================================
+
+
+
+Export and copy behavior
+
+\- Every export names the artifact clearly (product,
+project or context, date or version) — no generic “export.txt.”
+
+\- Export actions are explicit buttons with plain
+labels: “Export PDF,” “Copy to clipboard,” “Save encrypted backup” — not
+ambiguous “Share.”
+
+\- Success feedback: short confirmation line or toast;
+failure: plain reason + what to fix — same tone as validation errors.
+
+\- Clipboard copy of secrets or tokens auto-clears
+after a short timeout when the platform supports it; user sees a one-line
+notice.
+
+
+
+Handoff outputs
+
+\- When the app prepares data for an external site or
+tool, offer the same output shapes where possible: structured file (JSON/CSV),
+human-readable sheet, and copy-friendly plain text.
+
+\- Handoff screens state what the app produced, what
+the user must paste or upload elsewhere, and what was not sent over the
+network.
+
+\- Readiness summary before handoff: checklist or
+bullet list tied to engine state — not a static marketing blurb.
+
+
+
+
+
+\================================================================================
+
+FOOTERS, LEGAL LINKS, AND SUPPORT PLACEMENT
+
+\================================================================================
+
+
+
+Where Privacy, Terms, and Support live (fixed
+contract)
+
+\- Every app exposes the same five user-facing support
+entry points with the same labels:
+
+  Help |
+Feedback | Support center | Privacy | Terms
+
+\- Placement rules:
+
+  - Desktop:
+application menu (or Help menu) — always reachable from the main window.
+
+  - Mobile:
+support row, drawer section, or settings support block — visible without
+completing a workflow.
+
+  - Feedback
+page footer: repeat links to Privacy, Terms, Support center, and Contact — so
+legal and help are discoverable from the send flow itself.
+
+\- URLs follow one site pattern per product:
+
+  -
+Privacy:  
+https\://nivo78.com/{product}/privacy/
+
+  - Terms:     https\://nivo78.com/{product}/terms/
+
+  -
+Support:  
+https\://nivo78.com/{product}/support/ 
+(knowledge base / help center)
+
+  -
+Contact:   mailto or support page linked
+from Feedback — never a hidden address buried in About only.
+
+\- In-app About / Data security (where the product has
+one) links to the same Privacy URL — no duplicate policy text that can drift.
+
+
+
+In-app and website linking standard (APP-WEBSITE-LINKS-STANDARD)
+
+\- Every app provides clean, non-pushy pathways to the product website and support center:
+
+  1. Support menu: exact 5 canonical items (Help, Feedback, Support center, Privacy, Terms) — Support center opens https\://nivo78.com/{product}/support/ in the system browser. After those five items, Help chrome MUST also include **Check for updates** immediately before **About** (`APP-SUPPORT-CHECK-FOR-UPDATES`).
+
+  2. In-app Help hub (F1): window action bar provides an "Online guides & support (nivo78.com)" link leading to https\://nivo78.com/{product}/support/.
+
+  3. About dialog / screen: prominent, clickable "Visit https\://nivo78.com/{product}/" link alongside product version, local-first promise, philosophy tagline, and copyright.
+
+\- Constraint: Never nag, spam pop-ups, toast prompts, or interruptive review/visit prompts. Links are discoverable in standard menu and help chrome only. **Check for updates** is user-initiated only (no startup/timer background checks).
+
+In-app store update check (`APP-SUPPORT-CHECK-FOR-UPDATES`) [QA]
+
+\- Every store-distributed Nivo78 app MUST expose **Check for updates** in Help chrome (desktop: Help ▾; mobile: Help / Settings / Support equivalent).
+
+\- Placement: immediately before **About**, after the five canonical support items.
+
+\- Behavior on store installs: up to date; update available (store install and/or open listing); cannot determine (neutral message + optional open listing). Use official store APIs — not a custom version server in shipped products.
+
+\- NOT APPLICABLE only when release docs state there is no store channel (rare).
+
+
+
+Footer content (when a page has a footer)
+
+\- Utility footers are minimal: legal links, app
+version (optional), data-on-device reminder on first-run or security pages only
+— not copyright walls on every screen.
+
+\- Workflow footers hold Save/Cancel or Next/Back —
+never mix legal links into the save bar; legal links live in menu + Feedback
+footer.
+
+
+
+App shell footer (desktop and tablet/shared shell —
+every Nivo78 app that shows a window footer)
+
+\- Two centered lines, same order and jobs in every
+product:
+
+  1. Philosophy
+only: “Local-first · No Nivo78 account · No cloud sync · No analytics”
+
+     (adapt only
+when the product’s job explicitly requires an account or optional sync — state
+the exception plainly).
+
+     Do NOT
+append publisher city on this line.
+
+  2. Copyright
+with place of business: “© {year} Nivo78 Mobile Apps, LLC · Tyler, Texas. All
+rights reserved.”
+
+\- About / credits dialogs that show copyright MUST use
+the same copyright line (include Tyler, Texas there — do not duplicate a
+separate “LLC · Tyler” line above it).
+
+
+
+
+
+\================================================================================
+
+FEEDBACK, BUG REPORT, SUPPORT, AND CONTACT — ONE
+INTERFACE CONTRACT
+
+\================================================================================
+
+
+
+Single Feedback destination per app
+
+\- One in-app Feedback page (not separate “Contact us”
+and “Report bug” silos unless they are tabs on the same page).
+
+\- Report type chips or tabs — same three types in
+every app:
+
+  -
+Feedback      — comments, praise, or
+general product notes (not how-to)
+
+  - Bug
+report    — something broke or looks
+wrong
+
+  - Feature
+request — idea for a future version (honest: not a commitment)
+
+\- How-to questions belong in the in-app Help hub /
+Support center — NOT a Feedback report type.
+
+\- Contact block on every send:
+
+  - Name
+(required)
+
+  - Email
+(required, validated)
+
+  - Phone
+(optional)
+
+  - Pre-fill
+name and email from profile when the product stores them; user edits before
+send.
+
+\- Subject line: sensible default per report type; user
+can edit.
+
+\- Narrative fields depend on type:
+
+  - Bug: What
+were you doing? / What happened? / What did you expect? / Additional details
+(optional)
+
+  - Feedback:
+Message (comments)
+
+  - Feature:
+Describe the feature
+
+\- Send path: compose mailto (or platform mail handoff)
+— user reviews the draft in their mail app and taps Send. The app never
+silently transmits.
+
+\- Primary send action label: **Send request** (N78-Ops
+UiCopy.Feedback.sendButton pattern). Not “Submit”, “Send email”, or “Review in
+mail app” alone.
+
+
+
+Email draft body — structured sections
+(APP-FEEDBACK-BUG-NARRATIVE) [GATE]
+
+\- Canonical reference: N78-Ops FeedbackScreen.kt,
+SupportFeedbackRouting, UiCopyFeedback. Family utilities implement the same
+contract scaled to product data. Ops diagnostics detail:
+docs/FEEDBACK_DATA_COLLECTION.md.
+
+\- Contact block at the top of the mailto body (before
+report-type narrative):
+
+  - NAME: {trimmed name}
+
+  - EMAIL: {normalized email}
+
+  - PHONE: {formatted phone or N/A}
+
+\- Report narrative MUST use these exact delimiter lines
+(support tooling parses them):
+
+  - --- REPORT_TYPE --- (human-readable type label on
+the next line)
+
+  - Feedback: --- FEEDBACK ---
+
+  - Bug report: --- WHAT_WERE_YOU_DOING --- / ---
+WHAT_HAPPENED --- / --- WHAT_DID_YOU_EXPECT --- / --- ADDITIONAL_DETAILS ---
+(only when the user entered optional additional comments)
+
+  - Feature request: --- FEATURE_REQUEST ---
+
+\- Blank narrative fields use the placeholder **(not
+provided)**.
+
+\- Always append on every report type: ---
+SETTINGS_FOR_SUPPORT --- (minimal operational snapshot — app version, device/OS
+summary, active screen, aggregate non-PII counts per product policy; never
+business record contents).
+
+\- Extended diagnostics (Bug report only when checkbox
+ON, default ON; optional on Feedback comments default OFF; never Feature
+request): --- EXTENDED_DIAGNOSTICS --- (product-specific redacted appendix).
+
+\- Forbidden for Bug report: a single unstructured
+“Details” or “Message” field instead of separate doing / happened / expected
+fields; omitting --- SETTINGS_FOR_SUPPORT ---; silent transmit without OS mail
+review.
+
+
+
+Support center vs Feedback
+
+\- Support center opens the hosted knowledge base in
+the browser (offline-safe: show a clear message if network unavailable).
+
+\- Feedback is for messages to Nivo78; Support center
+is for self-serve articles — cross-link both directions in intro copy.
+
+
+
+Contact without Feedback
+
+\- Products may expose “Email support” as a secondary
+action with the same contact defaults — still user-initiated mailto, still no
+silent send.
+
+
+
+Email routing (same three report types + two general
+channels)
+
+\- feedback\@nivo78.com — typed reports from in-app
+Feedback (Feedback / Bug report / Feature request); subject prefix per type
+({Product} Feedback:, Bug report:, Feature request:).
+
+\- support\@nivo78.com — licensing, account, and channel
+when the user skips structured Feedback (not a Feedback chip).
+
+\- contact\@nivo78.com — business, press, partnerships —
+not product bug triage.
+
+
+
+
+
+\================================================================================
+
+DEVICE VS WEB — FEEDBACK TYPE ROUTING (BINDING)
+
+\================================================================================
+
+
+
+Principle
+
+\- Structured Feedback with diagnostics exists only
+inside the installed app.
+
+\- The website and Help KB may offer mailto for
+human-written messages — never silent log upload, never web forms that attach
+project data or diagnostics.
+
+\- Bug reports that support can act on require
+on-device context; web cannot substitute.
+
+
+
+Routing matrix (every product)
+
+
+
+  Report
+type        In-app Feedback     Website / KB
+
+ 
+\----------------- 
+\------------------ 
+\------------------------------------------
+
+  Bug
+report         PRIMARY — only      Redirect only — do not present as equal
+path
+
+                    
+path with auto      (no “report a bug” web form; no promise of
+
+                    
+diagnostics         automatic
+version, page, or audit context)
+
+  Feedback           Primary             OK — mailto\:feedback@ with plain
+note that
+
+                    
+(comments)          diagnostics
+are not included
+
+  Feature
+request    Primary             OK — mailto\:feedback@; no
+diagnostics block
+
+  How-to / Help
+KB   Not a Feedback      Self-serve Help hub / Support center
+first;
+
+                    
+report type        
+mailto\:support@ secondary only
+
+  Contact
+(business) Secondary button    OK —
+mailto\:contact@ or site contact page
+
+                                         when
+product uses one — still no diagnostics
+
+
+
+In-app rules
+
+\- Bug report chip/tab is the only way to send
+structured doing / happened / expected fields plus SETTINGS\_FOR\_SUPPORT and
+extended diagnostics.
+
+\- Feedback (comments) may offer optional “Attach extra
+troubleshooting details” (default OFF) when the product has a diagnostics
+block; Feature request MUST NOT.
+
+\- Feature request MUST NOT show extended diagnostics
+checkbox — narrative and contact only (no audit trail by default).
+
+\- Copy on the Feedback page states that bug reports
+belong here so version, active page, and troubleshooting details can be
+included. How-to questions use Help, not Feedback.
+
+
+
+Web and Help KB rules
+
+\- Support page Contact block MUST say bug reports use
+Help → Feedback (or Settings → Feedback) in the app — not web mailto alone.
+
+\- Web mailto\:feedback@ MAY remain for Feedback and
+feature ideas with subject hint — MUST NOT describe web email as including
+automatic diagnostics.
+
+\- Help KB articles about bugs MUST point to in-app
+Feedback; MUST NOT promote a generic contact form or contact@ as the primary
+bug path.
+
+\- If the product has no installed app (marketing-only
+page), web copy states bugs cannot be triaged without the app — offer
+Feedback/feature mailto only.
+
+\- Website Support & feedback form report types are
+Feedback and Feature request only — no Help/Support how-to type.
+
+
+
+Anti-patterns (reject)
+
+\- Web “Report a bug” page or form that mimics in-app
+structured bug flow without diagnostics.
+
+\- Help KB copy that says “email contact@ with your
+version” instead of in-app Feedback.
+
+\- Feature request flow that attaches extended audit
+diagnostics by default.
+
+\- Presenting web mailto and in-app Feedback as
+interchangeable for bugs.
+
+## Rule-ID coverage
+
+Primary attachment for: APP-FEEDBACK-DIAGNOSTICS, APP-FEEDBACK-ROUTING, APP-FEEDBACK-TYPES, APP-SUPPORT-MENU-ORDER, APP-SUPPORT-CHECK-FOR-UPDATES, APP-WEBSITE-LINKS-STANDARD, AUDIT-VECTOR-FEEDBACK, KB-FEEDBACK-ROUTING.

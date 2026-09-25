@@ -1,0 +1,111 @@
+NIVO78 STANDARDS — CURSOR ENFORCEMENT (hard requirements)
+============================================================
+
+Goal: Nivo78 app standards are honored on every Cursor session and every ship —
+not optional "best effort" for agents.
+
+Standards home (canonical): Desktop/Nivo78/N78Ops
+  (N78APA may retain mirrors/wrappers only — do not treat APA as source of truth.)
+
+Cursor layout (1.31):
+  - nivo78-core.mdc — alwaysApply router
+  - 01–19 focused projections — alwaysApply false + description + globs
+  - nivo78-app-standards.mdc — DEPRECATED stub (alwaysApply false)
+
+Standards are enforced in THREE layers. All three matter:
+
+  1. CURSOR (always-on guidance) — agents see rules every turn
+  2. VERIFY (automated gates) — scripts fail CI/commit when rules break
+  3. OVERRIDES (documented exceptions) — only way to waive a rule on purpose
+
+----------------------------------------------------------------------
+LAYER 1 — CURSOR (always honored in the IDE)
+----------------------------------------------------------------------
+
+A. Global plugin (all projects on this machine)
+
+   Path: %USERPROFILE%\.cursor\plugins\local\n78-global-rules\
+
+   AlwaysApply:
+     - nivo78-core.mdc
+     - anticipate-before-implementing.mdc
+     - fix-propagation-audit.mdc
+     - desktop-launcher-bats.mdc
+     - agent-use-user-selected-model.mdc
+
+   Also synced (intelligent / globs):
+     - 01-… through 19-….mdc focused projections
+
+   Activate once per machine:
+     1. Run: tools/maintain/install-n78-cursor-standards.ps1  (from N78Ops)
+        Or:   tools\launchers\N78-Install-Cursor-Standards.bat
+     2. Cursor → Customize → Rules → confirm nivo78-core shows **Always Applied**
+     3. Developer: Reload Window after plugin or rule file changes
+
+B. Per-repo rules (when a product repo is open)
+
+   N78Ops: nivo78-core + 01–19 (+ Ops-specific rules)
+   Other products: install script copies the family Cursor set into each
+   Desktop/Nivo78/* repo that has .git
+
+   Repo copy and global plugin MUST stay in sync when the standard changes:
+     pwsh -NoProfile -File tools/maintain/run-updocs.ps1 -SyncMirrors
+     (from N78Ops; or install-n78-cursor-standards.ps1)
+
+  Release gate verifies the shared rule inventory:
+     tools/verify/verify-cursor-global-rules.ps1  (from N78Ops)
+
+C. Optional — Cursor User Rules (belt and suspenders)
+
+   When the workspace is under Desktop/Nivo78 or any Nivo78 product repo,
+   binding rules in nivo78-core (alwaysApply) plus applicable focused
+   projections override conflicting agent suggestions. Do not violate a
+   MUST/MUST NOT without an active entry in
+   Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json.
+   Canonical text: N78Ops/reference/NIVO78_APP_STANDARD.txt.
+
+D. What Cursor rules CANNOT do alone
+
+   Rules guide agents; they do not compile code or block bad commits by themselves.
+   Pair Layer 1 with Layer 2 (release gate, pre-commit hook).
+
+----------------------------------------------------------------------
+LAYER 2 — VERIFY (hard gates — fail the build)
+----------------------------------------------------------------------
+
+From N78Ops repo root (family standards):
+
+  Cursor global rules:
+    tools/verify/verify-cursor-global-rules.ps1
+
+  Standard overrides registry:
+    tools/verify/verify-standard-overrides.ps1
+
+  Manage overrides:
+    tools/maintain/manage-standard-overrides.ps1
+
+Product repos keep their own release gates (Ops Play gate, APA MSIX gate, etc.).
+
+----------------------------------------------------------------------
+LAYER 3 — OVERRIDES (only legal waiver)
+----------------------------------------------------------------------
+
+  Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json
+
+  Rule catalog: N78Ops/reference/NIVO78_STANDARD_RULE_IDS.txt
+
+  Never waivable: secrets handling, silent upload, silent diagnostics,
+  breadcrumb logger or attachBreadcrumbsToBugReport in release/main,
+  pre-checked legal acceptance,
+  intentional security bypasses in release (debug unlocks, test credentials, development endpoints).
+
+----------------------------------------------------------------------
+MACHINE CHECKLIST
+----------------------------------------------------------------------
+
+[ ] Run install-n78-cursor-standards.ps1 from N78Ops
+[ ] Customize → Rules shows nivo78-core Always Applied
+[ ] Focused 01–19 present with alwaysApply false and globs
+[ ] nivo78-app-standards.mdc is deprecated stub (not alwaysApply true)
+[ ] reference/NIVO78_APP_STANDARD.txt present under N78Ops (v1.31+)
+[ ] reference/STANDARDS_HOME.txt describes the home

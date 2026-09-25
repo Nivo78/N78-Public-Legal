@@ -1,0 +1,41 @@
+NIVO78 DESKTOP LAUNCH — Auto-build and Program Files install on shortcut open
+
+Scope
+-----
+Windows desktop utilities (WinForms and KMP Compose desktop). Android-only apps (N78-Dash, N78-Probe) are excluded.
+
+Behavior
+--------
+1. Operator double-clicks the desktop shortcut (or repo / Desktop\Apps launcher).
+2. ensure-{product}-launch.ps1 compares source timestamps to the last build.
+3. Gradle :desktop:createDistributable or dotnet build -c Release runs when stale.
+4. When build output is newer than Program Files, sync-{product}-install.ps1 copies to a fixed folder (UAC when needed).
+5. Desktop shortcuts (one per product) target the fixed Program Files .exe. Repo / Desktop\Apps launchers still run ensure-{product}-launch.ps1 for auto-build before start.
+6. sync-{product}-install.ps1 does not recreate shortcuts unless -RefreshShortcuts. create-desktop-shortcuts.ps1 repairs the single canonical .lnk (user Desktop preferred; removes duplicate Public Desktop copy).
+7. If install is skipped, the app still opens from the repo build folder.
+
+Shared implementation
+---------------------
+N78-Ops\tools\lib\N78DesktopLaunch.ps1
+
+Per-product files (stamped)
+---------------------------
+tools\lib\N78DesktopLaunchProfile.ps1
+tools\maintain\ensure-{slug}-launch.ps1
+tools\maintain\sync-{slug}-install.ps1
+tools\maintain\create-desktop-shortcuts.ps1
+tools\launchers\{LauncherPrefix}.bat
+
+Family alignment
+----------------
+N78-Ops\tools\maintain\align-n78-desktop-launch.ps1
+N78-Ops\tools\launchers\N78-Align-Desktop-Launch.bat
+
+New utilities
+-------------
+N78-Kit stamp-desktop-launch.ps1 (also invoked from new-n78-utility.ps1 for Windows stacks).
+
+Standard top menu bar + action toolbar policy (PC/Mac)
+----------------------------------------------------
+N78-Ops/reference/NIVO78_DESKTOP_MENU_BAR.txt — required top menu; optional action bar
+(high-frequency only, no duplication of menu commands).

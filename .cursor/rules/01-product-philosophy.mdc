@@ -1,0 +1,418 @@
+---
+description: "Nivo78 product philosophy, trust, commercial honesty, offline/local-first behavior, and overall product engineering bar."
+alwaysApply: false
+globs: ["**/BrandConfig.kt","**/UiCopy*.kt","**/HelpArticles.kt","**/UserFacingMessages.kt","**/UiCopyTierPreview.kt","reference/MARKETING_COPY.txt","docs/EDITIONS.md","docs/PRIVACY_POLICY.md","docs/PLAN_LIMITS.md","**/privacy_policy.html","**/*marketing*","**/*brand*","Website/**",".cursor/rules/01-product-philosophy.mdc",".cursor/rules/nivo78-branding.mdc",".cursor/rules/user-facing-copy.mdc",".cursor/rules/17-web-marketing.mdc"]
+---
+
+# Nivo78 Rule Projection — 01-product-philosophy
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- This projection attaches on brand, Help, marketing, privacy, and editions surfaces — not on every file. `nivo78-core.mdc` still carries the local-first through-line on every chat.
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+WHAT CONSTITUTES A GOOD NIVO78 APP
+
+
+
+Through-line
+
+\- Utility first. Your data under your control. Never
+pay for fluff.
+
+\- Brand stamp (public + in-product voice): Local-First
+Software. The way we think apps should be.
+
+  Do the job.
+Respect the user. Skip the fluff. Cloud is optional, never required.
+
+
+
+Brand Philosophy (keep every app Nivo78-like)
+
+\- Mission: Build professional-quality software that
+respects its users.
+
+\- Public home: https\://nivo78.com/about/ (Website
+include/n78\_company\_philosophy.php) — product
+
+ 
+About/Help/support copy must not contradict this philosophy.
+
+\- Guiding test: Would a user feel the software exists
+to help them accomplish their goals —
+
+  not to
+monetize their attention, harvest their data, or lock them into an ecosystem?
+
+\- Trust test (copy and product): After reading the
+product page and Help, would a careful customer
+
+  still be
+surprised by a hard limit, missing automation, or handoff they must do
+themselves?
+
+  If yes, the
+copy failed — fix the claim, not the customer’s expectations.
+
+\- Core principles (every product MUST honor unless an
+accepted standard override records otherwise):
+
+  - Local-First
+— working data stays on the device; everyday use does not require the Internet.
+
+  - Cloud
+Optional — cloud may add value; cloud is optional, never required for core
+work.
+
+  - No Account
+Required — start immediately; no mandatory Nivo78 sign-up for daily use unless
+
+    the
+product’s explicit job requires an account (document that exception).
+
+  - No In-App
+Advertising — no banners, pop-ups, or sponsored content.
+
+  - No User
+Tracking — no behavioral tracking, no selling user data, no advertising
+profiles.
+
+  - Strong Data
+Security — encrypt secrets appropriately; data leaves the device only when the
+user chooses.
+
+  - Your Data Is
+Yours — export anytime; open formats when practical; no vendor lock-in.
+
+  - Fair
+Business Model — clear product pricing—one-time purchase or subscription—where
+each
+
+    product
+provides real value; no tolls on using the app without valid maintenance,
+development,
+
+    or
+infrastructure costs. This is one of the ways we keep your costs low;
+subscriptions are fair
+
+    when they
+fund ongoing support, updates, or services — not as a toll on finished offline
+work
+
+    that does
+not need our servers; low cost — focused apps, honest tiers, no fluff markup.
+
+  - Fast &
+Reliable — starts quickly on the device; responsive UI; works offline and
+during outages / remote use.
+
+  - Respectful —
+no nag screens, notification spam, constant review requests, or manipulative
+design.
+
+  - Transparent
+— honest privacy policy, clear pricing, and plain talk about what the product
+does
+
+    and does not
+do; no hidden surprises after install or purchase.
+
+  - Built to
+Last — remain useful for years; data stays accessible if cloud services are
+unavailable.
+
+\- Brand statements (use on hub, About, store/marketing
+where accurate):
+
+  - Software
+that works for you—not on you.
+
+  - Tools you
+run. Data you control.
+
+  - Professional
+apps built around users, not business models.
+
+  - Cloud is
+optional, never required.
+
+  - The way apps
+should be.
+
+  - Do the job.
+Respect the user. Skip the fluff.
+
+  - Local-first.
+Low cost. Your data belongs to you.
+
+  - Honest about
+what we do — and what we don’t.
+
+\- Deliberately avoid (in addition to the won’t-do list
+below): forced account creation; required host
+
+  login for core
+offline work; excessive permissions; Internet required just to open the app;
+
+  tolls on using
+the app without valid maintenance, development, or infrastructure costs (this
+is
+
+  one of the
+ways we keep your costs low); proprietary-only data formats; manipulative
+feature
+
+  locks;
+manipulative microtransactions; hidden pricing;
+
+  unnecessary
+background activity; marketing or Help that oversells automation, sync, or
+outcomes
+
+  the shipped
+build does not deliver.
+
+
+
+One job, done well
+
+\- The app solves one clear problem — not an
+“everything platform.”
+
+\- A user can finish the core workflow without
+memorizing external manuals.
+
+\- The app prepares and validates work, then hands off
+when needed — it does not pretend to replace the user’s primary external tool
+(browser, email client, accounting site, file host, etc.) unless that
+replacement is explicitly shipped and labeled.
+
+
+
+Utility-first UI
+
+\- Compact, scannable layout — easy to read at a
+glance, not decorative.
+
+\- Visible controls only: buttons, checkboxes, menus,
+tabs — no hidden gestures as primary actions.
+
+\- Plain language on every screen users see — labels,
+errors, help, and empty states.
+
+\- Non-trivial fields get ? help; dangerous or
+irreversible warnings stay inline.
+
+\- Form state preserved when navigating back until the
+user saves or dismisses.
+
+
+
+Local-first and trustworthy data
+
+\- Core workflows work fully offline.
+
+\- The user’s working data stays on the device by
+default.
+
+\- Cloud login, sync, and backup are optional when offered
+— never required for daily work.
+
+\- No Nivo78 account required for daily use unless the
+product’s job explicitly needs it.
+
+\- No nags, behavioral profiling, telemetry for resale,
+or silent “phone home” analytics.
+
+\- Secrets encrypted at rest; after save, secrets are
+copy-only and not shown on screen again.
+
+\- Sensitive identifiers blocked from plain saves when
+product policy requires a vault.
+
+\- Clipboard cleared after a short timeout when the
+platform supports it.
+
+
+
+Clean architecture (multiplatform products)
+
+\- Business rules, validation, persistence, export, and
+vault live in shared engine code — not scattered in UI except trivial view
+state.
+
+\- No platform-specific APIs in shared engine code; OS
+access goes through bridges or injected abstractions.
+
+\- Paths and storage semantics are neutral in engine
+code — no hardcoded OS jargon in shared logic.
+
+\- Android, iOS, and desktop behave consistently
+because they share one rules engine.
+
+\- Debug-only 10,000-event breadcrumb ring buffer lives
+in shared engine code (expect/actual
+
+  isDebugBuild +
+MutexLock). UI intercepts touch, navigation, and field length — never raw text.
+
+
+
+Workflow quality
+
+\- Collect shared facts once (profile, organization,
+defaults) and reuse — do not re-ask the same data on every screen.
+
+\- Ask for context-specific details only where that
+context truly differs (e.g. separate external accounts or listing contacts when
+the product supports multiple destinations).
+
+\- Validate before save using published rules — not
+only at export time.
+
+\- Checklist or status indicators match engine truth
+(not started / needs attention / complete).
+
+\- Empty, loading, and error states on major screens —
+not happy-path only.
+
+
+
+Handoff honesty
+
+\- The app says plainly what it does vs what the user
+must do in an external app, site, or service.
+
+\- Network use is user-initiated and labeled (open
+browser, send email, confirm purchase) — never silent transmission of user
+data.
+
+\- No implied automation the product does not perform
+(upload, charge, sync, “we’ll submit this for you”) unless that capability is
+actually shipped.
+
+\- Readiness is obvious: what is done, what is missing,
+what to do next.
+
+
+
+Expectation honesty (no negative customer surprises)
+
+\- Trust is built by stating features and limitations
+in the same breath — on the product webpage,
+
+  in Help, in
+About/upgrade copy, and at the step where a limit matters.
+
+\- Prefer “does X; does not do Y” over glowing
+capability claims that omit the boundary.
+
+\- Limits that change outcomes (tiers, offline vs
+online, handoff vs automation, platform gaps,
+
+  what stays
+on-device vs what the user must do elsewhere) MUST be discoverable before the
+user
+
+  depends on the
+wrong assumption — not only after a failed action.
+
+\- Help articles for non-trivial tasks MUST include
+rules and limits, not only happy-path steps.
+
+\- Website “will do / won’t do” sections, store listing
+claims, and in-app Help MUST agree with
+
+  shipped
+behavior in the current build — overselling is a defect, same as a wrong
+calculation.
+
+\- When scope is preparation-only, say so. When a
+calendar, store portal, bank, or mail app still
+
+  has the last
+step, say so. When a setting or feature lives on one surface only (e.g.
+calendar,
+
+  not Settings),
+say so.
+
+
+
+Help and support
+
+\- Searchable Help hub: browse, search, deep-link by
+article id where the product uses that pattern.
+
+\- Structured Feedback (report type, contact,
+narrative, optional diagnostics); user reviews before send.
+
+\- Menu or equivalent includes Help, Feedback, Support,
+Privacy, and Terms (or documented equivalent placement).
+
+\- Help and support copy encourage trust: accurate
+capabilities, clear limits, plain next steps —
+
+  never
+marketing that sets up disappointment after install.
+
+
+
+Commercial honesty
+
+\- Free tiers are genuinely useful — not demo timers or
+crippled core jobs.
+
+\- Paid upgrades add caps or extras — not tolls on
+finished work the user already created.
+
+\- No tolls on using the app without valid maintenance,
+development, or infrastructure costs. This is one of the ways we keep your
+costs low.
+
+\- Subscriptions are fair when they fund ongoing
+support, updates, or services — not as a toll
+
+  on finished
+offline work that does not need our servers.
+
+\- Keep prices as low as practical utility allows —
+focused scope, no fluff markup.
+
+\- Free utility voluntary monetization (WEB-FREE-APP-TIP-JAR): Free Nivo78 apps never use in-app advertising, user tracking, or artificial feature gating. For free utilities, a voluntary web tip jar ("Support Nivo78" / "Buy the developer a coffee") on the product hub and support center is mandatory. The in-app experience remains 100% free, ad-free, and clean (no direct in-app donation/tip links to comply with app store commerce policies and maintain distraction-free utility).
+
+\- Website linking standard (APP-WEBSITE-LINKS-STANDARD): Subtle, non-intrusive discovery links to nivo78.com via the 5-item Support Menu (Support center), In-app Help (Online guides & support), and About dialog (clickable website link). Never push, nag, or pop up unprompted.
+
+\- Customer-facing copy matches shipped behavior in the
+current build.
+
+\- No “coming soon,” “planned,” or roadmap language
+unless the feature is declared shipped for this version.
+
+\- Copy is complete: users can discover what the app
+does, what it does not do, limits, handoffs, and platform restrictions (Help, privacy,
+about, upgrade, or critical inline warnings).
+
+\- Product web pages publish explicit “what it will do
+for you” and “what it won’t do for you” sections derived from this standard and
+the product’s MARKETING\_COPY.txt — not buried in a single paragraph.
+
+\- Every public product web page includes comprehensive
+SEO metadata in the same pass as copy edits: unique title, meta description
+(\~160 characters), canonical URL, Open Graph, and Twitter cards — verified by
+the product website script (WEB SEO checks).
+
+## Rule-ID coverage
+
+Primary attachment for: APP-BRAND-PHILOSOPHY, WEB-FREE-APP-TIP-JAR, APP-WEBSITE-LINKS-STANDARD.

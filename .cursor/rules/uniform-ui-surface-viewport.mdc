@@ -1,0 +1,30 @@
+---
+description: Mandatory uniform 1920×1080 scaled surface and explicit main viewport scroll (desktop dense apps). APP-UI-UNIFORM-SURFACE-VIEWPORT [GATE].
+alwaysApply: false
+globs: ["**/*.vb", "**/*.cs", "**/AppUiScaling.*", "**/CompactMainViewport*", "**/WorksheetHighDpiPolicy.*", "**/MainForm.*", "**/desktopMain/**"]
+---
+
+**Rank:** Family GATE (desktop workstation dense layout). Outranks product UI convenience; conflicts need registered override.
+
+# Uniform UI surface and main viewport (APP-UI-UNIFORM-SURFACE-VIEWPORT)
+
+**Canonical spec:** `reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md` (N78-Ops repo).
+
+**Reference implementation (port — do not reinvent):** N78-Estimate — `AppUiScaling.vb`, `CompactMainViewportHost.vb`, `WorksheetHighDpiPolicy.vb`, shared `AppUiScaling.kt` / `WorksheetHighDpiPolicy.kt`.
+
+## Mandatory
+
+1. **Surface:** `BaseWidth=1920`, `BaseHeight=1080`; one `ScaleFactor = deviceDpi/96`; all layout ints via `ScaleLogical` / `ScalePx`.
+2. **WinForms:** `AutoScaleMode.None` on main form; PerMonitorV2 (or equivalent) before UI create.
+3. **Main viewport:** Explicit H/V scrollbars + pinned content offset — **`CompactMainViewportHost` pattern**. Do **not** use `Panel.AutoScroll` as the primary full-surface host.
+4. **Scroll home:** Bars at minimum → surface `(0,0)` flush viewport top-left; fix inner worksheet shell drift (`Location = Empty` when inner AutoScroll is off).
+5. **Wheel:** Signed 16-bit delta from `WM_MOUSEWHEEL` (never raw `CShort` on `0xFFxx` under Option Strict).
+6. **Layout:** One scaled layout (no reflow that hides money columns); pane width ≠ full 3840 canvas inside a clipped split.
+
+## New products
+
+Stamp from N78Kit: copy scaling + viewport host from N78-Estimate or future `Common` extract — **no one-off scroll/DPI design**.
+
+## Exceptions
+
+Mobile fluid Compose, web, and **documented** product overrides only (e.g. N78-Frame WinForms notes).

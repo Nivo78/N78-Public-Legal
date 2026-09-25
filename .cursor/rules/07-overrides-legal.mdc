@@ -1,0 +1,472 @@
+---
+description: "Standard overrides, diagnostics privacy, debug breadcrumbs, and legal gating/acknowledgement."
+alwaysApply: false
+globs: ["**/*override*.{json,md,txt}","**/*.{kt,kts,swift,cs,java,md,txt,json}"]
+---
+
+# Nivo78 Rule Projection — 07-overrides-legal
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+STANDARD OVERRIDES — ACCEPTED DEVIATIONS PER PRODUCT
+(BINDING)
+
+\================================================================================
+
+
+
+Principle
+
+\- The global standard stays strict; a product may
+document an intentional, accepted deviation
+
+  without
+weakening the family bar for other apps.
+
+\- Overrides are explicit, reviewable, and persistent
+until revoked — not silent exceptions in verify scripts.
+
+
+
+Registry (required for shipped products)
+
+\- File:
+Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json (APA:
+{ProductCode}.overrides.json)
+
+\- Rule ids: reference/NIVO78\_STANDARD\_RULE\_IDS.txt —
+add new ids before referencing them
+
+\- README: reference/standard-overrides/README.txt
+(schema); Desktop/Nivo78/Common/standard-overrides/README.txt (location)
+
+
+
+Override entry (required fields)
+
+\- override\_id — stable id for later edits (manage
+script generates on -Add)
+
+\- rule\_id   —
+stable id from NIVO78\_STANDARD\_RULE\_IDS.txt
+
+\- surface   —
+website | app | kb | audit | tooling | all
+
+\- scope     —
+repo-relative path or functional area
+
+\- reason    —
+plain-language justification (min 10 characters)
+
+\- accepted  —
+ISO date YYYY-MM-DD
+
+\- status    —
+active | revoked
+
+
+
+Optional: detail (sub-scope), updated (auto on
+change), review\_by (warn when passed), ticket,
+
+owner, compensating\_control, risk (see Override
+governance / APP-OVERRIDE-\*)
+
+
+
+Edit workflow
+
+\- tools/maintain/manage-standard-overrides.ps1 — list,
+show, add, update, revoke, reactivate (-OverrideId)
+
+\- Change reason, scope, review date, or status with
+-Update; do not hand-edit JSON unless necessary
+
+\- Revoke when fixed; -Reactivate if waiver needed
+again
+
+
+
+Never waivable
+
+\- Silent data upload, silent diagnostics, background
+bug reporting
+
+\- Breadcrumb / UI-event ring buffer or
+attachBreadcrumbsToBugReport in any release / main source set
+
+\- Secrets shown on screen after save, skipping vault
+encryption where required
+
+\- Pre-checked legal acceptance or core workflows
+without terms acknowledgement
+
+\- Intentional security bypasses in release (debug
+unlocks, test credentials, development endpoints)
+
+
+
+Override governance (APP-OVERRIDE-\* — see OVERRIDE
+GOVERNANCE section)
+
+\- Active overrides should record approving owner and
+compensating control where applicable (APP-OVERRIDE-OWNER).
+
+\- Active overrides should set review\_by (date or
+trigger) and must not become permanent by neglect (APP-OVERRIDE-REVIEW).
+
+\- Overrides that weaken security, privacy, integrity,
+or release controls should record risk (APP-OVERRIDE-RISK).
+
+\- Revoke when no longer needed (APP-OVERRIDE-CLEANUP).
+Optional registry fields: owner, compensating\_control, risk.
+
+
+
+Tooling contract
+
+\- tools/maintain/manage-standard-overrides.ps1 — list,
+add, update, revoke, reactivate overrides by override\_id
+
+\- tools/lib/N78StandardOverrides.ps1 — load and match
+overrides
+
+\- tools/verify/verify-standard-overrides.ps1 —
+validate registry (release gate)
+
+\- tools/verify/verify-apa-website.ps1 — skip failing
+checks covered by active overrides; log ACCEPTED
+
+\- Marketing drift checks honor MARKETING-HUB-\*
+overrides with detail matching the bullet warning
+
+
+
+Text tests (Nivo78 app.txt vector STANDARD-OVERRIDES)
+
+\- Load
+Desktop/Nivo78/Common/standard-overrides/{ProductCode}.overrides.json before
+scoring
+
+\- Finding matches active override (rule\_id + surface +
+scope) → report ACCEPTED-OVERRIDE with reason; not FAIL
+
+\- Violation with no override → normal finding severity
+
+\- Flag: unknown rule\_id, missing reason, expired
+review\_by still active, orphaned override with no matching check
+
+\- App audit vectors (APP-\*) and audit-vector waivers
+apply to manual/code review findings
+
+
+
+Workflow
+
+\- When you accept a deviation for the product you are
+working on, add or update the override in the same change
+
+  — do not
+disable verify scripts globally.
+
+\- Revoke (status revoked) when the product is brought
+back into compliance.
+
+
+
+
+
+\================================================================================
+
+DIAGNOSTICS ON BUG REPORTS — USER PERMISSION REQUIRED
+
+\================================================================================
+
+
+
+Principle
+
+\- Diagnostics help support reproduce issues; they are
+never collected silently or uploaded in the background.
+
+\- The user sees what will be included, toggles
+optional extras, and reviews the full draft before send.
+
+
+
+Always included in bug reports (minimal operational
+snapshot)
+
+\- App name and version
+
+\- Host OS summary (e.g. Windows 11, Android 14 — no
+raw env dumps)
+
+\- Active screen or destination id (which page the user
+was on)
+
+\- Product-neutral progress flags only when relevant
+(e.g. checklist counts — not business record contents)
+
+
+
+Included by default; user can turn off extended block
+(bug reports; optional on Feedback comments when offered)
+
+\- Checkbox: “Attach extra troubleshooting details” —
+shown for Bug report (default ON) and optionally Feedback comments (default
+OFF); never on Feature request; plain explanation of what that means.
+
+\- Feature request: no extended diagnostics checkbox —
+contact and narrative only.
+
+\- Extended block may include: recent sign-in or
+security audit lines (timestamps and action labels only), tier or mode labels,
+schema versions — whatever helps support without exposing business data.
+
+\- Bug reports MUST always include minimal
+SETTINGS\_FOR\_SUPPORT even when extended checkbox is OFF; extended audit block
+still applies for bug reports per product composer policy (user sees draft
+before send).
+
+\- How-to questions MUST NOT be a Feedback report type
+— use the Help hub.
+
+
+
+Debug-only breadcrumb snapshot
+(APP-BREADCRUMB-DEBUG-ONLY)
+
+\- Every Nivo78 app MUST implement the shared
+10,000-event breadcrumb ring buffer (nivo78-breadcrumbs
+
+  or an
+equivalent Clean Engine copy) with expect/actual \`isDebugBuild\` and
+\`MutexLock\`.
+
+\- \`log(event)\` MUST begin with \`if (!isDebugBuild)
+return\`. \`getSnapshot()\` MUST return
+
+  \`Release Build
+\- No Logs\` when \`isDebugBuild\` is false.
+
+\- Text input MUST log action + character count only —
+never the typed value.
+
+\- \`attachBreadcrumbsToBugReport\` MUST live only in the
+debug source set (\`src/androidDebug/kotlin\`
+
+  for KMP
+libraries, \`src/debug/kotlin\` for Android apps). Never \`src/androidMain\`,
+\`src/main\`,
+
+  or
+\`src/release\`.
+
+\- Full 10,000-event dumps are a local debug file, not
+mailto. A short debug tail MAY appear in
+
+  extended
+diagnostics on debug builds only.
+
+\- Release binaries MUST NOT allocate the ring buffer
+and MUST NOT include the export utility.
+
+
+
+Never include without explicit user paste
+
+\- Passwords, tokens, API keys, vault contents
+
+\- Full file paths to user projects (redact to basename
+or remove)
+
+\- Bank, tax, government, or payout identifiers
+
+\- Email bodies, customer lists, or exported
+attachments
+
+\- Database files or project folder trees
+
+
+
+Redaction rules (engine-side, before mailto)
+
+\- Run diagnostics through a privacy redactor: strip
+path prefixes, token-like strings, and fields on a deny list.
+
+\- Copy on the Feedback page states plainly: “Bug
+reports include app version and which page you were on. Optional details
+exclude project folders and saved passwords. Do not paste secrets unless you
+choose to.”
+
+\- When extended diagnostics is OFF, send the minimal
+snapshot only; do not sneak extended fields into the body.
+
+
+
+Platform limits
+
+\- Respect mailto URL length limits (especially
+Windows); truncate or summarize with a note in the draft when necessary — never
+fail silently.
+
+
+
+
+
+\================================================================================
+
+LEGAL GATING AND CUSTOMER ACKNOWLEDGEMENT — EVERY APP
+
+\================================================================================
+
+
+
+Principle
+
+\- Users must explicitly agree to Terms and acknowledge
+Privacy before core workflows — no silent acceptance, no pre-checked boxes, no
+bypass on upgrade unless terms version unchanged.
+
+\- Legal copy lives in engine-layer registries (product
+equivalent of ApaLegalCopy, ApaDataSecurityCopy) — not scattered in
+Composables.
+
+\- First-run dialog, menu Privacy/Terms links, and
+in-repo privacy/terms HTML must tell the same story.
+
+
+
+Explicit consent (first run and re-consent)
+
+\- Modal first-run legal dialog blocks the core shell
+until the user accepts or declines.
+
+\- Acceptance checkbox defaults unchecked; Accept
+button disabled until checked.
+
+\- Full Terms and Privacy reachable from the dialog
+before accepting — stable URLs (nivo78.com/{product}/…) or equivalent in-app
+viewers.
+
+\- No silent acceptance on install, upgrade, or terms
+bump.
+
+\- Plain-language in-app summary in the dialog; full
+policy on linked pages (layered disclosure).
+
+
+
+Decline integrity
+
+\- Decline button label must match behavior on every
+platform (desktop, mobile, tablet).
+
+\- If copy says “Decline and exit” (or equivalent), the
+app exits or fully blocks core workflows — not a no-op with full access.
+
+\- If the product allows limited use without
+acceptance, relabel the button honestly — never promise exit while leaving
+workflows open.
+
+
+
+Versioned acceptance record
+
+\- Record acceptance in engine/support layer with:
+terms version, timestamp, app version at accept time.
+
+\- Single gateway API per product (product equivalent
+of ApaLegalAcceptanceGateway) — platform stores implement persistence.
+
+\- When TERMS\_VERSION (or product equivalent)
+increases, users who accepted an older version see the first-run dialog again.
+
+\- Privacy policy documents what the acceptance record
+contains and where it is stored on device.
+
+
+
+Startup legal gate
+
+\- Core workflows unreachable before acceptance:
+open/create primary workspace, setup checklists, export/handoff, vault unlock
+when product policy requires legal gate first.
+
+\- Document and keep consistent the order of legal gate
+vs master-password or vault setup on each platform.
+
+\- Menu Privacy and Terms remain reachable after
+acceptance — not only on first run.
+
+
+
+Legal copy accuracy (aligned with privacy/terms web
+pages)
+
+\- In-app Terms privacy summary matches engine security
+copy and code/Website privacy HTML (plain vs encrypted vs blocked vs never
+stored).
+
+\- Terms state: not legal, tax, or store advice; no
+store affiliation or guaranteed approval outcomes.
+
+\- Platform scope honest in Terms, Privacy, and support
+pages (desktop vs companion vs unsupported form factors).
+
+\- Optional third-party egress (e.g. user-configured AI
+API) disclosed in Terms/Privacy when shipped — user-initiated only.
+
+
+
+Cross-platform parity
+
+\- Same TERMS\_VERSION and first-run dialog copy on
+desktop, mobile, and tablet shells.
+
+\- Decline, accept, and re-consent behavior equivalent
+across platforms; document intentional storage-path differences in privacy
+policy only.
+
+
+
+Store and entity alignment
+
+\- In-repo and hosted privacy/terms URLs match Partner
+Center / Play Console / App Store Connect listing requirements.
+
+\- Legal entity name consistent: Nivo78 Mobile Apps,
+LLC (or successor named in Terms) across Terms, Privacy, support, and in-app copy.
+
+
+
+Audit and ship
+
+\- Run reference/text-tests-audit/prompts/Legal.txt
+when consent, terms version, or legal copy changes.
+
+\- Run updocs after ApaLegalCopy (or product
+equivalent) or privacy/terms HTML changes.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: APP-LEGAL-GATE, AUDIT-VECTOR-LEGAL-GATE, LEGAL-GATE.

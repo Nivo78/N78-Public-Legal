@@ -1,0 +1,161 @@
+---
+description: "Analytics/third-party collection, vulnerability and incident response, and override governance."
+alwaysApply: false
+globs: ["**/*.{kt,kts,swift,cs,java,ts,tsx,js,jsx,json,md,txt}"]
+---
+
+# Nivo78 Rule Projection — 15-privacy-incident-override
+
+**Binding status:** This file is a maintained enforcement projection of the canonical Nivo78 Product Standard.
+**Source:** `reference/NIVO78_APP_STANDARD.txt`
+**Authority:** The canonical standard and rule-ID catalog control if this projection and the source ever differ.
+
+## Agent instructions
+- Apply this rule whenever the work described by the rule is relevant.
+- Treat every requirement below as binding unless the canonical standard marks it as `[QA]`/conditional or an approved override applies.
+- Preserve and mention canonical `APP-*`, `WEB-*`, `MARKETING-*`, and other rule IDs when reporting compliance or exceptions.
+- Do not weaken a requirement merely because it is inconvenient to implement.
+- If a requirement cannot be met, stop before shipping and use the standard override process.
+
+---
+
+ANALYTICS AND THIRD-PARTY DATA COLLECTION
+(APP-PRIVACY-\*) — EVERY APP
+
+\================================================================================
+
+
+
+APP-PRIVACY-NO-AD-ID [GATE]
+
+\- Do not use advertising identifiers, fingerprinting,
+session replay, or behavioral profiling in N78
+
+  applications
+unless a product-specific policy explicitly permits it.
+
+
+
+APP-PRIVACY-THIRD-PARTY-SDK [GATE]
+
+\- Third-party SDKs that collect, transmit, or analyze
+user or device data require explicit review
+
+  before
+inclusion.
+
+
+
+APP-PRIVACY-ANALYTICS-CONSENT [QA]
+
+\- If optional analytics are ever introduced, the
+collection purpose, data collected, destination,
+
+  retention, and
+user choice must be explicitly documented.
+
+
+
+
+
+\================================================================================
+
+VULNERABILITY AND INCIDENT RESPONSE
+(APP-SEC-RESPONSE-\*) — FAMILY
+
+\================================================================================
+
+
+
+APP-SEC-VULNERABILITY-RESPONSE [QA]
+
+\- Maintain a documented process for receiving,
+assessing, prioritizing, fixing, and communicating
+
+  material
+security vulnerabilities affecting released products.
+
+
+
+APP-SEC-CRITICAL-FIX [QA]
+
+\- Material vulnerabilities affecting released products
+must receive an explicit severity, owner,
+
+  remediation
+decision, and target action.
+
+
+
+APP-SEC-RELEASE-RECALL [QA]
+
+\- The product family must have a documented response
+path for a release that must be withdrawn,
+
+  replaced, or
+urgently patched.
+
+
+
+
+
+\================================================================================
+
+OVERRIDE GOVERNANCE (APP-OVERRIDE-\*) — EVERY PRODUCT
+
+\================================================================================
+
+
+
+(Complements STANDARD OVERRIDES — ACCEPTED DEVIATIONS
+PER PRODUCT above; does not replace it.)
+
+
+
+APP-OVERRIDE-OWNER [QA]
+
+\- Every active override must identify the product,
+rule ID, reason, approving owner, date approved,
+
+  and
+compensating control where applicable.
+
+
+
+APP-OVERRIDE-REVIEW [QA]
+
+\- Every active override must have a defined review
+date or review trigger.
+
+\- Overrides must not become permanent merely because
+they were once approved.
+
+
+
+APP-OVERRIDE-RISK [QA]
+
+\- Overrides that weaken security, privacy, data
+integrity, or release controls must identify the
+
+  associated
+risk and why the exception is acceptable.
+
+
+
+APP-OVERRIDE-CLEANUP [QA]
+
+\- When a product no longer requires an override, the
+override must be revoked and the affected
+
+  standard rule
+restored.
+
+
+
+
+
+\================================================================================
+
+## Rule-ID coverage
+
+Primary attachment for: APP-PRIVACY-ANALYTICS-CONSENT, APP-PRIVACY-NO-AD-ID, APP-PRIVACY-THIRD-PARTY-SDK.
