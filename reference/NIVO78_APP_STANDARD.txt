@@ -1986,9 +1986,9 @@ legal and help are discoverable from the send flow itself.
 
   -
 Privacy:  
-https\://nivo78.com/{product}/privacy/
+https\://nivo78.github.io/N78-Public-Legal/pages/{App display name}.privacy.html
 
-  - Terms:     https\://nivo78.com/{product}/terms/
+  - Terms:     https\://nivo78.github.io/N78-Public-Legal/pages/{App display name}.terms.html
 
   -
 Support:  
@@ -4217,10 +4217,10 @@ and store listings)
 https\://nivo78.com/{product}/
 
 \- Privacy:     
-https\://nivo78.com/{product}/privacy/
+https\://nivo78.github.io/N78-Public-Legal/pages/{App display name}.privacy.html
 
 \- Terms:       
-https\://nivo78.com/{product}/terms/
+https\://nivo78.github.io/N78-Public-Legal/pages/{App display name}.terms.html
 
 \- Support:     
 https\://nivo78.com/{product}/support/
@@ -5065,7 +5065,7 @@ PRE-SHIP BAR (WEB — FAMILY CONSISTENCY)
 privacy/, terms/, support/, legal.css before store listing.
 
 \- Hosted URLs live at
-nivo78.com/{product}/privacy|terms|support/ and match in-app support URL
+GitHub Pages privacy/terms (N78-Public-Legal) plus nivo78.com/{product}/support/ — match in-app support URL registry
 registry.
 
 \- Support page: philosophy callout, contact block
