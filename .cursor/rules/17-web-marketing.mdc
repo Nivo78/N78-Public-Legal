@@ -398,6 +398,24 @@ terms reference updated policy.
 
 \================================================================================
 
+STORE TRIAL — AFTER-TRIAL HUB COPY (WEB-PRODUCT-TRIAL-AFTER-COPY)
+
+\================================================================================
+
+When a product ships APP-TRIAL-READONLY-EXPORT-LOCK:
+
+\- **How you pay** (clarity item 7): one sentence — trial length → what stays free forever (read saved work) → what requires paid unlock (new work, full runs, exports).
+
+\- **Will do** bullets MUST include separate lines for **{Trial / evaluation}**, **{Free forever / after trial}**, and **{Paid tier}** per templates/PRODUCT_HUB_PAGE_LAYOUT.txt.
+
+\- **Won't do** MUST include: no lockout of saved data after trial; no silent deletion on expiry.
+
+\- Phase C (tiers/modes): after-trial paragraph with link to pricing when Phase C4 exists.
+
+Canonical behavior spec: reference/NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt (Play/store snippet patterns).
+
+\================================================================================
+
 ## Rule-ID coverage
 
-Primary attachment for: KB-COPY-DRIFT, MARKETING-HUB-WILL-DRIFT, MARKETING-HUB-WONT-DRIFT.
+Primary attachment for: KB-COPY-DRIFT, MARKETING-HUB-WILL-DRIFT, MARKETING-HUB-WONT-DRIFT, WEB-PRODUCT-TRIAL-AFTER-COPY.

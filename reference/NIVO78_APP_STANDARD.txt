@@ -871,6 +871,16 @@ crippled core jobs.
 \- Paid upgrades add caps or extras — not tolls on
 finished work the user already created.
 
+\- Store apps with time-limited trials (APP-TRIAL-READONLY-EXPORT-LOCK):
+  use the Read-Only / Export-Lock freemium model unless an accepted override
+  records otherwise. Canonical detail:
+  reference/NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt. During trial (typically
+  30–60 days): full create, edit, calculate, export. After trial: app stays open;
+  saved data stays readable; license required for new records, full calculation
+  runs (product-defined), and exports (reports, G-code, share/save export paths).
+  Never full app lockout or silent data loss on expiry. Hub and listing copy:
+  WEB-PRODUCT-TRIAL-AFTER-COPY.
+
 \- No tolls on using the app without valid maintenance,
 development, or infrastructure costs. This is one of the ways we keep your
 costs low.
@@ -1197,6 +1207,10 @@ because a subscription lapsed — charge for ongoing support, updates, or real
 
  
 infrastructure, not for opening the user’s own data.
+
+\- No full app lockout when a store trial ends (when
+APP-TRIAL-READONLY-EXPORT-LOCK applies) — read access to saved work remains;
+  export-lock gates new outbound artifacts, not viewing existing data.
 
 \- No dark-pattern upgrade walls mid-task (“pay to save
 what you already typed”).

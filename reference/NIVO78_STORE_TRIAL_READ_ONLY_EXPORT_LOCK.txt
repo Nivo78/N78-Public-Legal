@@ -1,0 +1,103 @@
+NIVO78 STORE TRIAL — READ-ONLY / EXPORT-LOCK FREEMIUM
+=====================================================
+Rule IDs: APP-TRIAL-READONLY-EXPORT-LOCK, WEB-PRODUCT-TRIAL-AFTER-COPY
+Primary projections: .cursor/rules/01-product-philosophy.mdc, 17-web-marketing.mdc
+Hub layout: templates/PRODUCT_HUB_PAGE_LAYOUT.txt (clarity + Phase C after-trial paragraph)
+
+Applies to: Nivo78 **store** utilities that ship a **time-limited evaluation** (trial).
+Does not apply to: N78-Ops Play tier model (Basic / Pro / Premier) unless an explicit product override says otherwise.
+
+Operator policy recorded: 2026-09-27 (Mike).
+
+================================================================================
+MODEL NAME
+================================================================================
+
+Read-Only / Export-Lock freemium (recommended default).
+
+Not a hard time bomb that shuts down the entire app or hides the user's workspace.
+
+================================================================================
+TRIAL PHASE (30–60 DAYS — PRODUCT CHOOSES DURATION)
+================================================================================
+
+- Unrestricted access: create, edit, calculate, export — full product job.
+- Trial length MUST appear in: product hub (how you pay), store listing, in-app trial status, and Help.
+- In-app countdown or expiry date MUST be visible while the trial runs (no surprise midnight lock).
+
+================================================================================
+AFTER TRIAL — PERMANENT RESTRICTED MODE
+================================================================================
+
+Always allowed (free forever after trial):
+- Open the app.
+- View and read saved work: past calculations, machine setups, profiles, job logs, history.
+- Navigate lists and detail screens for data the user already created.
+
+Requires a license (paid unlock, subscription, or perpetual — per product):
+- Create **new** records (or equivalent primary entities).
+- Run **full** job calculations the product defines as licensed (e.g. full cycle-time run).
+- **Export** and outbound handoffs: reports, G-code, CSV/PDF export pipelines, share sheets, "Save as…" from export flows.
+
+Gate **write** and **export** paths; leave **read/list/detail** open.
+
+================================================================================
+DATA AND TRUST (NON-NEGOTIABLE)
+================================================================================
+
+- NEVER lock the user out of the app because the trial ended.
+- NEVER silently delete, hide, or corrupt user data on trial expiry (see NIVO78_APP_STANDARD destructive-data: no auto-delete on trial expiry).
+- NEVER use export lock without read access to existing work.
+- Customer copy MUST state what stays free after trial and what requires payment — before install and in Help.
+
+================================================================================
+REINSTALL / TRIAL RESET (DESIGN INTENT)
+================================================================================
+
+- Do not rely solely on uninstall-blocking or opaque device fingerprinting.
+- On typical mobile installs, uninstall removes app-private data (profiles, presets, logs).
+- The model assumes **data gravity**: resetting the trial by reinstall costs more than paying — accumulated local utility outweighs clock-reset friction.
+- Products MAY still persist entitlement via store receipt / Play Billing where applicable; UX remains read-only/export-lock after expiry regardless.
+
+================================================================================
+ANTI-PATTERNS (DEFECTS)
+================================================================================
+
+- "Trial expired — you cannot open the app."
+- Paywall on opening old projects or viewing saved notes only because trial ended.
+- Wiping workspace on expiry without explicit user-confirmed destructive action.
+- Marketing that implies data will be deleted if the user does not pay (unless a separate, explicit, confirmed policy exists and is legally reviewed).
+- Mid-task dark pattern: "Pay to save what you already typed" on data created during trial (export-lock applies to **new** export actions; existing read stays open).
+
+================================================================================
+IMPLEMENTATION CHECKLIST (PER PRODUCT)
+================================================================================
+
+[ ] Entitlement state machine: FullTrial → ReadOnlyExportLocked (names per product).
+[ ] Central gate for create, full-run, and export — not scattered if-checks only in one screen.
+[ ] Post-trial banner: what works, what needs license; link to upgrade / store SKU.
+[ ] Help article: trial length, after-trial behavior, reinstall vs data on device.
+[ ] MARKETING_COPY.txt: tier-shaped will-do (trial / free forever / paid) + how you pay sentence.
+[ ] Hub Phase C after-trial paragraph when tiers or modes section exists (WEB-PRODUCT-TRIAL-AFTER-COPY).
+[ ] Play / App Store Data safety and listing text agree with shipped gates.
+[ ] GATE evidence: unit or guardrail tests for entitlement transitions and export/create blocks (map in product GATE_EVIDENCE_MAP.md).
+
+================================================================================
+PLAY / STORE COPY SNIPPETS (ADAPT PER PRODUCT)
+================================================================================
+
+How you pay (one sentence pattern):
+  "{N}-day full access, then free forever to view your saved work; new jobs and exports need {SKU name}."
+
+Will do — Free forever / after trial:
+  "Open the app and read everything you already saved — setups, logs, and calculations stay on your device."
+
+Will do — Trial:
+  "{N} days of full create, edit, and export with no restrictions."
+
+Will do — Paid:
+  "Unlock new work and exports after the trial — {price model}."
+
+Won't do:
+  "Lock you out of your saved data when the trial ends."
+  "Delete your work automatically when the trial ends."

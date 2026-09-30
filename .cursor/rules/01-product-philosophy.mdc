@@ -1,7 +1,7 @@
 ---
 description: "Nivo78 product philosophy, trust, commercial honesty, offline/local-first behavior, and overall product engineering bar."
 alwaysApply: false
-globs: ["**/BrandConfig.kt","**/UiCopy*.kt","**/HelpArticles.kt","**/UserFacingMessages.kt","**/UiCopyTierPreview.kt","reference/MARKETING_COPY.txt","docs/EDITIONS.md","docs/PRIVACY_POLICY.md","docs/PLAN_LIMITS.md","**/privacy_policy.html","**/*marketing*","**/*brand*","Website/**",".cursor/rules/01-product-philosophy.mdc",".cursor/rules/nivo78-branding.mdc",".cursor/rules/user-facing-copy.mdc",".cursor/rules/17-web-marketing.mdc"]
+globs: ["**/BrandConfig.kt","**/UiCopy*.kt","**/HelpArticles.kt","**/UserFacingMessages.kt","**/UiCopyTierPreview.kt","**/*Entitlement*","**/*Trial*","reference/MARKETING_COPY.txt","reference/NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt","docs/EDITIONS.md","docs/PRIVACY_POLICY.md","docs/PLAN_LIMITS.md","**/privacy_policy.html","**/*marketing*","**/*brand*","Website/**",".cursor/rules/01-product-philosophy.mdc",".cursor/rules/nivo78-branding.mdc",".cursor/rules/user-facing-copy.mdc",".cursor/rules/17-web-marketing.mdc"]
 ---
 
 # Nivo78 Rule Projection — 01-product-philosophy
@@ -377,6 +377,8 @@ crippled core jobs.
 \- Paid upgrades add caps or extras — not tolls on
 finished work the user already created.
 
+\- **APP-TRIAL-READONLY-EXPORT-LOCK** — Store utilities with a time-limited trial use Read-Only / Export-Lock freemium (canonical: `reference/NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt`). Trial: full create/edit/calculate/export (30–60 days, product choice). After trial: app and read access stay; license for new records, full runs, and exports. Never full lockout or silent data loss on expiry. Reinstall may reset the clock on some platforms; design assumes uninstall wipes local profiles/logs so reset is self-defeating.
+
 \- No tolls on using the app without valid maintenance,
 development, or infrastructure costs. This is one of the ways we keep your
 costs low.
@@ -415,4 +417,4 @@ the product website script (WEB SEO checks).
 
 ## Rule-ID coverage
 
-Primary attachment for: APP-BRAND-PHILOSOPHY, WEB-FREE-APP-TIP-JAR, APP-WEBSITE-LINKS-STANDARD.
+Primary attachment for: APP-BRAND-PHILOSOPHY, APP-TRIAL-READONLY-EXPORT-LOCK, WEB-FREE-APP-TIP-JAR, APP-WEBSITE-LINKS-STANDARD.

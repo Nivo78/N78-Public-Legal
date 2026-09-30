@@ -1,4 +1,4 @@
-NIVO78 STANDARD RULE ID REGISTRY — 1.40
+NIVO78 STANDARD RULE ID REGISTRY — 1.41
 
 Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 
@@ -160,6 +160,8 @@ Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 155 | APP-SUPPORT-CHECK-FOR-UPDATES | QA | 06-output-support.mdc
 156 | APP-RELEASE-PUBLISH-SPINE | GATE | 12-release-supply-chain.mdc
 157 | APP-DESKTOP-CHROME-VERTICAL-ORDER | QA | 03-family-identity.mdc
+158 | APP-TRIAL-READONLY-EXPORT-LOCK | GATE | 01-product-philosophy.mdc
+159 | WEB-PRODUCT-TRIAL-AFTER-COPY | QA | 17-web-marketing.mdc
 
 CLASS DEFINITIONS
 - STATIC = source/configuration requirement suitable for automated/static enforcement.
