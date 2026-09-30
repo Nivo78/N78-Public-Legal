@@ -359,8 +359,8 @@ until the user accepts or declines.
 button disabled until checked.
 
 \- Full Terms and Privacy reachable from the dialog
-before accepting — stable URLs (nivo78.com/{product}/…) or equivalent in-app
-viewers.
+before accepting — **APP-LEGAL-IN-APP-DIALOG**: in-app modal only; never
+Desktop.browse, ACTION_VIEW, or openURL for Privacy/Terms (`reference/NIVO78_LEGAL_IN_APP_DIALOG.txt`).
 
 \- No silent acceptance on install, upgrade, or terms
 bump.
@@ -469,4 +469,4 @@ equivalent) or privacy/terms HTML changes.
 
 ## Rule-ID coverage
 
-Primary attachment for: APP-LEGAL-GATE, AUDIT-VECTOR-LEGAL-GATE, LEGAL-GATE.
+Primary attachment for: APP-LEGAL-GATE, APP-LEGAL-IN-APP-DIALOG, AUDIT-VECTOR-LEGAL-GATE, LEGAL-GATE.

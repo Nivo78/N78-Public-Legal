@@ -1,0 +1,51 @@
+NIVO78 LEGAL — IN-APP DIALOG CONTAINMENT
+========================================
+Rule ID: APP-LEGAL-IN-APP-DIALOG
+Class: GATE (family store and business utilities with Privacy/Terms)
+Primary projection: .cursor/rules/07-overrides-legal.mdc
+Companion: APP-LEGAL-GATE, APP-UI-DIALOG-CANCEL-BUTTON, APP-UI-UNIVERSAL-TEXT-SELECTION
+
+Principle
+---------
+Privacy Policy and Terms of Service MUST open inside the application. The operator
+must not be sent to an external browser (Chrome, Safari, Edge) to read legal text
+during first-run gate, Help menu Privacy/Terms, or any in-product legal link.
+
+Prohibited for Privacy and Terms
+--------------------------------
+- Desktop.getDesktop().browse() for policy/terms handoffs
+- Intent.ACTION_VIEW on legal HTML assets or nivo78.com privacy/terms URLs from in-app chrome
+- UIApplication.open() / LocalUriHandler.openUri() for Privacy/Terms from the app shell
+- Extracting bundled HTML to a temp folder and opening it in the system browser
+
+Required
+--------
+- Dedicated in-app modal (Compose Dialog / DialogWindow) with:
+  - Scrollable, selectable document body (SelectionContainer on read-only text)
+  - Explicit Close / Cancel (APP-UI-DIALOG-CANCEL-BUTTON); Esc on desktop where supported
+  - Bundled offline HTML fallback (n78-legal/ or product-equivalent) when network is absent
+- First-run gate: View Privacy / View Terms open the modal; acceptance checkboxes unlock
+  after the operator opened each document in-app (not after external browser).
+- Help menu Privacy and Terms use the same in-app viewer — not openExternalUri for legal URIs.
+
+Allowed external browser (unchanged)
+------------------------------------
+- Support center / product hub / marketing URLs (APP-WEBSITE-LINKS-STANDARD)
+- mailto: feedback and bug reports
+- User-initiated store or check-for-updates links when policy says browser handoff is OK
+
+Implementation pattern (KMP utilities)
+------------------------------------
+- readBundledLegalDocumentHtml(kind) expect/actual from desktop/android assets
+- FamilyLegalDocumentDialog (or product-equivalent) at app shell root above worksheets
+- openExternalUri must no-op or refuse nivo78-legal:// and must not browse policy/terms HTTPS
+  from menu actions — route menus to the in-app dialog instead.
+
+Verification
+------------
+- Manual: Legal gate -> View Privacy -> modal stays in app; Close returns to gate.
+- Manual: Help -> Privacy -> same modal after acceptance.
+- Guardrail: FamilyLegalGate.kt must not call openExternalUri for privacy/terms.
+- Guardrail: desktop Platform must not call Desktop.browse for nivo78-legal://
+
+See also: docs/N78_APP_CREATION_SPECIFICATION.md Step 5 (APP-LEGAL-IN-APP-DIALOG).

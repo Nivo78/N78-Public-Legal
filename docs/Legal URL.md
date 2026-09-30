@@ -1,6 +1,6 @@
 # Nivo78 public legal URLs (N78-Public-Legal)
 
-Generated: September 29, 2026
+Generated: September 30, 2026
 
 Canonical GitHub Pages base: `https://nivo78.github.io/N78-Public-Legal/`
 
@@ -29,8 +29,8 @@ Canonical GitHub Pages base: `https://nivo78.github.io/N78-Public-Legal/`
 - **N78-Ops — Terms** (`pages/N78-Ops.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Ops.terms.html
 - **N78-Probe — Privacy** (`pages/N78-Probe.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Probe.privacy.html
 - **N78-Probe — Terms** (`pages/N78-Probe.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Probe.terms.html
-- **N78-StlLite — Privacy** (`pages/N78-StlLite.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-StlLite.privacy.html
-- **N78-StlLite — Terms** (`pages/N78-StlLite.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-StlLite.terms.html
+- **N78-ThinStl — Privacy** (`pages/N78-ThinStl.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-ThinStl.privacy.html
+- **N78-ThinStl — Terms** (`pages/N78-ThinStl.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-ThinStl.terms.html
 - **N78-Track — Privacy** (`pages/N78-Track.privacy.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Track.privacy.html
 - **N78-Track — Terms** (`pages/N78-Track.terms.html`) — https://nivo78.github.io/N78-Public-Legal/pages/N78-Track.terms.html
 

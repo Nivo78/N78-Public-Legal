@@ -2711,8 +2711,9 @@ until the user accepts or declines.
 button disabled until checked.
 
 \- Full Terms and Privacy reachable from the dialog
-before accepting — stable URLs (nivo78.com/{product}/…) or equivalent in-app
-viewers.
+before accepting — in-app modal viewers (APP-LEGAL-IN-APP-DIALOG); never the
+system browser for Privacy or Terms. Canonical:
+reference/NIVO78_LEGAL_IN_APP_DIALOG.txt.
 
 \- No silent acceptance on install, upgrade, or terms
 bump.

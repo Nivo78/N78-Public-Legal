@@ -1,5 +1,5 @@
 ---
-description: When adding a new runnable app, script, or dev util, also add a Desktop .bat launcher.
+description: Desktop launchers, fixed build/install paths, and shortcuts that must not break when TFM or Gradle output changes.
 alwaysApply: true
 ---
 
@@ -8,6 +8,23 @@ alwaysApply: true
 # Desktop launcher bats (Mike workflow)
 
 Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\desktop-launcher-bats.mdc` — edit the repo file, then `run-updocs.ps1 -SyncMirrors` (or install-n78-cursor-standards.ps1).
+
+Canonical spine: `reference/NIVO78_DESKTOP_LAUNCH.txt` and `N78-Ops/tools/lib/N78DesktopLaunch.ps1`.
+
+## Fixed .exe locations — desktop shortcuts must not break
+
+Every Nivo78 **Windows desktop** app MUST use **stable paths** for build output, Program Files install, and the operator desktop `.lnk`. Never wire shortcuts to folders that change with TFM, RID, or one-off CI layouts.
+
+| Layer | Rule |
+| ----- | ---- |
+| **Repo build** | .NET: fixed `OutputPath` (e.g. `bin\run\`), `AppendTargetFrameworkToOutputPath=false`, `AppendRuntimeIdentifierToOutputPath=false`. Profile `DotNetOutputRelative` must match. KMP: fixed Gradle distributable folder in `N78DesktopLaunchProfile.ps1`. |
+| **Install** | `%ProgramFiles%\{InstallFolderName}\` via `sync-{product}-install.ps1` only. |
+| **Desktop .lnk** | Default target: `{ProgramFiles}\{InstallFolderName}\{LauncherPrefix}-Launch.bat` (runs `ensure-{product}-launch.ps1` → build if stale → sync → start). **Do not** point `.lnk` at `Program Files\…\{ExeFileName}` or at `bin\Release\net*-windows\…` unless an approved override says otherwise. |
+| **Repo / Apps twins** | `tools\launchers\{Prefix}.bat` and `Desktop\Apps\…` call the same ensure script — never hard-code a moving build path in a shortcut. |
+
+When adding or changing a desktop product, verify `create-desktop-shortcuts.ps1` was run after profile changes so the desktop icon matches the table above.
+
+## Two launch paths for new runnables
 
 When you add a **new runnable** artifact the user will use more than once — desktop app entry, dev utility, maintain script with a launcher, test helper, etc. — **always** ship **two** launch paths in the **same turn**:
 
@@ -27,10 +44,10 @@ setlocal
 set "REPO=C:\Users\Mike\Desktop\Nivo78\N78-APA"
 set "LAUNCHER=%REPO%\tools\launchers\{CanonicalName}.bat"
 if not exist "%LAUNCHER%" (
-    echo Could not find %LAUNCHER%
-    echo Update REPO in this bat file if your N78-APA folder moved.
-    pause
-    exit /b 1
+ echo Could not find %LAUNCHER%
+ echo Update REPO in this bat file if your N78-APA folder moved.
+ pause
+ exit /b 1
 )
 call "%LAUNCHER%" %*
 set "ERR=%ERRORLEVEL%"
@@ -47,6 +64,8 @@ For PowerShell-only tools, call the `.ps1` under `tools/maintain/` instead of a 
 
 ## Checklist when closing
 
+- [ ] Fixed repo output path documented in profile / project file (no TFM/RID suffix in shortcut targets)
+- [ ] Desktop `.lnk` uses Program Files `*-Launch.bat` (or documented override)
 - [ ] Canonical launcher exists and was tested once from repo path
 - [ ] Apps twin `.bat` created or updated under `Desktop\Apps\{N78-Product}\` with correct `REPO` and target
 - [ ] Closing summary mentions both paths

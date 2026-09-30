@@ -40,7 +40,7 @@
 | **N78-Frame** | current line | as needed | `development` (behind `main`) |
 | **N78-Life** | current line | as needed | `development`, `ios-release` |
 | **N78-Track** | current line | as needed | `development` (merged into `main` 2026-09-26) |
-| **N78-Dash**, **N78-Book**, **N78-Probe**, **N78-StlLite**, **N78-Public-Legal**, **N78-Website** | current line | as needed | `master` → use **`main`** |
+| **N78-Dash**, **N78-Book**, **N78-Probe**, **N78-ThinStl**, **N78-Public-Legal**, **N78-Website** | current line | as needed | `master` → use **`main`** |
 | **N78-QRTest** | QR experiments | as needed | `master` → **`main`** |
 | **N78-Kit**, **N78-Template**, **N78-Successor**, **N78-Standards** | family infra | as needed | `master` → **`main`** (Standards) |
 

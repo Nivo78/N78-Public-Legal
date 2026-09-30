@@ -1,0 +1,74 @@
+---
+description: Mandatory format for all Nivo78 closing statements and bug closing comments (Track / TRK-*)
+alwaysApply: true
+---
+
+# Mandatory Closing Statement Format (Track standard)
+
+Whenever drafting, generating, or formatting a **closing statement** / **closing comment** for any tracked issue, feedback item, or bug report (`TRK-*` / Track #) across Nivo78, you MUST strictly use this exact format. Never omit any section or substitute different headers.
+
+**Canonical copy:** `reference/NIVO78_TRACK_CLOSING_COMMENT.txt` (keep in sync with this rule).
+
+## Required Structure
+
+```
+Tracking: {TrackNumber}
+Open Date: {OpenDate}
+Closing date: {ClosingDate}
+Originator: {Originator}
+Classification: {Classification}
+
+Classification rationale: {One to three plain-language sentences tying the label to the Bug Rules / bounty policy — why this classification and not another.}
+Status: Fixed in development (not in App Store 1.1.0 rev 7).
+
+What was wrong
+[What the reporter saw — plain language.]
+
+Cause
+[Why it happened — no code or test names.]
+
+Fix
+[What changed from the reporter's point of view.]
+
+Verify on next iPhone build
+[Short on-device steps — use -> between hops when helpful.]
+
+Thanks, {Originator} — [short compliment or thank you for helping to improve {AppName}.]
+```
+
+## Classification Standard
+
+The official **Bug Rules document** (`Bug bounty.docx` / `docs/BUG_BOUNTY_RULES.md`) is authoritative for determining the classification of every item.
+
+### Standard Classifications
+
+- **Bug** — Functional defect, logic error, data loss/corruption, broken interaction, calculation error, or crash that violates intended app behavior.
+- **Appearance** — Visual or cosmetic defect (e.g. text clipping, improper button tint/highlight, spacing, padding, alignment, or color contrast).
+- **Could Not Duplicate** — Behavior could not be reproduced following reported steps on the specified device and build.
+- **Duplicate** — Previously reported defect or existing tracked item already under development or fixed.
+- **Working as Designed** — Expected product behavior; inquiry or confusion regarding designed operation, device system-level settings, or intentional platform constraints.
+- **Enhancement** — Request or proposal for new capabilities, expanded options, or functionality outside current product design.
+
+### Classification rationale (required)
+
+- **Always include** `Classification rationale:` after `Classification:` with **one blank line** between them — for every closing, every classification (not only Bug).
+- **Length:** one to three sentences; plain language; no code, test, or class names.
+- **Content:** state why the chosen label fits the Bug Rules (e.g. functional vs cosmetic, bounty-eligible vs not, could-not-repro evidence, duplicate TRK id, working-as-designed policy).
+- **Do not** repeat the entire classification definition; explain **this** report.
+
+## CRLF deliverable (required on Windows)
+
+Closing comments must paste cleanly into email and support tools on Windows.
+
+1. **Line endings:** Every line in the closing block MUST use **CRLF** (`\r\n`), including the final line. Do not ship LF-only closings for Track replies.
+2. **Companion file:** When closing a `TRK-*` item in a product repo, write the same text to `docs/{TrackNumber}-closing.txt` (e.g. `docs/TRK-0034-closing.txt`) using **UTF-8 without BOM** and **CRLF** on every line. The operator copies from that file (Notepad, mail client) for replies.
+3. **Chat output:** You may show the closing in chat for review, but the **CRLF file is part of the standard deliverable** alongside the fix — not optional when a Track item is closed in development.
+
+## Rules & Voice
+
+1. **Header fields**: `Tracking:`, `Open Date:`, `Closing date:`, `Originator:`, and `Classification:` — consecutive lines, colon and space, no blank lines between them. Then **one blank line**, then `Classification rationale:` on its own line, then `Status:` on the next line (no blank between rationale and Status).
+2. **Section titles**: `What was wrong`, `Cause`, `Fix`, `Verify on next iPhone build`, and the `Thanks, …` line — each preceded by **one blank line** (empty CRLF line). The paragraph under a section title follows **immediately** on the next line (no blank line between title and body).
+3. **No engineering jargon**: Plain language only. Do NOT include internal code names, method names, test classes, or raw log dumps.
+4. **Thanks line**: Include the originator's full name and a warm thank-you / compliment for helping improve the app.
+5. **Character encoding**: Use standard ASCII characters (`->` for arrows, `-` for dashes) to avoid Unicode/ANSI code page garbling on Windows clipboard and email clients.
+6. **CRLF enforcement**: When writing `docs/{TrackNumber}-closing.txt`, convert to CRLF before handoff (PowerShell: normalize `\n` to `\r\n` on write). Never rely on chat copy alone for line-ending fidelity.

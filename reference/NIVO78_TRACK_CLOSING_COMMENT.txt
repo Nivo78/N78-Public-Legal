@@ -1,0 +1,45 @@
+Nivo78 Track closing comment standard (TRK-* / Track #)
+======================================================
+Authority: .cursor/rules/closing-comments.mdc (family global mirror under n78-global-rules).
+Use for every bug/feedback closing reply. Bug Rules: Bug bounty.docx / docs/BUG_BOUNTY_RULES.md.
+
+REQUIRED BLOCK (exact headers; Classification rationale and CRLF file are mandatory)
+
+Tracking: {TrackNumber}
+Open Date: {OpenDate}
+Closing date: {ClosingDate}
+Originator: {Originator}
+Classification: {Classification}
+
+Classification rationale: {1-3 plain sentences — why this label for this report per Bug Rules.}
+Status: Fixed in development (not in App Store {version} rev {build}).
+
+What was wrong
+{Reporter-visible behavior — plain language.}
+
+Cause
+{Why — no code or test names.}
+
+Fix
+{What changed from the reporter's point of view.}
+
+Verify on next iPhone build
+{Short steps; use -> between hops.}
+
+Thanks, {Originator} — {thank-you for helping improve {AppName}.}
+
+SPACING RULES
+  - Top header block: Tracking through Classification — consecutive, no blanks.
+  - Blank line, then Classification rationale, then Status (no blank between rationale and Status).
+  - Blank line BEFORE each section title: What was wrong, Cause, Fix, Verify on next iPhone build.
+  - Blank line BEFORE Thanks line.
+  - NO blank line between a section title and its paragraph.
+
+CLASSIFICATIONS
+  Bug | Appearance | Could Not Duplicate | Duplicate | Working as Designed | Enhancement
+
+CRLF DELIVERABLE
+  docs/{TrackNumber}-closing.txt — UTF-8 no BOM, every line CRLF (blank lines are empty CRLF rows).
+
+VOICE
+  Defect nouns: "the issue", not "your issue". ASCII: -> and -

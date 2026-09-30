@@ -1,4 +1,4 @@
-NIVO78 NEW PRODUCT CHECKLIST — v1.39
+NIVO78 NEW PRODUCT CHECKLIST — v1.40
 =======================================
 1. Install family `.cursor/rules` and reference/ standards on day one.
 2. Keep `nivo78-core.mdc` always applied; do not restore the deprecated monolith.
@@ -6,12 +6,14 @@ NIVO78 NEW PRODUCT CHECKLIST — v1.39
 4. Identify applicable rule IDs before implementation and use their primary projection.
 5. Verify display resolution awareness on high-res displays (HiDPI / 4K / Retina) and full UI scalability across display zoom / DPI scaling (100% to 300%+) with zero text truncation or clipping.
 5a. Desktop-dense apps: implement APP-UI-UNIFORM-SURFACE-VIEWPORT — port AppUiScaling + CompactMainViewportHost from N78-Estimate (see reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md); scroll home flush top-left; no primary AutoScroll host.
-6. Feedback mailto body matches APP-FEEDBACK-BUG-NARRATIVE (NAME/EMAIL/PHONE, --- REPORT_TYPE ---, doing/happened/expected, --- SETTINGS_FOR_SUPPORT ---, --- EXTENDED_DIAGNOSTICS --- when applicable; Send request label).
+6. Feedback — platform split (both mandatory where applicable):
+   a. Windows desktop (APP-FEEDBACK-WIN-DESKTOP-TWO-PATHWAY): three categories; Gmail (Browser) + Desktop Mail App; Save Report + Copy; support@nivo78.com; Cancel; spec reference/NIVO78_WINDOWS_DESKTOP_FEEDBACK.txt. KMP: FamilyFeedbackScreen + routing. WinForms: Common/WinForms/N78FamilyWinFormsFeedback.vb.
+   b. Mobile / Play (APP-FEEDBACK-BUG-NARRATIVE): mailto body sections (NAME/EMAIL/PHONE, --- REPORT_TYPE ---, narrative, --- SETTINGS_FOR_SUPPORT ---, --- EXTENDED_DIAGNOSTICS --- when applicable). N78-Ops FeedbackScreen remains authoritative for Ops mobile until desktop two-pathway ships there.
 7. For every applicable [GATE], provide a real executable adapter/test and map it in the GATE evidence map.
 8. Missing adapter = NOT VERIFIABLE and blocks certification.
 9. Formal overrides require required governance metadata.
 10. Synchronize the optional global Cursor mirror from the repo copy; never maintain two independent authorities.
-11. Run family verification plus product GATE verification before release certification.
+11. Run family verification plus product GATE verification before release certification. Portfolio gate (all apps): Common/tools/verify/run-nivo78-portfolio-enforcement.ps1 (or N78-Portfolio-Enforcement.bat).
 12. Report STATIC, GATE, and QA evidence separately.
 13. Store-distributed apps: Help chrome includes user-initiated **Check for updates** before About (APP-SUPPORT-CHECK-FOR-UPDATES); official store APIs only; no startup nag.
 14. **Publish spine (APP-RELEASE-PUBLISH-SPINE):** stamp must register the product in `N78-Ops/tools/maintain/N78-PublishCatalog.ps1` and create `tools/launchers/N78-{Name}-Publish.bat` plus Desktop Apps twin (same pass as cleanscript/updocs). See `reference/NIVO78_PUBLISH_SPINE.txt`.

@@ -91,7 +91,7 @@ Implementation notes
 Reference implementations
 -------------------------
 - WinForms header host: N78-Estimate (_formHeaderHost), N78-Frame (_formHeaderHost),
-  N78-Track (_formHeaderHost), N78-StlLite (MenuMain dock top above worksheet).
+  N78-Track (_formHeaderHost), N78-ThinStl (MenuMain dock top above worksheet).
 - Compose: N78-Machining, N78-Electrical, N78-Ops, N78-APA, N78-Life (MenuBar before brand).
 
 New utilities

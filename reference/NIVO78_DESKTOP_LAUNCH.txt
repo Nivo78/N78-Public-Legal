@@ -1,18 +1,40 @@
-NIVO78 DESKTOP LAUNCH — Auto-build and Program Files install on shortcut open
+NIVO78 DESKTOP LAUNCH — Fixed .exe paths and shortcuts that do not break
 
 Scope
 -----
 Windows desktop utilities (WinForms and KMP Compose desktop). Android-only apps (N78-Dash, N78-Probe) are excluded.
 
-Behavior
---------
-1. Operator double-clicks the desktop shortcut (or repo / Desktop\Apps launcher).
+Fixed locations (mandatory)
+---------------------------
+Desktop shortcuts and operator habits assume paths never move when TFM, RID, or Gradle folders change.
+
+1. Repo build output — stable relative folder only
+   • .NET (WinForms): vbproj/csproj MUST use a fixed OutputPath (typical bin\run\).
+     Set AppendTargetFrameworkToOutputPath=false and AppendRuntimeIdentifierToOutputPath=false.
+     Profile DotNetOutputRelative MUST match that folder (e.g. bin\run).
+   • KMP Compose desktop: Profile GradlePackageFolder + distributable path under desktop\build\compose\binaries\main\app\{folder}.
+     Do not point shortcuts at one-off bin\Release\net*-windows\... trees.
+
+2. Program Files install — one folder per product
+   • Destination: %ProgramFiles%\{InstallFolderName}\{ExeFileName}
+   • sync-{product}-install.ps1 copies from the fixed repo build folder above (UAC when needed).
+
+3. Desktop .lnk — stable target that runs the launch spine
+   • Default: C:\Program Files\{InstallFolderName}\{LauncherPrefix}-Launch.bat
+     (installed bat calls ensure-{product}-launch.ps1 in the repo — build, sync when stale, then start).
+   • Do NOT point the operator desktop .lnk directly at Program Files\{ExeFileName} unless an approved
+     override documents why (stale-binary risk when dev builds ahead of install).
+   • Do NOT point .lnk at a path inside the git clone (repo moves, branches, and CI output differ).
+   • Repo tools\launchers\{Prefix}.bat and Desktop\Apps\{Product}\ twins still call ensure-*-launch.ps1.
+
+Behavior on open
+----------------
+1. Operator double-clicks desktop shortcut, Apps twin, or repo launcher.
 2. ensure-{product}-launch.ps1 compares source timestamps to the last build.
 3. Gradle :desktop:createDistributable or dotnet build -c Release runs when stale.
-4. When build output is newer than Program Files, sync-{product}-install.ps1 copies to a fixed folder (UAC when needed).
-5. Desktop shortcuts (one per product) target the fixed Program Files .exe. Repo / Desktop\Apps launchers still run ensure-{product}-launch.ps1 for auto-build before start.
+4. When build output is newer than Program Files, sync-{product}-install.ps1 copies to the fixed install folder (UAC when needed).
+5. App starts from Program Files when install succeeded; otherwise from the fixed repo build folder (fallback only).
 6. sync-{product}-install.ps1 does not recreate shortcuts unless -RefreshShortcuts. create-desktop-shortcuts.ps1 repairs the single canonical .lnk (user Desktop preferred; removes duplicate Public Desktop copy).
-7. If install is skipped, the app still opens from the repo build folder.
 
 Shared implementation
 ---------------------
@@ -20,7 +42,7 @@ N78-Ops\tools\lib\N78DesktopLaunch.ps1
 
 Per-product files (stamped)
 ---------------------------
-tools\lib\N78DesktopLaunchProfile.ps1
+tools\lib\N78DesktopLaunchProfile.ps1  (ShortcutUseInstallExe = $false by default in shared library)
 tools\maintain\ensure-{slug}-launch.ps1
 tools\maintain\sync-{slug}-install.ps1
 tools\maintain\create-desktop-shortcuts.ps1
