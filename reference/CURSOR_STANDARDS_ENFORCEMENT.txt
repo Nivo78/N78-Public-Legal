@@ -32,6 +32,7 @@ A. Global plugin (all projects on this machine)
      - fix-propagation-audit.mdc
      - desktop-launcher-bats.mdc
      - agent-use-user-selected-model.mdc
+     - family-wide-cursor-compliance.mdc
 
    Also synced (intelligent / globs):
      - 01-… through 19-….mdc focused projections

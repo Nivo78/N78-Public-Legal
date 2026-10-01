@@ -1,0 +1,36 @@
+---
+description: Family-wide desktop compliance audits — full app inventory, executed QA evidence, compliance matrix; no false family PASS. Read full spec when auditing.
+alwaysApply: true
+---
+
+**Rank:** Family STATIC audit procedure. Outranked only by explicit operator override with governance metadata. Does not replace canonical APP-* / GATE rules; defines how Cursor runs family-wide compliance work.
+
+# Family-wide Cursor AI compliance
+
+**Canonical specification (read on audit / verify / enforce / check family compliance):**
+
+`reference/NIVO78_FAMILY_WIDE_CURSOR_AI_ENFORCEMENT.txt` (N78-Ops standards home; mirrored under each product `reference/` after standards install).
+
+## When this binds
+
+When the user asks to **audit**, **verify**, **enforce**, **make compliant**, or **check** Nivo78 **family** or **family-wide** requirements — especially desktop page layout QA, Email options, feedback, golden template, or N78-Kit — treat the task as **compliance**, not suggestions or partial spot checks.
+
+## Non-negotiable behavior
+
+1. **Inventory every** Nivo78 desktop application in scope before concluding anything family-wide.
+2. Status per app per requirement is exactly one of: **PASS**, **FAIL**, **NOT APPLICABLE**, **NOT VERIFIED**. Missing required feature = **FAIL**, not N/A.
+3. **No family PASS** if any applicable app is FAIL, NOT VERIFIED, or omitted.
+4. **PASS requires executed verification** (tests run, results recorded). Source search, guardrails, templates, and kit files are not proof.
+5. Produce the **compliance matrix** and **final report** defined in sections 29 and 38 of the canonical file.
+6. Do **not** invent filenames, tests, commands, results, or compliance status.
+
+## Technical requirements called out in the canonical spec
+
+- **APP-TEST-DESKTOP-PAGE-LAYOUT:** full page catalog, layout sweep in normal desktop QA, `N78FamilyDesktopPageLayoutQa.assertPageLayoutIntegrity` where applicable; WinForms need rendered-layout equivalence, not source-only checks.
+- **Email:** `Settings → Email options` for any app that sends/opens/prepares email; persisted preference used on all paths; document formats only when applicable; no duplicate mail settings.
+- **Feedback:** family implementation, category-specific UI, shared Email options; verify behavior not symbol names.
+- **Golden template / N78-Kit:** inheritance sources only — not evidence that shipped apps comply.
+
+## Stop
+
+If inventory, tests, or evidence cannot be completed, stop and report the blocker. Use **NOT VERIFIED** or **FAIL**, never assumed PASS.

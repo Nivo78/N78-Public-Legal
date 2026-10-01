@@ -1,0 +1,451 @@
+# Nivo78 FAMILY-WIDE CURSOR AI ENFORCEMENT REQUIREMENTS
+## 1. AUTHORITY
+These requirements are mandatory for every Nivo78 desktop application.
+They are family-wide requirements, not recommendations.
+Cursor AI SHALL treat these requirements as an engineering compliance specification.
+Cursor AI SHALL NOT weaken, reinterpret, omit, bypass, or replace a requirement because an individual application does not currently implement the required feature.
+If an application does not comply, the application is NON-COMPLIANT.
+If a requirement applies to an application but has not been implemented or verified, the application is NON-COMPLIANT.
+Documentation, comments, standards files, helper classes, guardrails, or source-code patterns do not constitute compliance by themselves.
+Actual application behavior and actual test execution are required.
+---
+# 2. PRIMARY OBJECTIVE
+The objective is to maintain a single enforceable Nivo78 desktop application standard.
+Every applicable Nivo78 desktop application SHALL:
+1. Implement the required family behavior.
+2. Use the approved family implementation where one exists.
+3. Be included in the appropriate automated QA.
+4. Actually execute the applicable QA.
+5. Pass the applicable QA.
+6. Remain compliant when new applications are created.
+7. Remain compliant when existing applications are modified.
+A family-wide PASS SHALL NOT be reported until every applicable desktop application has been accounted for.
+---
+# 3. APPLICATION INVENTORY IS MANDATORY
+Before performing a family-wide compliance audit, Cursor AI SHALL identify every Nivo78 desktop application in the supplied workspace/repository.
+The inventory SHALL include, at minimum:
+- Application name
+- Project location
+- Technology/platform
+- Desktop UI technology
+- Whether the application sends or opens email
+- Whether the application contains user-openable pages/screens/views
+- Whether the application uses the Nivo78 shared family libraries
+- Whether the application is derived from the Nivo78 golden template/kit
+Cursor AI SHALL NOT audit only the applications mentioned by the user unless the user explicitly limits the scope.
+Cursor AI SHALL NOT assume that three compliant applications establish family-wide compliance.
+---
+# 4. APPLICATION STATUS VALUES
+Every application SHALL have exactly one compliance status for each applicable requirement:
+- PASS
+- FAIL
+- NOT APPLICABLE
+- NOT VERIFIED
+Definitions:
+### PASS
+The requirement exists, is correctly implemented, and the applicable verification has actually been executed successfully.
+### FAIL
+The requirement applies but implementation or verification failed.
+### NOT VERIFIED
+The requirement may be implemented, but Cursor AI does not have sufficient evidence that it actually works or has been tested.
+### NOT APPLICABLE
+The requirement genuinely does not apply to the application.
+NOT APPLICABLE SHALL NEVER mean:
+- feature not implemented
+- feature not wired
+- feature not tested
+- feature not yet migrated
+- Cursor did not find it
+- Cursor did not have time to investigate
+- application currently does something different
+If a required feature is missing, the status is FAIL.
+---
+# 5. NO ASSUMPTIONS
+Cursor AI SHALL NOT infer compliance.
+Cursor AI SHALL NOT claim compliance because:
+- a similarly named class exists
+- a helper exists
+- a test file exists
+- a guardrail exists
+- documentation says the feature exists
+- another application implements the feature
+- the golden template contains the feature
+- the kit contains the feature
+- source-code search finds the expected symbol
+- a previous Cursor session reported success
+- one or more applications have passed the test
+Compliance requires evidence.
+---
+# 6. NO FALSE FAMILY-WIDE COMPLETION
+Cursor AI SHALL NOT report:
+"All Nivo78 applications comply"
+unless every applicable application has been audited.
+Cursor AI SHALL NOT report:
+"Family-wide PASS"
+when one or more applications are:
+- FAIL
+- NOT VERIFIED
+- omitted from the audit
+- not included in the applicable QA
+- known to lack the required implementation
+Partial compliance SHALL be reported as partial compliance.
+---
+# 7. APP-TEST-DESKTOP-PAGE-LAYOUT
+Every applicable Nivo78 desktop application SHALL have automated desktop page-layout QA.
+The page-layout QA SHALL:
+1. Maintain a catalog of every user-openable desktop page/view/screen.
+2. Open each cataloged page.
+3. Inspect the actual rendered desktop UI.
+4. Detect cut-off controls.
+5. Detect truncated text.
+6. Detect unusable ellipsis/truncation.
+7. Detect overlapping controls.
+8. Detect layout collisions.
+9. Detect inaccessible or unusable controls caused by layout.
+10. Fail the QA when a layout violation is found.
+The approved family assertion SHALL be used where applicable:
+`N78FamilyDesktopPageLayoutQa.assertPageLayoutIntegrity`
+The page-layout sweep SHALL be part of the normal desktop QA process.
+It SHALL NOT exist as an optional or separate audit that can be skipped.
+---
+# 8. PAGE CATALOG REQUIREMENT
+The page catalog SHALL represent the actual application.
+The catalog SHALL NOT contain only:
+- the main page
+- representative pages
+- pages selected because they are easy to test
+- pages known to be compliant
+Every user-openable page must be represented.
+If a page exists in the application but is absent from the catalog, the page-layout requirement is NOT VERIFIED and the application cannot receive family-wide PASS.
+---
+# 9. PAGE-LAYOUT EXECUTION REQUIREMENT
+The existence of a page-layout test is insufficient.
+Cursor AI SHALL verify that the test is actually invoked by the application's desktop QA.
+The audit SHALL distinguish between:
+1. Test code exists.
+2. Test is wired into QA.
+3. QA actually executes the test.
+4. Test passes.
+Only #4 constitutes PASS.
+---
+# 10. PAGE-LAYOUT FAILURE REQUIREMENT
+A page-layout violation SHALL cause the applicable desktop QA to fail.
+Cursor AI SHALL NOT:
+- suppress the failure
+- downgrade the failure to a warning
+- exclude the failing page
+- remove the page from the catalog
+- modify the test to make the page pass
+- mark the requirement NOT APPLICABLE
+- declare the application compliant while the failure remains
+A known failing page SHALL remain FAIL until corrected and retested.
+---
+# 11. WINFORMS DESKTOP APPLICATIONS
+WinForms applications SHALL receive an equivalent desktop page-layout audit.
+A .NET test that merely verifies source code, object creation, or control existence SHALL NOT be considered equivalent to rendered page-layout verification.
+The test must inspect actual desktop page behavior/layout to the extent supported by the application architecture.
+---
+# 12. EMAIL OPTIONS REQUIREMENT
+Every Nivo78 desktop application that opens, launches, sends, or prepares email SHALL provide:
+`Settings → Email options`
+The email options implementation SHALL use the approved Nivo78 family pattern where one exists.
+The setting SHALL control actual email behavior.
+A display-only settings screen does not satisfy this requirement.
+---
+# 13. EMAIL CLIENT SELECTION
+Where supported by the application, Email options SHALL provide the approved family choices for the user's email program.
+The choices SHALL be mutually exclusive.
+The application SHALL provide the approved "Ask each time" behavior where required by the family standard.
+The selected preference SHALL be persisted.
+The persisted preference SHALL be used by actual email dispatch.
+---
+# 14. EMAIL DISPATCH ENFORCEMENT
+Every email-producing action SHALL use the approved Email options mechanism.
+Cursor AI SHALL inspect all applicable email paths, including but not limited to:
+- feedback
+- bug reports
+- feature requests
+- reports
+- quotes
+- documents
+- sharing
+- contact actions
+- support actions
+- `mailto`
+- MAPI
+- browser-based webmail
+- Gmail web
+- Outlook web
+- Outlook desktop
+- Thunderbird
+- other mail-client launch mechanisms
+No email path may silently bypass the user's saved Email options selection.
+No email path may contain an undocumented hard-coded email client.
+---
+# 15. DOCUMENT EMAIL FORMAT
+If an application emails documents, its Email options SHALL provide the approved document-format choices applicable to that product.
+The family-supported choices are:
+- Plain text
+- PDF
+- Hosted HTML
+Hosted HTML SHALL ONLY be available when the application actually supports hosted-document sending.
+---
+# 16. HOSTED HTML RULE
+If an application does not support hosted document sending:
+`Hosted HTML`
+SHALL NOT appear in its Email options UI.
+Cursor AI SHALL verify both:
+1. The capability exists.
+2. The UI accurately reflects the capability.
+A UI option without working capability is FAIL.
+A working capability hidden from the required family UI is also FAIL where the family requirement applies.
+---
+# 17. EMAIL OPTIONS ARE CANONICAL
+Email behavior SHALL have one authoritative user-facing configuration.
+Cursor AI SHALL identify and report competing or duplicate email configuration systems.
+The application SHALL NOT contain multiple independent settings that can disagree about which email client or document format to use.
+---
+# 18. FEEDBACK REQUIREMENT
+The shared Nivo78 feedback mechanism SHALL be used where required by the family standard.
+Feedback SHALL use the same Email options preference as other application email functions.
+Feedback SHALL NOT create its own unrelated email-client selection.
+---
+# 19. FEEDBACK CONTEXT REQUIREMENT
+Feedback SHALL distinguish among the required feedback categories.
+At minimum, where the family feedback implementation applies:
+- General
+- Feature Request
+- Bug Report
+The displayed guidance and narrative placeholder SHALL correspond to the selected category.
+Bug-specific diagnostics SHALL only be presented when the selected feedback type is Bug Report.
+---
+# 20. FEEDBACK DATA REQUIREMENT
+The family feedback implementation SHALL use the approved family mechanisms, including where applicable:
+- `narrativePlaceholder`
+- `typeGuidance`
+- preferred email dispatch
+- remembered email preference
+Cursor AI SHALL verify actual behavior rather than merely checking for symbol names.
+---
+# 21. GOLDEN TEMPLATE REQUIREMENT
+The Nivo78 golden desktop application template SHALL contain all family-required infrastructure that is intended to be inherited by new applications.
+This includes applicable:
+- feedback functionality
+- email options
+- email preference storage
+- document email behavior
+- family QA hooks
+- required settings routes
+- required family guardrails
+The golden template SHALL be treated as an inheritance source, not as evidence that existing applications are compliant.
+---
+# 22. N78-KIT REQUIREMENT
+N78-Kit SHALL contain the family-standard components required for new desktop applications.
+Kit synchronization SHALL be verified.
+Kit verification SHALL fail if required family components are missing or altered incorrectly.
+---
+# 23. NEW APPLICATION REQUIREMENT
+A newly created Nivo78 desktop application SHALL inherit applicable family requirements automatically.
+Creating an application from the golden template or kit does not itself constitute compliance.
+The new application SHALL still undergo family compliance verification.
+---
+# 24. EXISTING APPLICATION REQUIREMENT
+Existing applications SHALL NOT be exempt merely because they predate the family standard.
+If a family requirement applies to an existing application, that application must either:
+- comply, or
+- be explicitly reported FAIL.
+---
+# 25. GUARDRAIL REQUIREMENT
+Guardrails SHALL enforce actual compliance.
+A guardrail that only checks whether a file, class, method, or symbol exists SHALL NOT be considered sufficient when actual behavior can be tested.
+Where practical, guardrails SHALL verify:
+- required implementation
+- required wiring
+- required execution
+- required application coverage
+- required test execution
+- required test result
+---
+# 26. SOURCE SEARCH IS NOT TESTING
+Cursor AI SHALL NOT substitute text search for behavioral verification.
+Finding:
+`N78FamilyDesktopPageLayoutQa`
+does not prove that page-layout QA runs.
+Finding:
+`EmailOptionsSettingsDialog`
+does not prove Email options works.
+Finding:
+`FeedbackEmailDispatch`
+does not prove feedback uses the selected email option.
+Finding a test method does not prove the test executes.
+Source inspection is an investigation method, not proof of compliance.
+---
+# 27. TEST EVIDENCE REQUIREMENT
+Every PASS SHALL have identifiable evidence.
+Evidence SHALL identify, where applicable:
+- application
+- requirement
+- test
+- test command
+- test result
+- relevant implementation
+- date/time or current run identifier when available
+Cursor AI SHALL not invent evidence.
+If evidence is unavailable, the result SHALL be NOT VERIFIED rather than PASS.
+---
+# 28. FAMILY-WIDE AUDIT REQUIREMENT
+A family-wide audit SHALL proceed in this order:
+1. Inventory applications.
+2. Determine applicability.
+3. Inspect family implementation.
+4. Inspect application implementation.
+5. Inspect test wiring.
+6. Execute applicable tests.
+7. Record results.
+8. Identify failures.
+9. Correct failures only when correction is within the requested scope.
+10. Re-run tests.
+11. Produce the final family compliance matrix.
+Cursor AI SHALL NOT skip directly from source inspection to a family-wide conclusion.
+---
+# 29. REQUIRED COMPLIANCE MATRIX
+Every family-wide audit SHALL produce a matrix containing at least:
+| Application | Requirement | Applicable | Implemented | Wired | Executed | Passed | Status | Evidence |
+|---|---|---|---|---|---|---|---|---|
+Every application must appear.
+Every applicable requirement must appear.
+Blank cells SHALL NOT be interpreted as PASS.
+---
+# 30. FAILURE HANDLING
+When a requirement fails, Cursor AI SHALL:
+1. Identify the application.
+2. Identify the exact requirement.
+3. Explain the actual deficiency.
+4. Identify the relevant source/code/test location.
+5. State whether the problem is implementation, wiring, testing, or enforcement.
+6. State what is required to achieve compliance.
+7. Re-test after correction.
+Cursor AI SHALL NOT move on and silently leave the failure unresolved.
+---
+# 31. SCOPE CONTROL
+Cursor AI SHALL not modify unrelated application behavior merely because it discovers unrelated issues.
+If unrelated defects are discovered, report them separately.
+Do not:
+- redesign unrelated UI
+- refactor unrelated code
+- rename unrelated classes
+- change unrelated business logic
+- change product behavior
+- introduce new architecture
+- replace working implementations unnecessarily
+Family compliance work must remain focused on the specified requirements.
+---
+# 32. NO HALLUCINATED IMPLEMENTATION
+Cursor AI SHALL NEVER claim that a component, test, guardrail, migration, or application behavior exists unless it has verified it in the actual workspace.
+Cursor AI SHALL NEVER invent:
+- filenames
+- classes
+- methods
+- tests
+- commands
+- applications
+- test results
+- migration status
+- implementation status
+If something cannot be located, report it as missing or not verified.
+---
+# 33. NO "PROBABLY COMPLIANT"
+The following statements SHALL NOT be used as compliance evidence:
+- probably compliant
+- appears compliant
+- should be compliant
+- inherited from the template
+- covered by the family library
+- covered by the guardrail
+- same as another application
+- no issue found
+- not applicable because it is not implemented
+Compliance requires evidence.
+---
+# 34. "NOT APPLICABLE" ENFORCEMENT
+Cursor AI SHALL use NOT APPLICABLE sparingly.
+Before assigning NOT APPLICABLE, Cursor AI SHALL document:
+1. The requirement.
+2. Why it would normally apply.
+3. The specific application characteristic that makes it genuinely inapplicable.
+4. The evidence supporting that determination.
+Example:
+Correct:
+`Email document format — NOT APPLICABLE — application never sends or prepares documents for email; verified all email paths.`
+Incorrect:
+`Email document format — NOT APPLICABLE — feature has not been implemented.`
+The second example is FAIL.
+---
+# 35. FAMILY-WIDE PASS CRITERIA
+A family-wide PASS requires:
+- every desktop application inventoried
+- every applicable requirement evaluated
+- every applicable implementation present
+- every required integration wired
+- every required QA test executed
+- every required QA test passed
+- no unresolved FAIL
+- no unexplained NOT VERIFIED
+- no omitted applications
+- no false NOT APPLICABLE determinations
+If any condition is false, the family-wide result is NOT PASS.
+---
+# 36. CURSOR OPERATING RULE
+When asked to "audit", "verify", "enforce", "make compliant", or "check" Nivo78 family requirements, Cursor AI SHALL interpret the request as a compliance task.
+Cursor AI SHALL NOT interpret it as:
+- a request for suggestions
+- a request for a partial audit
+- a request to inspect representative applications
+- a request to update documentation only
+- a request to create a theoretical implementation
+- a request to report what appears correct
+The required result is verified family-wide compliance status.
+---
+# 37. STOP CONDITIONS
+Cursor AI SHALL stop and report the issue when:
+- the application inventory cannot be established
+- required test infrastructure is missing
+- required family infrastructure is missing
+- a test cannot be executed
+- an application cannot be verified
+- evidence is contradictory
+- the requested change would require unrelated architectural changes
+- the user has not authorized a required scope expansion
+Cursor AI SHALL report the blocking condition instead of inventing a resolution.
+---
+# 38. REQUIRED FINAL REPORT
+Every completed family audit SHALL end with:
+## FAMILY STATUS
+`PASS` / `FAIL` / `NOT VERIFIED`
+## APPLICATION COVERAGE
+List every desktop application.
+## REQUIREMENT COVERAGE
+List every family requirement.
+## FAILURES
+List every failure by application and requirement.
+## NOT VERIFIED
+List every item lacking sufficient evidence.
+## NOT APPLICABLE
+List every N/A decision and its justification.
+## TESTS EXECUTED
+List the actual tests and their results.
+## CHANGES MADE
+List only changes actually made during the audit.
+## REMAINING WORK
+List every item preventing family-wide PASS.
+---
+# 39. FINAL NON-NEGOTIABLE RULE
+Cursor AI SHALL NEVER declare Nivo78 family-wide compliance based on partial coverage.
+Three passing applications do not establish family compliance.
+A passing template does not establish family compliance.
+A passing guardrail does not establish family compliance.
+A passing source-code search does not establish family compliance.
+A previous audit does not establish current family compliance.
+Only verified, current, application-by-application compliance establishes family-wide PASS.
+If Cursor AI cannot prove compliance, it SHALL report the requirement as NOT VERIFIED or FAIL rather than claiming PASS.
+END OF NIVO78 FAMILY-WIDE CURSOR AI ENFORCEMENT REQUIREMENTS

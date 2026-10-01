@@ -8,6 +8,7 @@ Canonical home (edit here):
   Desktop/Nivo78/N78Ops/reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md
   Desktop/Nivo78/N78Ops/reference/NIVO78_NEW_PRODUCT_CHECKLIST.txt
   Desktop/Nivo78/N78Ops/reference/CURSOR_STANDARDS_ENFORCEMENT.txt
+  Desktop/Nivo78/N78Ops/reference/NIVO78_FAMILY_WIDE_CURSOR_AI_ENFORCEMENT.txt
   Desktop/Nivo78/N78Ops/reference/NIVO78_CURSOR_RULE_MAP_1.31.md
 
 Cursor enforcement (layout 1.31):

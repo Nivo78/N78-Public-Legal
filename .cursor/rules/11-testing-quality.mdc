@@ -51,8 +51,18 @@ APP-TEST-UI-CRITICAL [GATE]
 \- Critical user workflows must have repeatable UI
 tests or documented equivalent verification, including
 
-  Save,
+ Save,
 Back/Cancel, validation, recovery, and core task completion.
+
+
+
+APP-TEST-DESKTOP-PAGE-LAYOUT [GATE]
+
+\- Every Nivo78 desktop app must open the shipping shell, display every page in the
+product page catalog, and run automated layout probes that fail on cut off, truncated,
+or overlapping primary chrome. Compose products use N78FamilyDesktopPageLayoutQa in
+CombinedReleaseQaTest and visibleUiQa; see reference/NIVO78_FAMILY_QA_TESTING_STANDARD.txt
+section 3e.
 
 
 
@@ -106,4 +116,4 @@ business data.
 
 ## Rule-ID coverage
 
-Primary attachment for: APP-TEST-FRESH-UPGRADE, APP-TEST-INTEGRATION, APP-TEST-OFFLINE, APP-TEST-REAL-DATA-SAFETY, APP-TEST-RECOVERY, APP-TEST-REGRESSION, APP-TEST-UI-CRITICAL, APP-TEST-UNIT.
+Primary attachment for: APP-TEST-DESKTOP-PAGE-LAYOUT, APP-TEST-FRESH-UPGRADE, APP-TEST-INTEGRATION, APP-TEST-OFFLINE, APP-TEST-REAL-DATA-SAFETY, APP-TEST-RECOVERY, APP-TEST-REGRESSION, APP-TEST-UI-CRITICAL, APP-TEST-UNIT.

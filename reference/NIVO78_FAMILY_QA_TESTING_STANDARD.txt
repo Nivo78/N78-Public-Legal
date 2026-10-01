@@ -1,0 +1,351 @@
+NIVO78 FAMILY QA AND TEXT-TEST STANDARD — v1.53
+Document ID: NIVO78-QA-STD-2026-V1.53
+On-screen interaction detail: reference/NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md
+================================================
+
+Authority: companion to NIVO78_APP_STANDARD.txt (TESTING AND QUALITY).
+Reference implementation: N78-Machining (headless + visible desktop QA).
+Every current and new Nivo78 product MUST implement the same **lanes**, tuned per app.
+
+Rule IDs (GATE):
+  APP-TEST-TEXT-ORCHESTRATOR
+  APP-TEST-RELEASE-QA-SUITE
+  APP-TEST-VAULT-BACKUP-QA
+  APP-TEST-DESKTOP-PAGE-LAYOUT
+
+Primary Cursor projection: .cursor/rules/11-testing-quality.mdc
+Product doc (required): docs/QA_RELEASE_SUITE.md
+Product evidence map: docs/GATE_EVIDENCE_MAP.md (verifier paths)
+
+
+1. PURPOSE
+----------
+
+Ship-quality regression is not ad hoc Gradle or dotnet invocations. Each product
+maintains:
+
+  A) A **dedicated text-test orchestrator** (serial scenarios + optional Agent
+     audit phases) tuned to that product's engine, paths, and prompts.
+
+  B) A **release QA suite orchestrator** (Machining-style) that runs automated
+     unit/integration/UI lanes in a fixed order before release.
+
+  C) **Password, vault, and backup/restore coverage** wherever the product
+     exposes those capabilities — or explicit negative/override evidence when
+     family policy exempts vault (see section 4).
+
+  D) **Unified desktop results reporting** — one operator-facing dashboard
+     (ALL-RESULTS.html) that aggregates every automated QA lane with counts
+     and links to detail reports (see section 3c).
+
+
+2. TEXT-TEST ORCHESTRATOR (APP-TEST-TEXT-ORCHESTRATOR)
+------------------------------------------------------
+
+Every product MUST ship:
+
+  tools/text-tests/run-text-scenarios.ps1
+    - Product name in script header (not a generic family-only runner).
+    - Resolves **this repo's** root and builds/loads the correct engine assembly
+      (or KMP test harness) for scenario execution.
+    - Reads scenarios from a product folder (e.g. tests/text-scenarios/).
+    - Integrates orchestrator findings reporting (warnings/failures docx path
+      consistent with family Common scripts under Desktop/Nivo78/Text Tests/).
+
+  tools/maintain/run-all-text-tests.ps1 (or product-named equivalent)
+    - **Dedicated** to one product: phase list, audit root, results directory,
+      and segment markers MUST NOT be shared verbatim across products without
+      product-specific paths and labels.
+    - Minimum automated step: engine text scenarios (same engine as release QA).
+    - Optional steps: family Common Text Tests prompts under
+      Desktop/Nivo78/Common/Text Tests/ with product overlay under
+      reference/text-tests-audit/prompts/.
+
+  reference/text-tests-audit/README.md
+    - Documents run order, launchers, active-segment state, and results paths.
+
+  Launchers (repo + Desktop Apps twin per desktop-launcher-bats rule):
+    - Engine-only: N78-{Product}-TextTests.bat (or established product alias).
+    - Full text suite: N78-{Product}-Run-All-Text-Tests.bat when Agent phases
+      are used.
+
+GATE evidence: successful run of engine scenarios in CI or release gate;
+full run-all-text-tests documented in QA_RELEASE_SUITE for manual/Agent lanes.
+
+
+3. RELEASE QA SUITE (APP-TEST-RELEASE-QA-SUITE) — MACHINING LANES
+-----------------------------------------------------------------
+
+Every product MUST ship:
+
+  tools/maintain/run-{product}-qa-suite.ps1
+  tools/launchers/N78-{Product}-QA-Suite.bat
+  tools/launchers/N78-{Product}-QA-Suite-Visible.bat (when :desktop:visibleUiQa exists)
+  Desktop/Apps/N78-{Product}/N78-{Product}-QA-Suite.bat (Apps twin)
+  Desktop/Apps/N78-{Product}/N78-{Product}-QA-Suite-Visible.bat (Apps twin)
+  docs/QA_RELEASE_SUITE.md
+
+Headless suite — minimum lanes (adapt module names to stack):
+
+  Lane 1 — Shared logic / guardrails / engine integration
+    - KMP: :shared:desktopTest (or product equivalent JVM test task).
+    - Entry: {Product}CombinedReleaseQaTest (or documented equivalent) for
+      guardrails and policy in one Gradle filter when used.
+
+  Lane 2 — On-screen UI automation (platform-tuned)
+    - Desktop Compose/KMP: :desktop:desktopTest — screen reading, critical
+      dialogs, navigation smoke (Machining: ComposeScreenReadingUiTest family).
+    - WinForms / VB primary shell: dotnet test UI/engine project when that is
+      the shipping surface (add alongside Compose when both exist).
+    - Store-only mobile: :app:connectedCheck / instrumented or documented
+      phone QA runner with the **same intent** as desktop visibleUiQa (section
+      3b).
+
+  Lane 3 — Text scenarios (when not duplicate-run in same invocation)
+    - tools/text-tests/run-text-scenarios.ps1
+
+  Optional Lane 4 — Product verify script (website, packaging) when already
+    part of ship gate — call from QA suite doc; do not replace lanes 1–3.
+
+3c. Unified results reporting (APP-TEST-RELEASE-QA-SUITE — mandatory)
+
+Every product with an automated release QA suite MUST publish **family-format**
+results under the operator Desktop (same root resolution as Machining):
+
+  %USERPROFILE%\Desktop\Results\N78-{Product}\
+
+Required entry point (open this first):
+
+  ALL-RESULTS.html
+    - Written or refreshed at the end of every run-{product}-qa-suite.ps1
+      (pass and fail).
+    - **Single file, full test list:** summary table plus embedded sections
+      listing every test case / scenario executed in **this run** (JUnit XML,
+      TRX, text-scenario summary JSON). Operators must not need to open
+      multiple LATEST-* pages to see all results.
+    - Summary **table**: one row per lane (guardrails, Gradle modules, dotnet,
+      text scenarios) with columns Lane | Tests | Failures | Skipped | Notes.
+    - Footer row: **Grand total** across lanes run in this session.
+    - **On-screen UI** lane MUST appear under an explicit heading (e.g.
+      ":desktop:desktopTest — on-screen Compose UI") when the product ships
+      Compose UI tests; distinguish from watchable visibleUiQa preview logs.
+    - Suite status (PASSED / FAILED), timestamp, optional qa-runs/{id} snapshot.
+    - LATEST-* folders remain optional Gradle/dotnet drill-down copies.
+
+Per-lane detail artifacts (LATEST-* convention):
+
+  LATEST-{module}-{testTask}/index.html
+    - Full Gradle HTML report bundle (css/js alongside index.html).
+  LATEST-{module}-{testTask}.html
+    - Redirect stub at Results root → folder index.html (never a lone copied
+      index at root without assets).
+
+  When the suite runs dotnet test (WinForms, C#, or secondary engine VB):
+  LATEST-dotnet-{lane}/index.html (+ LATEST-dotnet-{lane}.html redirect)
+    - Generate from TRX (or equivalent machine-readable log) with per-test
+      outcome list.
+    - TRX may live under Results/N78-{Product}/dotnet/... for re-publish.
+
+  PARTIAL-* bundles when Gradle runs with --tests filters; LATEST-* updates
+  only on full lane runs (or when publishLatestReport=true on intentional
+  full lane). Document partial behavior in docs/QA_RELEASE_SUITE.md.
+
+Implementation (product-tuned, shared contract):
+
+  tools/lib/N78DesktopTestResults.ps1 (or {Product}DesktopTestResults.ps1)
+    - Resolve Desktop Results root (env N78_DESKTOP_RESULTS_DIR override).
+    - Publish-N78{Product}QaRunSummary (or shared name) builds ALL-RESULTS.html.
+    - Parse Gradle index.html for tests/failures/skipped (with fallback to
+      repo build/reports and Results/gradle/.../html/index.html when LATEST
+      bundle missing).
+    - Ingest dotnet TRX counters for the dotnet lane row.
+
+  Gradle (KMP desktop products):
+    - Sync HTML + JUnit XML to Desktop Results on desktopTest (Machining/
+      Estimate pattern in code/build.gradle.kts).
+    - Property n78.{product}.publishLatestReport=true from QA suite script.
+
+Reference implementations:
+  N78-Machining — ALL-RESULTS.html + LATEST Gradle bundles.
+  N78-Estimate — ALL-RESULTS.html with shared + desktop Gradle + dotnet
+  WinForms lanes and total count (235-class full suite).
+
+Store-only / no Desktop Results folder:
+  - Publish ALL-RESULTS.html (or product-equivalent index) wherever the
+    product's QA doc specifies, with the **same table schema** and links to
+    JVM/instrumented HTML or CI artifacts. Do not skip aggregation.
+
+GATE evidence: ALL-RESULTS.html exists after QA suite run; GATE_EVIDENCE_MAP.md
+lists publish function and paths; docs/QA_RELEASE_SUITE.md tells operators to
+open ALL-RESULTS.html first.
+
+3b. Visible / watchable QA (desktop or phone)
+
+  tools/launchers/N78-{Product}-QA-Suite-Visible.bat
+  Gradle task visibleUiQa (or product-named) OR documented phone harness.
+
+  Same automation **style** as Machining: real app shell chrome where possible,
+  multi-pass exploration, copy/paste probes where applicable. Headless lane 2
+  remains the default release blocker; visible lane is operator preview.
+
+GATE evidence: run-{product}-qa-suite.ps1 (or launcher) green on release branch;
+GATE_EVIDENCE_MAP.md lists exact tasks and test class names.
+
+
+3d. ON-SCREEN EXHAUSTIVE INTERACTION & COMPONENT EXPLORATION (mandatory)
+
+Every application with a desktop visibleUiQa harness MUST execute an exhaustive
+interaction pass on the real visual surface. Slideshow-only or non-interactive
+step-through is prohibited.
+
+  1. EXHAUSTIVE CONTROL COVERAGE
+     - Text fields: focus, type, select-all/copy, clear, empty-state check,
+       paste/re-enter, blur/commit (Tab or IME).
+     - Buttons and action bars: exercise primary, secondary, utility controls;
+       destructive actions use Cancel/dismiss first where applicable.
+     - Toggles, checkboxes, tabs, dropdowns, page views: cycle states.
+
+  2. RUNTIME VISIBILITY & PACING
+     - visibleUiQa MUST use a visible bordered desktop host (runDesktopComposeUiTest,
+       Compose Window, or WinForms). Headless runSkikoComposeUiTest is for
+       :desktop:desktopTest CI only.
+     - Controlled pacing (50–150 ms per interaction) so operators can watch.
+     - Selector hygiene and mutation sequence: NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md
+       §2.1–§2.3.
+
+  3. AUTHENTICATION & BACKUP ENFORCEMENT (Rule 162)
+     - Vault/passcode products: bad input, good unlock, backup restore matrix.
+     - No-vault override: assert no vault chrome; legal gate still tested.
+     - Backup: engine round-trip plus UI restore readout when shipped.
+
+  4. UNIFIED CONSOLIDATION (single-file law)
+     - Each visible interaction assertion emits a discrete pass/fail record.
+     - ALL lanes compile into Desktop\\Results\\N78-{Product}\\ALL-RESULTS.html.
+     - ONE master table lists 100% of individual tests with lane, time, PASS/FAIL.
+
+Product implementation: granular JSON (or TRX-equivalent) from visibleUiQa
+ingested by tools/lib/*DesktopTestResults.ps1 into ALL-RESULTS.html.
+
+
+3e. DESKTOP PAGE LAYOUT VISIBILITY (APP-TEST-DESKTOP-PAGE-LAYOUT) — mandatory
+
+Every Nivo78 **desktop** app (Compose Desktop primary shell, WinForms primary shell,
+or dual-stack) MUST open the shipping UI, **display every cataloged page**, and fail
+automated QA when layout probes detect **cut off**, **truncated**, or **overlapping**
+interactive or primary readout chrome.
+
+  1. PAGE CATALOG
+     - Maintain the authoritative page list in product code (exploration catalog or
+       equivalent) covering every module tab, settings/help surface, and primary modal
+       route exercised before release.
+     - docs/QA_RELEASE_SUITE.md MUST name the catalog and the CombinedReleaseQaTest /
+       visibleUiQa entry that visits it.
+
+  2. AUTOMATED PROBES (minimum)
+     - After each page is displayed and layout is idle, call the family hook
+       N78FamilyDesktopPageLayoutQa.assertPageLayoutIntegrity (Compose) or the
+       product's documented WinForms/dotnet equivalent.
+     - Probes MUST detect: semantic bounds clipped inside the viewport while the
+       node center is visible; ellipsis on primary chrome labels; overlapping
+       clickable controls (buttons, tabs, checkboxes) beyond tolerance.
+
+  3. LANES
+     - Headless CombinedReleaseQaTest / mass exploration: full page sweep + probes
+       before or during multi-pass exploration.
+     - visibleUiQa: same sweep so operators can watch every page display.
+     - WinForms-only products: dotnet UI test or documented runner with the same
+       page list and human-readable failure rows in ALL-RESULTS.html.
+
+  4. MANUAL SUPPLEMENT
+     - docs/QA_MANUAL_VISUAL_CHECKLIST.md retains DPI scaling and aesthetic checks
+       automation cannot judge; it does not replace the automated page sweep.
+
+GATE evidence: CombinedReleaseQaTest (or equivalent) references displayEveryPageLayoutSweep
+or assertPageLayoutIntegrity; GATE_EVIDENCE_MAP.md lists verifier class paths.
+
+
+4. PASSWORD, VAULT, AND BACKUP/RESTORE (APP-TEST-VAULT-BACKUP-QA)
+-----------------------------------------------------------------
+
+Coverage is **capability-based**, not one-size-fits-all.
+
+4a. Vault / master passcode products (Machining, Electrical, …)
+
+  Engine (shared desktopTest minimum):
+    - Auto backup engine: plain export round-trip AND encrypted vault backup
+      round-trip (passcode and recovery-key paths when shipped).
+    - Naming reference: MachiningAutoBackupEngineTest pattern.
+
+  Desktop Compose UI (desktopTest minimum):
+    - Vault passcode / unlock dialogs: ComposeVaultPasswordUiTest pattern.
+    - Backup restore UI: plain file restore + encrypted decrypt-and-restore
+      dialog: ComposeVaultBackupRestoreUiTest pattern.
+
+  Visible QA: operator can watch vault/backup flows in visibleUiQa where wired.
+
+4b. Backup without vault (document export, job backup, …)
+
+  Engine: document/job backup serialize + restore + corrupt/truncation handling
+    where APP-BACKUP-* and APP-TEST-RECOVERY apply.
+
+  UI: user-facing restore path exercised in Compose or WinForms tests when the
+    product exposes restore in UI.
+
+4c. Approved APP-VAULT-CONTRACT override (no vault)
+
+  Register override in Desktop/Nivo78/Common/standard-overrides/.
+  QA MUST still include:
+    - Legal gate / first-run acceptance tests when LEGAL-GATE applies.
+    - Explicit guardrails: no master passcode / vault unlock chrome in shell.
+    - Backup lane for the product's **actual** backup format (e.g. plain JSON).
+
+  docs/QA_RELEASE_SUITE.md MUST state override and map tests (Estimate pattern).
+
+4d. Store / phone-only products
+
+  When no desktop module exists, map lanes 2 and 3b to:
+    - JVM unit/integration tests for backup/crypto logic, AND
+    - Instrumented or manual phone QA doc with password/backup steps where UI
+      exists on device.
+
+NOT APPLICABLE only when the product has no backup and no secrets surface;
+document NOT APPLICABLE in QA_RELEASE_SUITE.md and GATE_EVIDENCE_MAP.md.
+
+
+5. NEW PRODUCT STAMP (N78-KIT)
+------------------------------
+
+Stamp MUST create skeleton:
+
+  - run-text-scenarios.ps1 + tests/text-scenarios/README.txt
+  - run-all-text-tests.ps1 stub with product results path
+  - run-{product}-qa-suite.ps1 + QA-Suite.bat (+ Visible when desktop Compose)
+  - tools/lib/*DesktopTestResults.ps1 + ALL-RESULTS publish at end of suite
+  - {Product}CombinedReleaseQaTest + placeholder guardrail runner
+  - docs/QA_RELEASE_SUITE.md from Machining template with TODO lanes marked
+    and ALL-RESULTS / LATEST-* paths documented
+  - Vault/backup test stubs when product.identity declares vault or backup
+
+Existing products: bring into compliance before next store/desktop release.
+
+
+6. VERIFIER SUMMARY (per product)
+---------------------------------
+
+| Rule ID | Typical verifier |
+| --- | --- |
+| APP-TEST-TEXT-ORCHESTRATOR | tools/text-tests/run-text-scenarios.ps1; run-all-text-tests.ps1 |
+| APP-TEST-RELEASE-QA-SUITE | run-{product}-qa-suite.ps1; N78-{Product}-QA-Suite.bat; Desktop\\Results\\N78-{Product}\\ALL-RESULTS.html |
+| APP-TEST-VAULT-BACKUP-QA | Named engine + UI tests in QA_RELEASE_SUITE.md; override doc if no vault |
+| APP-TEST-DESKTOP-PAGE-LAYOUT | Page catalog + N78FamilyDesktopPageLayoutQa (or WinForms equivalent) in CombinedReleaseQaTest / visibleUiQa |
+
+Missing product-tuned orchestrator or Machining-parity lanes = NOT VERIFIABLE
+for certification.
+
+
+7. SYNC
+-------
+
+Canonical maintenance home: N78-Ops/reference/ (family standards home).
+Product repos hold working copies; run updocs / install-n78-cursor-standards.ps1
+-SyncMirrors after editing this file in any repo.

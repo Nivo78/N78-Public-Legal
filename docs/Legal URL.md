@@ -1,6 +1,6 @@
 # Nivo78 public legal URLs (N78-Public-Legal)
 
-Generated: September 30, 2026
+Generated: October 1, 2026
 
 Canonical GitHub Pages base: `https://nivo78.github.io/N78-Public-Legal/`
 

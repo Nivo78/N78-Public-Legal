@@ -163,6 +163,7 @@ Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 158 | APP-TRIAL-READONLY-EXPORT-LOCK | GATE | 01-product-philosophy.mdc
 159 | WEB-PRODUCT-TRIAL-AFTER-COPY | QA | 17-web-marketing.mdc
 160 | APP-LEGAL-IN-APP-DIALOG | GATE | 07-overrides-legal.mdc
+161 | APP-TEST-DESKTOP-PAGE-LAYOUT | GATE | 11-testing-quality.mdc
 
 CLASS DEFINITIONS
 - STATIC = source/configuration requirement suitable for automated/static enforcement.
