@@ -6,7 +6,8 @@
 #>
 param(
     [string]$Nivo78Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
-    [string[]]$OnlyLabel = @()
+    [string[]]$OnlyLabel = @(),
+    [switch]$RequireLabelMatch
 )
 
 $ErrorActionPreference = 'Stop'
@@ -80,9 +81,14 @@ $products = @(
 )
 
 Write-Host 'N78-STD-LEGAL-01 family verifier' -ForegroundColor Cyan
+$scanned = 0
 foreach ($p in $products) {
     if ($OnlyLabel.Count -gt 0 -and ($OnlyLabel -notcontains $p.Label)) { continue }
+    $scanned++
     Test-RepoLegalCompliance -RepoPath (Join-Path $Nivo78Root $p.Path) -Label $p.Label
+}
+if ($RequireLabelMatch -and $OnlyLabel.Count -gt 0 -and $scanned -eq 0) {
+    Add-Fail "No product matched OnlyLabel ($($OnlyLabel -join ', ')) — fix display_name or repo folder vs family catalog."
 }
 
 if ($failures.Count -gt 0) {

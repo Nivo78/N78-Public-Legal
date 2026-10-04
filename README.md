@@ -30,6 +30,15 @@ Runs, in order: `sync-from-n78-website.ps1` → `ensure-all-family-legal-pages.p
 pwsh -NoProfile -File tools/sync-from-n78-website.ps1
 ```
 
+## N78-STD-LEGAL-01 (in-app embedded + GitHub canonical)
+
+- Standard: `reference/N78-STD-LEGAL-01.txt`
+- Family scan: `tools/verify/verify-n78-std-legal-01-family.ps1`
+- Per-product verify hook: `tools/verify/Invoke-N78StdLegal01ProductVerify.ps1` (wired from each product `tools/verify/verify-product.ps1`)
+- Regenerate KMP embedded baselines: `tools/sync-embedded-legal-baselines.ps1 -DisplayName "N78-Foo" -OutDir <product>/shared/src/commonMain/resources/legal`
+- WinForms family module: `family/winforms/N78FamilyWinFormsLegalSnapshot.vb` (mirror: `tools/sync-winforms-legal-snapshot.ps1`)
+- WinForms GATE: `family/tools/verify/Assert-N78WinFormsFamilyLegal.ps1`
+
 ## Ensure three pages for every family app (catalog from N78-Kit `family-apps.json` + N78-QRTest)
 
 Creates **missing** privacy / terms / operator pages from `templates/` (does not overwrite existing website-synced privacy or terms):
