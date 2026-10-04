@@ -1,0 +1,145 @@
+N78-STD-LEGAL-01 — Canonical GitHub Legal with Embedded Offline Fallback
+Rule IDs: APP-LEGAL-OFFLINE-SNAPSHOT (GATE), APP-LEGAL-VIEWER-ATTRIBUTION (QA), APP-LEGAL-GITHUB-CANONICAL-FALLBACK (GATE)
+Projection: .cursor/rules/07-overrides-legal.mdc, 01-product-philosophy.mdc
+Effective: 2026-10-04 (strengthened; supersedes 2026-09-30 offline-only wording)
+Applies to: Every current and future Nivo78 application — NO EXCEPTIONS
+
+================================================================================
+NO EXCEPTIONS
+================================================================================
+This requirement applies to all current and future Nivo78 applications, regardless
+of framework, platform, product type, distribution channel, or implementation
+architecture, including KMP, desktop, Android, iOS, Windows, WinForms, WebView,
+native UI, HTML, plain-text snapshots, templates, and applications derived from
+templates. If an application presents Privacy, Terms, Operator Disclaimer, or
+other required legal documents, it MUST comply.
+
+Local-only legal pages or static in-app strings alone are NOT compliance.
+Required observable behavior: GitHub canonical retrieval when available, with a
+complete shipped embedded fallback that is immediately available offline.
+
+Classification for shipped violations: #3 — Actual application defect requiring
+production app-code changes (not optional refactor or documentation-only).
+
+================================================================================
+1. CANONICAL SOURCE
+================================================================================
+- Authority: N78-Public-Legal published on GitHub Pages
+  (https://nivo78.github.io/N78-Public-Legal/pages/{DisplayName}.{privacy|terms|operator}.html)
+- Product repositories MUST NOT become competing authoritative legal sources.
+- Embedded snapshots exist for offline operation, first-run, network failure,
+  GitHub outage, air-gapped use, and resilience — not as source of truth.
+
+================================================================================
+2. RUNTIME BEHAVIOR (MANDATORY)
+================================================================================
+Initial display:
+- Local embedded content MUST be available synchronously when the legal UI opens.
+- Do NOT block first paint on network, spinners, blank screens, or errors.
+
+Canonical retrieval (non-blocking):
+- After local content is shown, the app MAY attempt HTTPS fetch of the canonical
+  GitHub Pages document for that product and document type.
+- SUCCESS: display the canonical GitHub version (replace or upgrade visible text).
+- FAILURE (offline, DNS, TLS, timeout, 4xx/5xx): keep displaying embedded snapshot;
+  fail silently to the user; no crash; legal gate remains usable.
+
+Forbidden:
+- Internet required → legal document
+- GitHub unavailable → error / blank / endless loading
+- Accept blocked until network sync succeeds (unless a registered standards conflict)
+
+Conceptual model:
+  LegalDocumentRequest → embedded snapshot available immediately → display
+  → attempt GitHub canonical → success: show canonical | failure: keep embedded
+
+Reference KMP: LegalSnapshotRepository.readingSnapshot(type) with UI seeding from
+activeSnapshot/bundledSnapshot before suspend fetch (N78-Electrical, N78-Machining).
+
+================================================================================
+3. EMBEDDED SNAPSHOT REQUIREMENT
+================================================================================
+- Every legal document the app presents MUST have a shipped embedded snapshot
+  (e.g. commonMain/resources/legal/*-baseline.txt and platform asset twins).
+- Snapshots MUST be complete enough for offline review — not placeholders such as
+  "Internet connection required" or summary-only stubs when canonical is full text.
+- Prefer regeneration from N78-Public-Legal HTML via family sync tooling; avoid
+  hand-editing embedded bodies when canonical changed.
+
+================================================================================
+4. CACHE (OPTIONAL ENHANCEMENT)
+================================================================================
+Order of preference when cache is implemented:
+  Embedded snapshot (guaranteed) → cached canonical → fresh GitHub canonical
+Cache is NOT a substitute for embedded snapshot. App MUST work with no cache,
+corrupt cache, or deleted cache.
+
+================================================================================
+5. LEGAL GATE
+================================================================================
+First-run / acceptance gates MUST:
+- Open without Internet; show embedded content immediately; allow scroll-to-end;
+- Remain usable if GitHub cannot be reached; optionally upgrade to canonical after fetch.
+- Never wire Accept to exitApplication/process kill (APP-UI-DIALOG-CANCEL-BUTTON).
+
+================================================================================
+6. ATTRIBUTION (QA)
+================================================================================
+When source is known, UI MAY show "Canonical GitHub Pages" vs "Embedded fallback".
+Attribution MUST NOT prevent display.
+
+================================================================================
+7. SYNCHRONIZATION PIPELINE
+================================================================================
+N78-Public-Legal (canonical HTML) → snapshot generation → embedded resources → build
+When legal changes: update Public-Legal → regenerate snapshots → verify → build →
+test online/offline/first-run → commit → push affected repos.
+
+Tooling: N78-Public-Legal/tools/sync-embedded-legal-baselines.ps1 (family),
+         tools/port-n78-std-legal-01-to-kmp-app.ps1 (KMP port),
+         tools/sync-winforms-legal-snapshot.ps1 (WinForms family module → Common mirror)
+
+================================================================================
+8. ARCHITECTURE
+================================================================================
+Prefer shared LegalSnapshotRepository + readingSnapshot in KMP commonMain.
+Equivalent behavior required when framework prevents reuse (document reason).
+WinForms: family/winforms/N78FamilyWinFormsLegalSnapshot.vb (versioned here);
+  products link via vbproj; runtime mirror at Desktop/Nivo78/Common/WinForms.
+
+================================================================================
+9. AUTOMATED ENFORCEMENT (GATE)
+================================================================================
+Guardrails MUST fail (not warn) when:
+- Legal gate or viewer lacks embedded fallback resources
+- Legal loading is network-only or blocks on fetch
+- Static scroll body used where repository pattern is required (KMP with legal gate)
+- Missing Public-Legal URL mapping for presented documents
+
+Failure message:
+  N78-STD-LEGAL-01 FAIL — Legal delivery does not implement GitHub canonical
+  source + embedded offline fallback.
+
+Verifier: N78-Public-Legal/tools/verify/verify-n78-std-legal-01-family.ps1
+
+================================================================================
+10. VERIFICATION CHECKLIST
+================================================================================
+Online: open legal → local immediate → canonical retrieved → canonical shown
+Offline: open legal → full embedded text, no blocking error
+GitHub failure: fetch fails → embedded remains, app continues
+First-run clean: no cache, no network → gate shows embedded snapshot
+Regression: scroll, accept/cancel, links, subsequent launches
+
+================================================================================
+11. REFERENCE IMPLEMENTATIONS
+================================================================================
+- N78-Electrical, N78-Machining: LegalSnapshotRepository, FamilyLegalDocumentModal
+- N78-Public-Legal: canonical HTML pages
+- Pairs with APP-DESKTOP-STARTUP-FULLSCREEN-LEGAL-SCROLL (desktop first-run)
+
+Family statement (documentation):
+All Nivo78 applications use canonical GitHub-hosted legal documents with a shipped
+local fallback. Mandatory for every current and future application. No application-
+specific exceptions. Local-first: GitHub provides current canonical; the app
+provides guaranteed offline version.

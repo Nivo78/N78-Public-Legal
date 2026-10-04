@@ -6,7 +6,8 @@ NIVO78 NEW PRODUCT CHECKLIST — v1.40
 4. Identify applicable rule IDs before implementation and use their primary projection.
 5. Verify display resolution awareness on high-res displays (HiDPI / 4K / Retina) and full UI scalability across display zoom / DPI scaling (100% to 300%+) with zero text truncation or clipping.
 5a. Desktop-dense apps: implement APP-UI-UNIFORM-SURFACE-VIEWPORT — port AppUiScaling + CompactMainViewportHost from N78-Estimate (see reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md); scroll home flush top-left; no primary AutoScroll host.
-6. Feedback — platform split (both mandatory where applicable):
+6. Legal (N78-STD-LEGAL-01 — NO EXCEPTIONS): GitHub Pages canonical from N78-Public-Legal plus complete embedded offline fallback. KMP: run tools/port-n78-std-legal-01-to-kmp-app.ps1 after stamp; wire FamilyLegalDocumentModal + LegalSnapshotRepository. WinForms: link family/winforms/N78FamilyWinFormsLegalSnapshot.vb, embed Resources/legal/*-baseline.txt (sync-embedded-legal-baselines.ps1), run sync-winforms-legal-snapshot.ps1 for Common mirror. Verifier: verify-n78-std-legal-01-family.ps1.
+6a. Feedback — platform split (both mandatory where applicable):
    a. Windows desktop (APP-FEEDBACK-WIN-DESKTOP-TWO-PATHWAY): three categories; Gmail (Browser) + Desktop Mail App; Save Report + Copy; support@nivo78.com; Cancel; spec reference/NIVO78_WINDOWS_DESKTOP_FEEDBACK.txt. KMP: FamilyFeedbackScreen + routing. WinForms: Common/WinForms/N78FamilyWinFormsFeedback.vb.
    b. Mobile / Play (APP-FEEDBACK-BUG-NARRATIVE): mailto body sections (NAME/EMAIL/PHONE, --- REPORT_TYPE ---, narrative, --- SETTINGS_FOR_SUPPORT ---, --- EXTENDED_DIAGNOSTICS --- when applicable). N78-Ops FeedbackScreen remains authoritative for Ops mobile until desktop two-pathway ships there.
 7. For every applicable [GATE], provide a real executable adapter/test and map it in the GATE evidence map.

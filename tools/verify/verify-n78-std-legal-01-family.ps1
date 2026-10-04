@@ -5,7 +5,8 @@
   Exit 1 with "N78-STD-LEGAL-01 FAIL" when a repo with an in-app legal gate lacks compliance signals.
 #>
 param(
-    [string]$Nivo78Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path
+    [string]$Nivo78Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..\..')).Path,
+    [string[]]$OnlyLabel = @()
 )
 
 $ErrorActionPreference = 'Stop'
@@ -80,6 +81,7 @@ $products = @(
 
 Write-Host 'N78-STD-LEGAL-01 family verifier' -ForegroundColor Cyan
 foreach ($p in $products) {
+    if ($OnlyLabel.Count -gt 0 -and ($OnlyLabel -notcontains $p.Label)) { continue }
     Test-RepoLegalCompliance -RepoPath (Join-Path $Nivo78Root $p.Path) -Label $p.Label
 }
 
