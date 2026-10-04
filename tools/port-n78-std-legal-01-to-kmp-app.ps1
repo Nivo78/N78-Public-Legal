@@ -132,9 +132,17 @@ object $UrlsObjectName {
 
 # Patch FamilyLegalGate
 $gateFile = Get-ChildItem (Join-Path $sharedSrc "commonMain\kotlin\$pkgPath\ui\FamilyLegalGate.kt") -ErrorAction SilentlyContinue
+$machiningGateTemplate = Join-Path $TemplateRoot "commonMain\kotlin\com\nivo78\machining\ui\FamilyLegalGate.kt"
 if ($gateFile) {
     $g = Get-Content -Raw $gateFile.FullName
-    if ($g -match 'FamilyLegalScrollDocumentModal') {
+    if ($g -match 'privacyPolicyChecked|onViewPrivacyPolicy') {
+        if (-not (Test-Path $machiningGateTemplate)) { throw "Missing gate template $machiningGateTemplate" }
+        $g = Get-Content -Raw $machiningGateTemplate
+        $g = $g -replace 'com\.nivo78\.machining', $PackagePrefix
+        Set-Content -Path $gateFile.FullName -Value $g -Encoding utf8 -NoNewline
+    }
+    elseif ($g -match 'FamilyLegalScrollDocumentModal') {
+        $g = Get-Content -Raw $gateFile.FullName
         $g = $g -replace 'var showTermsModal by remember \{ mutableStateOf\(false\) \}\s*\r?\n\s*var showPrivacyModal by remember \{ mutableStateOf\(false\) \}', 'var showLegalModalKind by remember { mutableStateOf<LegalDocumentKind?>(null) }'
         $g = $g -replace '(?s)if \(showTermsModal\) \{.*?\}\s*if \(showPrivacyModal\) \{.*?\}\s*\r?\n', @'
     if (showLegalModalKind != null) {
