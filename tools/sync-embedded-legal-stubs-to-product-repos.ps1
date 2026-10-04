@@ -46,7 +46,7 @@ foreach ($app in $apps) {
     if ([string]::IsNullOrWhiteSpace($slug)) { continue }
     $outDir = Join-Path $repoRoot "code\Website\$slug"
     if (-not (Test-Path -LiteralPath (Split-Path $outDir -Parent))) { continue }
-    & $expandScript -IdentityPath $identityPath -OutDir $outDir
+    & $expandScript -IdentityPath $identityPath -OutDir $outDir -LegalRedirectStubsOnly
     $expanded += $folder
 }
 
