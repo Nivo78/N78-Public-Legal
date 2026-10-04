@@ -1,0 +1,24 @@
+N78-Public-Legal — canonical legal authority (Nivo78 family)
+============================================================
+
+Sole source of truth for hosted privacy, terms, and operator-responsibility HTML:
+
+  Repository: https://github.com/Nivo78/N78-Public-Legal  (branch: main)
+  GitHub Pages: https://nivo78.github.io/N78-Public-Legal/pages/
+
+File pattern (flat pages/):
+
+  {App display name}.privacy.html
+  {App display name}.terms.html
+  {App display name}.operator.html
+
+Product repos, N78-Website, and nivo78.com must not host authoritative policy bodies.
+Use redirect stubs (N78-Kit legal/*_github_redirect.html) that point to GitHub Pages.
+
+In-app and store listing URLs must match N78FamilyPublicLegalUrls in N78-Theme.
+
+Refresh pipeline (run from this repo):
+
+  tools/refresh-public-legal-mirror.ps1
+
+Then commit and push this repository before releases that cite legal URLs.

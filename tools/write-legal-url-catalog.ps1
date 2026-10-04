@@ -42,15 +42,15 @@ foreach ($f in @('index.html', 'legal.css')) {
     }
 }
 $lines += ''
-$lines += '## Product privacy and terms (`pages/`)'
+$lines += '## Product privacy, terms, and operator disclaimer (`pages/`)'
 $lines += ''
 $pagesDir = Join-Path $RepoRoot 'pages'
 if (Test-Path -LiteralPath $pagesDir) {
     Get-ChildItem -LiteralPath $pagesDir -Filter '*.html' | Sort-Object Name | ForEach-Object {
         $rel = 'pages/' + $_.Name
         $enc = 'pages/' + (Encode-UriPathSegment $_.Name)
-        $kind = if ($_.Name -match '\.privacy\.html$') { 'Privacy' } elseif ($_.Name -match '\.terms\.html$') { 'Terms' } else { 'Page' }
-        $app = $_.Name -replace '\.(privacy|terms)\.html$', ''
+        $kind = if ($_.Name -match '\.privacy\.html$') { 'Privacy' } elseif ($_.Name -match '\.terms\.html$') { 'Terms' } elseif ($_.Name -match '\.operator\.html$') { 'Operator disclaimer' } else { 'Page' }
+        $app = $_.Name -replace '\.(privacy|terms|operator)\.html$', ''
         $lines += "- **$app — $kind** (``$rel``) — $base$enc"
     }
 }
