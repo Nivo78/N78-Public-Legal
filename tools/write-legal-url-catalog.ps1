@@ -38,7 +38,7 @@ $lines += ''
 foreach ($f in @('index.html', 'legal.css')) {
     $p = Join-Path $RepoRoot $f
     if (Test-Path -LiteralPath $p) {
-        $lines += "- **$f** — $base$(Encode-UriPathSegment $f)"
+        $lines += "- **$f** - $base$(Encode-UriPathSegment $f)"
     }
 }
 $lines += ''
@@ -51,7 +51,7 @@ if (Test-Path -LiteralPath $pagesDir) {
         $enc = 'pages/' + (Encode-UriPathSegment $_.Name)
         $kind = if ($_.Name -match '\.privacy\.html$') { 'Privacy' } elseif ($_.Name -match '\.terms\.html$') { 'Terms' } elseif ($_.Name -match '\.operator\.html$') { 'Operator disclaimer' } else { 'Page' }
         $app = $_.Name -replace '\.(privacy|terms|operator)\.html$', ''
-        $lines += "- **$app — $kind** (``$rel``) — $base$enc"
+        $lines += "- **$app - $kind** (``$rel``) - $base$enc"
     }
 }
 
@@ -62,7 +62,7 @@ Set-Content -LiteralPath $mdPath -Value $text -Encoding UTF8
 
 $pandoc = Get-Command pandoc -ErrorAction SilentlyContinue
 if (-not $pandoc) {
-    Write-Warning 'pandoc not on PATH — wrote docs/Legal URL.md only'
+    Write-Warning 'pandoc not on PATH - wrote docs/Legal URL.md only'
     exit 0
 }
 

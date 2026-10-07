@@ -61,7 +61,7 @@ function Write-N78OpsPublicLegalPage {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>$display — $titleKind</title>
+  <title>$display - $titleKind</title>
   <meta name="robots" content="index, follow">
   <link rel="stylesheet" href="../legal.css">
 </head>
