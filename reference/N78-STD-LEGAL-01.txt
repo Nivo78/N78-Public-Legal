@@ -1,5 +1,5 @@
 N78-STD-LEGAL-01 — Canonical GitHub Legal with Embedded Offline Fallback
-Rule IDs: APP-LEGAL-OFFLINE-SNAPSHOT (GATE), APP-LEGAL-VIEWER-ATTRIBUTION (QA), APP-LEGAL-GITHUB-CANONICAL-FALLBACK (GATE)
+Rule IDs: APP-LEGAL-OFFLINE-SNAPSHOT (GATE), APP-LEGAL-VIEWER-ATTRIBUTION (QA), APP-LEGAL-GITHUB-CANONICAL-FALLBACK (GATE), APP-LEGAL-TRIPLE-SYNC (GATE)
 Projection: .cursor/rules/07-overrides-legal.mdc, 01-product-philosophy.mdc
 Effective: 2026-10-04 (strengthened; supersedes 2026-09-30 offline-only wording)
 Applies to: Every current and future Nivo78 application — NO EXCEPTIONS
@@ -91,21 +91,29 @@ Attribution MUST NOT prevent display.
 ================================================================================
 7. SYNCHRONIZATION PIPELINE
 ================================================================================
+APP-LEGAL-TRIPLE-SYNC (GATE) — see reference/NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt
+
+When privacy/terms body prose changes, update all three surfaces in the same release:
+  (1) in-app bundled legal (offline-capable install)
+  (2) N78-Public-Legal GitHub Pages HTML (canonical hosted mirror)
+  (3) N78-Website product legal bodies/redirects where the product has nivo78.com pages
+
+Edit authoritative source in the product repo first → run product/family sync →
+regenerate embedded snapshots → verify → build → test online/offline/first-run →
+commit → push affected repos (product, N78-Public-Legal, N78-Website when applicable).
+
 N78-Public-Legal (canonical HTML) → snapshot generation → embedded resources → build
-When legal changes: update Public-Legal → regenerate snapshots → verify → build →
-test online/offline/first-run → commit → push affected repos.
 
 Tooling: N78-Public-Legal/tools/sync-embedded-legal-baselines.ps1 (family),
          tools/port-n78-std-legal-01-to-kmp-app.ps1 (KMP port),
-         tools/sync-winforms-legal-snapshot.ps1 (WinForms family module → Common mirror)
+         N78-Ops tools/deploy/sync_privacy_policy.ps1 (Ops + iOS + Public-Legal)
 
 ================================================================================
 8. ARCHITECTURE
 ================================================================================
 Prefer shared LegalSnapshotRepository + readingSnapshot in KMP commonMain.
 Equivalent behavior required when framework prevents reuse (document reason).
-WinForms: family/winforms/N78FamilyWinFormsLegalSnapshot.vb (versioned here);
-  products link via vbproj; runtime mirror at Desktop/Nivo78/Common/WinForms.
+WinForms: N78FamilyWinFormsLegalSnapshot pattern (embedded + GitHub fetch).
 
 ================================================================================
 9. AUTOMATED ENFORCEMENT (GATE)
@@ -134,7 +142,8 @@ Regression: scroll, accept/cancel, links, subsequent launches
 ================================================================================
 11. REFERENCE IMPLEMENTATIONS
 ================================================================================
-- N78-Electrical, N78-Machining: LegalSnapshotRepository, FamilyLegalDocumentModal
+- N78-Estimate: LegalPlainTextFormatting, LegalPlainTextPresentation, LegalFormattedDocumentBody, EstimateLegalPlainTextPresentation.vb (APP-LEGAL-FORMATTED-PLAIN-DISPLAY reference)
+- N78-Electrical, N78-Machining: LegalSnapshotRepository, FamilyLegalDocumentModal — migrate formatted plain display from N78-Estimate for store builds
 - N78-Public-Legal: canonical HTML pages
 - Pairs with APP-DESKTOP-STARTUP-FULLSCREEN-LEGAL-SCROLL (desktop first-run)
 

@@ -1,0 +1,64 @@
+NIVO78 — Formatted plain-text legal display (store apps)
+Rule ID: APP-LEGAL-FORMATTED-PLAIN-DISPLAY (GATE)
+Companion: APP-LEGAL-IN-APP-DIALOG (GATE), APP-LEGAL-GITHUB-CANONICAL-FALLBACK (GATE), APP-UI-UNIVERSAL-TEXT-SELECTION (STATIC)
+Effective: 2026-10-12
+Applies to: Every Nivo78 product distributed through an app store (Microsoft Store, Google Play, Apple App Store) that shows Privacy Policy or Terms of Use as bundled plain text or offline snapshot text inside the in-app legal viewer.
+
+Business-only desktop utilities SHOULD adopt the same display mode for parity; store shipping builds MUST comply.
+
+================================================================================
+REQUIREMENT
+================================================================================
+When Privacy or Terms body text is shown from embedded/offline plain text (not a live HTML WebView of the full page), the app MUST use the family **formatted plain display** mode — structured blocks with readable typography — not a single undifferentiated text dump.
+
+1. **Normalize** all snapshot/plain bodies through the shared line-break normalizer before parse or WinForms bind (Kotlin: LegalPlainTextFormatting.normalizeForDisplay; WinForms: product equivalent calling the same rules).
+
+2. **Parse** into display blocks (Kotlin: LegalPlainTextPresentation.parseBlocks; WinForms: product mirror kept in sync with Kotlin block kinds and merge rules):
+   - Product banner, document title, tagline, last-updated/effective meta
+   - Numbered section headings (e.g. "1. …")
+   - Bullets (• or - prefix)
+   - Label + body pairs (limitation of liability, governing law, venue, severability, merger, not professional advice)
+   - Disclaimer title/body blocks
+   - Merged paragraphs (soft line breaks within a paragraph collapse to one block)
+
+3. **Render** with formatted typography on every in-app plain-text legal surface (legal gate modal, FamilyLegalDocumentModal / equivalent, Settings/Help hosted legal dialog when showing snapshot.content):
+   - Section headings: family accent blue #006EFF, bold, ≥17sp (or platform-equivalent)
+   - Body: ≥14sp, comfortable line height; muted meta/tagline
+   - Bullets: hanging bullet column; selectable text (APP-UI-UNIVERSAL-TEXT-SELECTION)
+   - Compose: LegalFormattedDocumentBody (or kit copy with identical block mapping)
+   - WinForms: RichTextBox (or equivalent) populated via shared block styling — not Assign whole file to .Text on a Label
+
+4. **Repository paths** that load bundled baselines MUST apply normalizeForDisplay to content before persistence in UI state (LegalSnapshotRepository or equivalent).
+
+5. **HTML/WebView paths** may still show canonical hosted HTML when online; when the UI falls back to or exclusively uses plain snapshot text, formatted plain display is mandatory.
+
+Prohibited for store apps on plain-text legal bodies:
+- One monolithic Text( entireFile ) or RichTextBox.Text = rawFile with no block structure
+- Skipping normalizeForDisplay on WinForms while Kotlin uses it (cross-surface drift)
+- Section headings styled the same as body paragraphs (no visual hierarchy)
+
+================================================================================
+GATE EVIDENCE (PRODUCT)
+================================================================================
+- Unit tests: LegalPlainTextPresentationTest (or product copy) — paragraph merge, section detection, bullets
+- Guardrail: in-app legal surfaces reference LegalFormattedDocumentBody (KMP) and block populator (WinForms); FamilyLegalDocumentModal and hosted legal dialog use formatted body for snapshot.content
+- LegalSnapshotRepository (or equivalent) applies normalizeForDisplay on loaded plain content
+
+Failure message:
+  APP-LEGAL-FORMATTED-PLAIN-DISPLAY FAIL — store app shows bundled Privacy/Terms as unstructured plain dump instead of formatted block display.
+
+================================================================================
+REFERENCE IMPLEMENTATION (COPY FOR NEW STORE UTILITIES)
+================================================================================
+N78-Estimate (authoritative for block parser + Compose renderer + WinForms mirror):
+- code/shared/.../legal/LegalPlainTextFormatting.kt
+- code/shared/.../legal/LegalPlainTextPresentation.kt
+- code/shared/.../ui/LegalFormattedDocumentBody.kt
+- EstimateLegalPlainTextPresentation.vb + EstimateLegalBaseline.NormalizeLegalPlainTextForDisplay
+
+Port these four surfaces together when stamping or migrating KMP store apps. Keep Kotlin and WinForms block logic synchronized.
+
+================================================================================
+CURSOR PROJECTION
+================================================================================
+.cursor/rules/legal-formatted-plain-display.mdc (family mirror via standards sync)

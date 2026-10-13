@@ -1,9 +1,9 @@
 ---
-description: Desktop launchers, fixed build/install paths, and shortcuts that must not break when TFM or Gradle output changes.
+description: GATE APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS — fixed build/install paths; operator .lnk must not break.
 alwaysApply: true
 ---
 
-**Rank:** Operating workflow rule. Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Do not weaken, skip, or silently bypass a family rule to satisfy this one. Conflicts require an approved override.
+**Rank:** Family **GATE** (`APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS`). Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Do not weaken, skip, or silently bypass a family rule to satisfy this one. Conflicts require an approved override.
 
 # Desktop launcher bats (Mike workflow)
 
@@ -11,16 +11,20 @@ Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\desktop
 
 Canonical spine: `reference/NIVO78_DESKTOP_LAUNCH.txt` and `N78-Ops/tools/lib/N78DesktopLaunch.ps1`.
 
-## Fixed .exe locations — desktop shortcuts must not break
+## Fixed build / install / shortcut — mandatory for all desktop apps
 
-Every Nivo78 **Windows desktop** app MUST use **stable paths** for build output, Program Files install, and the operator desktop `.lnk`. Never wire shortcuts to folders that change with TFM, RID, or one-off CI layouts.
+Every Nivo78 **Windows desktop** app MUST use **the same three fixed layers** every release. Paths MUST NOT move when TFM, RID, Gradle folders, or CI output layout changes.
+
+**Operator Desktop `.lnk`** = `%ProgramFiles%\{InstallFolderName}\{ExeFileName}` only (stamped `ShortcutUseInstallExe = $true`). **Never** point the operator `.lnk` at the repo clone, `:desktop:run` output, or `bin\Release\net*-windows\…`.
+
+**Engineering only:** `ensure-{product}-launch.ps1`, `tools\launchers\{Prefix}.bat`, `Desktop\Apps\…` twins, and optional `br` / `:desktop:run` — they MUST still write to the **profile-defined fixed repo distributable folder**, then **sync** to Program Files before the shortcut is “latest.”
 
 | Layer | Rule |
 | ----- | ---- |
-| **Repo build** | .NET: fixed `OutputPath` (e.g. `bin\run\`), `AppendTargetFrameworkToOutputPath=false`, `AppendRuntimeIdentifierToOutputPath=false`. Profile `DotNetOutputRelative` must match. KMP: fixed Gradle distributable folder in `N78DesktopLaunchProfile.ps1`. |
-| **Install** | `%ProgramFiles%\{InstallFolderName}\` via `sync-{product}-install.ps1` only. |
-| **Desktop .lnk** | Default target: `{ProgramFiles}\{InstallFolderName}\{LauncherPrefix}-Launch.bat` (runs `ensure-{product}-launch.ps1` → build if stale → sync → start). **Do not** point `.lnk` at `Program Files\…\{ExeFileName}` or at `bin\Release\net*-windows\…` unless an approved override says otherwise. |
-| **Repo / Apps twins** | `tools\launchers\{Prefix}.bat` and `Desktop\Apps\…` call the same ensure script — never hard-code a moving build path in a shortcut. |
+| **Repo build** | .NET: fixed `OutputPath` (e.g. `bin\run\`), `AppendTargetFrameworkToOutputPath=false`, `AppendRuntimeIdentifierToOutputPath=false`. Profile `DotNetOutputRelative` must match. KMP: fixed Gradle distributable folder in `N78DesktopLaunchProfile.ps1` (`GradlePackageFolder`). |
+| **Install** | `%ProgramFiles%\{InstallFolderName}\{ExeFileName}` via `sync-{product}-install.ps1` only. |
+| **Desktop .lnk** | `{ProgramFiles}\{InstallFolderName}\{ExeFileName}` when `ShortcutUseInstallExe` (N78-Ops family default). Launch `.bat` twins are for repo/Apps — not the operator Desktop `.lnk` target. |
+| **Repo / Apps twins** | `tools\launchers\{Prefix}.bat` and `Desktop\Apps\…` call `ensure-*-launch.ps1` — never hard-code a moving build path. |
 
 When adding or changing a desktop product, verify `create-desktop-shortcuts.ps1` was run after profile changes so the desktop icon matches the table above.
 
@@ -65,7 +69,7 @@ For PowerShell-only tools, call the `.ps1` under `tools/maintain/` instead of a 
 ## Checklist when closing
 
 - [ ] Fixed repo output path documented in profile / project file (no TFM/RID suffix in shortcut targets)
-- [ ] Desktop `.lnk` uses Program Files `*-Launch.bat` (or documented override)
+- [ ] Desktop `.lnk` uses fixed Program Files `{ExeFileName}` (or documented override)
 - [ ] Canonical launcher exists and was tested once from repo path
 - [ ] Apps twin `.bat` created or updated under `Desktop\Apps\{N78-Product}\` with correct `REPO` and target
 - [ ] Closing summary mentions both paths

@@ -1,0 +1,24 @@
+---
+description: GATE APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS — Store apps must open Privacy and Terms in-app before the legal acceptance checkbox is enabled.
+globs:
+  - "**/*Legal*Gate*"
+  - "**/AppIdentity.vb"
+  - "**/EstimateLegalScreens.kt"
+  - "**/FamilyLegalGate*"
+  - "**/ApaLegal*Gate*"
+alwaysApply: false
+---
+
+**Rank:** Family GATE (`APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS`). Canonical: `reference/NIVO78_STORE_LEGAL_GATE_OPEN_BEFORE_ACCEPT.txt`.
+
+# Store legal gate — open documents before accept checkbox
+
+For **Microsoft Store, Google Play, and App Store** builds with a legal gate:
+
+1. Privacy Policy and Terms of Use open **in-app** (modal viewer), not browser-only.
+2. Acceptance checkbox **unchecked** and **disabled** until **both** documents were opened this session.
+3. **Accept** disabled until checkbox is checked (and both opened).
+
+Do not enable the checkbox on gate load, on summary text alone, or after opening only one document.
+
+Verify with product guardrails + legal-gate UI test before store submission.

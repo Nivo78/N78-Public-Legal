@@ -1,8 +1,24 @@
 NIVO78 DESKTOP LAUNCH — Fixed .exe paths and shortcuts that do not break
 
+Rule ID: APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS [GATE]
+Enforcement: every stamped Windows desktop product; verifier DesktopLaunchShortcutGuardrailTest (N78-Ops spine) + align-n78-desktop-launch.ps1 family sweep.
+
 Scope
 -----
 Windows desktop utilities (WinForms and KMP Compose desktop). Android-only apps (N78-Dash, N78-Probe) are excluded.
+
+Family mandatory contract (all desktop apps)
+--------------------------------------------
+Every Nivo78 Windows desktop app MUST keep build, install, and operator shortcut targets on **fixed paths that never move** when TFM, RID, Gradle output layout, or CI folder names change. Shortcuts MUST NOT point at repo clones, moving bin\Release\net*-windows\ trees, or Gradle :desktop:run scratch output.
+
+Operator path (what the Desktop .lnk runs):
+  %ProgramFiles%\{InstallFolderName}\{ExeFileName}
+  Refreshed only by ensure-{product}-launch.ps1 → createDistributable/dotnet build → sync-{product}-install.ps1.
+
+Engineering path (repo dev only — never the operator .lnk target):
+  tools\launchers\{Prefix}.bat, Desktop\Apps\… twins, and optional :desktop:run / br — these build into the **same fixed repo distributable folder** defined in N78DesktopLaunchProfile.ps1, then sync to Program Files before the operator shortcut is considered current.
+
+If Program Files is older than the fixed repo build output, the product is **not** up to date for shortcut launch until sync-{product}-install.ps1 succeeds.
 
 Fixed locations (mandatory)
 ---------------------------
@@ -19,11 +35,12 @@ Desktop shortcuts and operator habits assume paths never move when TFM, RID, or 
    • Destination: %ProgramFiles%\{InstallFolderName}\{ExeFileName}
    • sync-{product}-install.ps1 copies from the fixed repo build folder above (UAC when needed).
 
-3. Desktop .lnk — stable target that runs the launch spine
-   • Default: C:\Program Files\{InstallFolderName}\{LauncherPrefix}-Launch.bat
-     (installed bat calls ensure-{product}-launch.ps1 in the repo — build, sync when stale, then start).
-   • Do NOT point the operator desktop .lnk directly at Program Files\{ExeFileName} unless an approved
-     override documents why (stale-binary risk when dev builds ahead of install).
+3. Desktop .lnk — fixed .exe only (mandatory)
+   • Operator shortcut: C:\Users\{user}\Desktop\{DisplayName}.lnk ->
+     C:\Program Files\{InstallFolderName}\{ExeFileName} (direct binary; no .bat/.ps1 wrapper targets).
+   • N78-Ops: C:\Program Files\N78Ops\N78-Ops.exe. Refresh the binary with sync-ops-install.ps1 or
+     N78-Ops-Launch.bat / ensure-ops-launch.ps1 (repo + Apps twins only — not the Desktop .lnk).
+   • Do NOT point the operator desktop .lnk at Gradle output under the repo clone (path churn).
    • Do NOT point .lnk at a path inside the git clone (repo moves, branches, and CI output differ).
    • Repo tools\launchers\{Prefix}.bat and Desktop\Apps\{Product}\ twins still call ensure-*-launch.ps1.
 
@@ -42,7 +59,7 @@ N78-Ops\tools\lib\N78DesktopLaunch.ps1
 
 Per-product files (stamped)
 ---------------------------
-tools\lib\N78DesktopLaunchProfile.ps1  (ShortcutUseInstallExe = $false by default in shared library)
+tools\lib\N78DesktopLaunchProfile.ps1  (ShortcutUseInstallExe = $true — .lnk -> fixed Program Files .exe)
 tools\maintain\ensure-{slug}-launch.ps1
 tools\maintain\sync-{slug}-install.ps1
 tools\maintain\create-desktop-shortcuts.ps1

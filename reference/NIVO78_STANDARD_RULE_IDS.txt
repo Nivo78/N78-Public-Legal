@@ -164,6 +164,11 @@ Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 159 | WEB-PRODUCT-TRIAL-AFTER-COPY | QA | 17-web-marketing.mdc
 160 | APP-LEGAL-IN-APP-DIALOG | GATE | 07-overrides-legal.mdc
 161 | APP-TEST-DESKTOP-PAGE-LAYOUT | GATE | 11-testing-quality.mdc
+162 | APP-LEGAL-GITHUB-CANONICAL-FALLBACK | GATE | 07-overrides-legal.mdc (N78-STD-LEGAL-01)
+163 | APP-LEGAL-TRIPLE-SYNC | GATE | 07-overrides-legal.mdc (NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt)
+164 | APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | GATE | desktop-launcher-bats.mdc (reference/NIVO78_DESKTOP_LAUNCH.txt)
+165 | APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | GATE | store-legal-gate-open-before-accept.mdc (NIVO78_STORE_LEGAL_GATE_OPEN_BEFORE_ACCEPT.txt)
+166 | APP-LEGAL-FORMATTED-PLAIN-DISPLAY | GATE | legal-formatted-plain-display.mdc (NIVO78_LEGAL_FORMATTED_PLAIN_DISPLAY.txt)
 
 CLASS DEFINITIONS
 - STATIC = source/configuration requirement suitable for automated/static enforcement.

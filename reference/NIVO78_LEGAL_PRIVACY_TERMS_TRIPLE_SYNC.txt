@@ -1,0 +1,127 @@
+NIVO78 — Legal, Privacy, and Terms — Three-Surface Sync (MANDATORY)
+Rule ID: APP-LEGAL-TRIPLE-SYNC (GATE)
+Projection: .cursor/rules/07-overrides-legal.mdc, product privacy-policy-website-sync (where stamped)
+Pairs with: N78-STD-LEGAL-01 (GitHub canonical + embedded offline fallback)
+Effective: 2026-10-10
+Applies to: Every Nivo78 product that ships Privacy Policy and/or Terms of Use — NO EXCEPTIONS
+
+================================================================================
+NO EXCEPTIONS
+================================================================================
+When Privacy Policy or Terms of Use **body prose** changes (permissions, data
+collection, retention, billing, platform scope, contact paths, or legal entity),
+the change MUST reach all three surfaces in the **same release** — not app-only,
+not website-only, and not a silent drift in a sibling repo.
+
+Classification for shipped violations: Actual application / compliance defect —
+not documentation-only.
+
+This rule does NOT replace N78-STD-LEGAL-01 embedded snapshots and GitHub
+canonical fetch behavior; it defines the **edit → sync → ship** contract across
+surfaces.
+
+================================================================================
+THE THREE SURFACES (ALL THREE — EVERY TIME)
+================================================================================
+
+1. IN-APP (offline-capable bundled legal)
+   - Privacy and Terms HTML (or product-equivalent bundled legal assets) shipped
+     inside the install/build so Legal gate, Settings → Legal, and modal viewers
+     work with no network.
+   - Store products: typically app/src/main/assets/privacy_policy.html and
+     terms_of_use.html (or stamped equivalent paths).
+   - KMP products: bundled assets plus legal/*-baseline.txt snapshots per
+     N78-STD-LEGAL-01.
+
+2. CANONICAL PUBLIC LEGAL REPO (N78-Public-Legal)
+   - GitHub Pages HTML for the product (e.g. pages/N78-Ops.privacy.html,
+     pages/N78-Ops.terms.html).
+   - Updated only from the product’s authoritative in-repo legal source via
+     family/product sync tooling — not hand-edited competing prose on Pages.
+
+3. PRODUCT WEBSITE (N78-Website where the product has nivo78.com pages)
+   - Hosted legal bodies, embed fragments, and marketing/support links that
+     show privacy/terms prose or Last updated / effective dates.
+   - Examples: ops/N78-Ops-Privacy/privacy_body.html,
+     ops/N78-Ops-Terms/terms_body.html, or successor paths documented in the
+     product deploy script.
+   - Redirect-only stubs must still point at the synced canonical URL set; do
+     not leave stale bodies when embed files exist in the Website repo.
+
+Products with **no** public website legal embeds still MUST update surfaces (1)
+and (2). Surface (3) is NOT APPLICABLE only when the product has no hosted
+legal pages on nivo78.com and store listings use Public-Legal URLs exclusively
+— document that in the product release checklist, not by skipping (2).
+
+================================================================================
+SOURCE OF TRUTH (EDIT HERE FIRST)
+================================================================================
+- One authoritative in-product-repo legal source per product (bundled HTML and/or
+  engine legal copy registry — never two competing masters).
+- N78-Ops: edit app/src/main/assets/privacy_policy.html and
+  terms_of_use.html first; then run sync — do not author Play/legal prose only
+  on nivo78.com or in N78-Public-Legal.
+- APA-style products: engine ApaLegalCopy (or equivalent) and in-repo public
+  HTML stay aligned; updocs propagates to Website Help/legal pages.
+
+================================================================================
+MANDATORY WORKFLOW (SAME CHANGE / SAME RELEASE)
+================================================================================
+1. Edit authoritative privacy/terms source in the **product repo**.
+2. Run product/family privacy sync (N78-Ops:
+   tools/deploy/sync_privacy_policy.ps1; APA: run-updocs privacy phase).
+3. Regenerate embedded legal baselines when N78-STD-LEGAL-01 applies
+   (N78-Public-Legal/tools/sync-embedded-legal-baselines.ps1 or product script).
+4. Bump legal acceptance / disclosure version when material to users
+   (LegalAcceptance.CURRENT_DISCLOSURE_VERSION or product equivalent).
+5. Update docs/PRIVACY_POLICY.md (or product summary) when policy meaning changes.
+6. Commit **product repo** + **N78-Public-Legal** (+ **N78-Website** when bodies
+   or dates changed there) in the same release train.
+7. Ship a **new app/build** so bundled in-app legal matches synced hosted copy.
+8. Deploy website when nivo78.com hosted bodies or redirects must go live.
+
+Never hand-edit hosted privacy_body.html / terms_body.html or GitHub Pages HTML
+for store-legal prose when a sync script exists — sync from the app asset.
+
+================================================================================
+GATE EVIDENCE (EXECUTABLE — NOT SOURCE SEARCH ALONE)
+================================================================================
+Release is blocked until applicable verifiers PASS or a registered override covers
+the gap:
+
+- Product legal guardrails (e.g. LegalGateSurfacesGuardrailTest,
+  ApaInRepoLegalSecurityCopyTest) — in-app vs Public-Legal Last updated /
+  required clauses / no mojibake URL defects.
+- Privacy sync script exit 0 after legal edits (sync_privacy_policy.ps1 or
+  product equivalent).
+- Website static integrity when Website repo hosts legal bodies
+  (verify-website-web-integrity-static.ps1 retention/contact alignment).
+- N78-STD-LEGAL-01 family verify when KMP legal snapshots apply
+  (verify-n78-std-legal-01-family.ps1).
+
+Failure message:
+  APP-LEGAL-TRIPLE-SYNC FAIL — Privacy/Terms changed without synchronized
+  in-app bundled legal, N78-Public-Legal pages, and product website legal
+  surfaces in the same release.
+
+================================================================================
+NEVER WAIVABLE
+================================================================================
+- Shipping privacy/terms prose changes on only one of the three surfaces when
+  the other surfaces apply to that product.
+- Competing authoritative legal HTML in Website or Public-Legal that was not
+  produced by the product sync pipeline.
+- Store listing or in-app “View in browser” URLs that show older policy than
+  the bundled in-app document in the same build.
+
+================================================================================
+VERIFICATION CHECKLIST (OPERATOR)
+================================================================================
+[ ] Edited authoritative privacy/terms in product repo only
+[ ] Ran sync_privacy_policy.ps1 (or product updocs privacy phase)
+[ ] N78-Public-Legal pages updated and committed
+[ ] N78-Website legal bodies/redirects updated when product uses them
+[ ] Embedded baselines regenerated (KMP / N78-STD-LEGAL-01)
+[ ] Disclosure version bumped if users must re-accept
+[ ] New app/desktop/mobile build shipped with bundled HTML
+[ ] Website deploy when hosted copy must match live

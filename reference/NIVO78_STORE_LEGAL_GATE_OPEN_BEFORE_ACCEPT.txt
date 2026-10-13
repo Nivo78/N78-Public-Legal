@@ -1,0 +1,37 @@
+NIVO78 — Store legal gate: open Privacy and Terms before acceptance checkbox (MANDATORY)
+Rule ID: APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS (GATE)
+Companion: APP-LEGAL-GATE (QA), APP-LEGAL-IN-APP-DIALOG (GATE)
+Effective: 2026-10-12
+Applies to: Every Nivo78 product distributed through an app store (Microsoft Store, Google Play, Apple App Store) that ships a first-run or re-consent legal gate.
+
+================================================================================
+REQUIREMENT (NO EXCEPTIONS FOR STORE APPS)
+================================================================================
+On the legal acceptance surface (first run or terms-version re-consent):
+
+1. Privacy Policy and Terms of Use MUST open in the in-app modal viewer (APP-LEGAL-IN-APP-DIALOG) — not the system browser as the only path.
+
+2. The acceptance checkbox MUST default to unchecked and MUST remain disabled (not toggleable) until the operator has opened Privacy Policy AND Terms of Use at least once during that gate session.
+
+3. The Accept (or equivalent primary) button MUST remain disabled until the acceptance checkbox is checked AND both documents have been opened in that session.
+
+4. Decline / exit behavior unchanged (APP-LEGAL-GATE decline integrity).
+
+Optional but allowed: also require scroll-to-end before Accept; if implemented, the checkbox gate MUST NOT be weaker (checkbox still disabled until both documents opened).
+
+Non-store engineering builds MAY skip the gate or use unrestricted dev policy — document in product release checklist; store shipping builds MUST enforce this rule.
+
+================================================================================
+GATE EVIDENCE (PRODUCT)
+================================================================================
+- Source guardrails asserting gate UI wiring (checkbox disabled until both documents opened).
+- Visible UI or instrumented test: open Privacy, open Terms, then checkbox enables; Accept enables only after check.
+- WinForms + KMP surfaces that ship store builds must both comply when both exist.
+
+Failure message:
+  APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS FAIL — acceptance checkbox active before Privacy and Terms were opened in-app on the legal gate.
+
+================================================================================
+CURSOR PROJECTION
+================================================================================
+.cursor/rules/store-legal-gate-open-before-accept.mdc (family mirror via standards sync)

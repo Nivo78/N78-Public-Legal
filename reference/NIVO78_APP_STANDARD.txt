@@ -2715,6 +2715,11 @@ before accepting — in-app modal viewers (APP-LEGAL-IN-APP-DIALOG); never the
 system browser for Privacy or Terms. Canonical:
 reference/NIVO78_LEGAL_IN_APP_DIALOG.txt.
 
+\- Store apps showing bundled/offline plain-text legal
+bodies MUST use formatted block display (APP-LEGAL-FORMATTED-PLAIN-DISPLAY);
+canonical reference/NIVO78_LEGAL_FORMATTED_PLAIN_DISPLAY.txt; reference
+implementation N78-Estimate LegalFormattedDocumentBody.
+
 \- No silent acceptance on install, upgrade, or terms
 bump.
 
@@ -2813,6 +2818,66 @@ when consent, terms version, or legal copy changes.
 
 \- Run updocs after ApaLegalCopy (or product
 equivalent) or privacy/terms HTML changes.
+
+
+
+
+
+\================================================================================
+
+LEGAL, PRIVACY, AND TERMS — THREE-SURFACE SYNC (MANDATORY)
+
+\================================================================================
+
+Rule ID: APP-LEGAL-TRIPLE-SYNC [GATE]
+
+Canonical detail: reference/NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt
+
+Applies to every product that ships Privacy Policy and/or Terms of Use. When
+body prose changes, update all three surfaces in the same release — not
+app-only, not website-only, not a orphan commit in a sibling repo.
+
+The three surfaces
+
+1. In-app bundled legal — offline-capable privacy/terms inside the install
+   (assets, baselines, or product-equivalent bundled HTML).
+
+2. N78-Public-Legal — GitHub Pages product privacy/terms HTML synced from the
+   product authoritative source (not hand-edited competing prose).
+
+3. N78-Website — hosted legal bodies, embed fragments, and marketing/support
+   legal links on nivo78.com where the product has them (privacy_body.html,
+   terms_body.html, or documented successor paths).
+
+Source of truth
+
+\- Edit authoritative privacy/terms in the product repo first (e.g. N78-Ops
+app/src/main/assets/privacy_policy.html and terms_of_use.html; APA engine
+legal copy plus in-repo HTML).
+
+\- Never treat nivo78.com or N78-Public-Legal alone as the master copy for
+store legal prose when product sync tooling exists.
+
+Mandatory workflow
+
+\- Edit product source → run privacy/legal sync (N78-Ops:
+tools/deploy/sync_privacy_policy.ps1; full doc pass: run-updocs.ps1) →
+regenerate embedded baselines when N78-STD-LEGAL-01 applies → bump disclosure
+version when material → commit product + N78-Public-Legal (+ N78-Website when
+bodies changed) → ship new build with bundled legal → deploy website when live
+hosted copy must match.
+
+Gate evidence
+
+\- Product legal guardrails, privacy sync script success, website static legal
+integrity when embeds exist, N78-STD-LEGAL-01 verify when snapshots apply.
+
+Never waivable
+
+\- Shipping privacy/terms prose on only one surface when the others apply.
+\- Competing authoritative legal HTML outside the sync pipeline.
+
+Pairs with N78-STD-LEGAL-01 (GitHub canonical + embedded offline fallback).
 
 
 
@@ -3418,18 +3483,8 @@ APP-TEST-UI-CRITICAL [GATE]
 \- Critical user workflows must have repeatable UI
 tests or documented equivalent verification, including
 
- Save,
+  Save,
 Back/Cancel, validation, recovery, and core task completion.
-
-
-
-APP-TEST-DESKTOP-PAGE-LAYOUT [GATE]
-
-\- Every Nivo78 desktop app must open the shipping shell, display every page in the
-product page catalog, and run automated layout probes that fail on cut off, truncated,
-or overlapping primary chrome. Compose products use N78FamilyDesktopPageLayoutQa in
-CombinedReleaseQaTest and visibleUiQa; see reference/NIVO78_FAMILY_QA_TESTING_STANDARD.txt
-section 3e.
 
 
 
@@ -5459,6 +5514,7 @@ APP-INPUT-FOCUS-EDIT-ONLY | [QA] | 04-input-architecture.mdc
 APP-INPUT-FORMAT-ON-COMMIT | [QA] | 04-input-architecture.mdc
 APP-LEAVE-DIRTY-PROMPT | [QA] | 04-input-architecture.mdc
 APP-LEGAL-GATE | [QA] | 07-overrides-legal.mdc
+APP-LEGAL-TRIPLE-SYNC | [GATE] | 07-overrides-legal.mdc
 APP-MOBILE-PHONE-INPUT | [QA] | 02-ui-input-save.mdc
 APP-OVERRIDE-CLEANUP | [QA] | 19-operating-model-release-certification.mdc
 APP-OVERRIDE-OWNER | [QA] | 19-operating-model-release-certification.mdc
@@ -5504,7 +5560,6 @@ APP-TEST-REAL-DATA-SAFETY | [QA] | 11-testing-quality.mdc
 APP-TEST-RECOVERY | [GATE] | 11-testing-quality.mdc
 APP-TEST-REGRESSION | [GATE] | 11-testing-quality.mdc
 APP-TEST-UI-CRITICAL | [GATE] | 11-testing-quality.mdc
-APP-TEST-DESKTOP-PAGE-LAYOUT | [GATE] | 11-testing-quality.mdc
 APP-TEST-UNIT | [GATE] | 11-testing-quality.mdc
 APP-UI-A11Y-FLOOR | [QA] | 05-accessibility-i18n.mdc
 APP-UI-EXPLAIN-JARGON | [QA] | 05-accessibility-i18n.mdc

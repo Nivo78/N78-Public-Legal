@@ -1,0 +1,28 @@
+---
+description: GATE APP-LEGAL-FORMATTED-PLAIN-DISPLAY — Store apps must render bundled Privacy/Terms plain text with structured formatted display, not a raw text dump.
+globs:
+  - "**/*Legal*"
+  - "**/LegalPlainText*"
+  - "**/LegalFormatted*"
+  - "**/LegalSnapshot*"
+  - "**/FamilyLegal*"
+  - "**/EstimateLegalPlainText*"
+alwaysApply: false
+---
+
+**Rank:** Family GATE (`APP-LEGAL-FORMATTED-PLAIN-DISPLAY`). Canonical: `reference/NIVO78_LEGAL_FORMATTED_PLAIN_DISPLAY.txt`.
+
+# Formatted plain-text legal display (store apps)
+
+For **Microsoft Store, Google Play, and App Store** builds showing **bundled/offline plain text** for Privacy or Terms in the in-app viewer:
+
+1. **Normalize** line breaks (`LegalPlainTextFormatting` or WinForms equivalent).
+2. **Parse** into blocks (`LegalPlainTextPresentation.parseBlocks` + WinForms mirror).
+3. **Render** with `LegalFormattedDocumentBody` (Compose) or block-styled RichTextBox — section headings **#006EFF**, readable body/meta sizes, bullets, merged paragraphs.
+4. Apply normalize on all **LegalSnapshotRepository** (or equivalent) content paths.
+
+Do **not** ship a single undifferentiated `Text(fullFile)` / raw RichTextBox dump on legal modals or gate viewers.
+
+Reference copy set: N78-Estimate `LegalPlainTextFormatting.kt`, `LegalPlainTextPresentation.kt`, `LegalFormattedDocumentBody.kt`, `EstimateLegalPlainTextPresentation.vb`.
+
+Verify: `LegalPlainTextPresentationTest` + `EstimateLegalSurfacesGuardrailTest.formattedPlainDisplay_*` before store submission.
