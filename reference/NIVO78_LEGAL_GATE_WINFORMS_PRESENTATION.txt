@@ -1,0 +1,46 @@
+NIVO78 — Legal gate WinForms presentation (Privacy, Terms, legal gate)
+Effective: 2026-10-22
+Applies to: WinForms first-run / re-consent legal gates and in-app Privacy/Terms document hosts.
+
+================================================================================
+1. Core principles
+================================================================================
+- No indent hacks: Never use rich-text indent hacks, artificial spacing runs, or margin
+  compensation to force alignment. Text flow must remain natural and horizontal.
+- Single-source width math: Compute available content width once from the host
+  container inner client width (ClientSize.Width inside a padded Panel host). Never
+  double-subtract Padding.Horizontal down the child tree.
+- Full file integrity: Do not truncate layout implementations when refactoring.
+
+================================================================================
+2. Layered margin hierarchy (~12px DPI-scaled)
+================================================================================
+1) Outer content host — Dock Fill Panel with uniform ~12px scaled Padding on all sides.
+2) Interactive rows (intro, readiness, bottom actions) — row Padding left/right ~12px
+   scaled on labels and bottom panel; do not force child panel Width that cancels host inset.
+3) Document area (TabControl or full-width document stack) — Margin left AND right ~12px
+   scaled (same as row horizontal padding) so Privacy/Terms body aligns with intro text and
+   the right inset is visibly present (not flush to the dialog edge).
+4) Document host — Panel Dock Fill inside each tab (or document stack) with uniform ~12px
+   scaled Padding on all four sides around the RichTextBox (Dock Fill).
+
+Symmetric rule: left and right gutters MUST match on every legal surface (gate tabs, Help/Settings
+Privacy and Terms dialog). Never ship document text flush to the right while rows show inset.
+
+================================================================================
+3. Label and text flow
+================================================================================
+- Measure intro/readiness height using TextRenderer and inner width minus label Padding only.
+- Minimum content width floor (~240px scaled) to prevent vertical character stacking.
+- Re-run layout on: host Resize, dialog Load, dialog Shown.
+
+================================================================================
+4. Verification checklist
+================================================================================
+[ ] Document host shows uniform inset from tab client area (left, right, top, bottom).
+[ ] TabControl / document stack shows matching left and right Margin (~12px scaled).
+[ ] Help/Settings Privacy and Terms dialog uses the same outer host + document host pattern.
+[ ] Bottom action panel uses row padding; no edge-to-edge width override.
+[ ] Text reflows on resize without one-character columns.
+
+Product reference (N78-Frame): FrameLegalGateLayout.vb, AppIdentity ShowLegalGate / ShowLegalDocument.

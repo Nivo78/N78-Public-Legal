@@ -52,7 +52,8 @@ function Expand-N78PublicLegalTemplate {
     param(
         [string] $TemplateText,
         [object] $App,
-        [string] $PermissionsAppendixHtml = ''
+        [string] $PermissionsAppendixHtml = '',
+        [hashtable] $ExtraReplacements = @{}
     )
     $displayName = [string]$App.displayName
     $year = (Get-Date).Year.ToString()
@@ -67,12 +68,18 @@ function Expand-N78PublicLegalTemplate {
         '{{PUBLIC_PRIVACY_URL}}'   = $privacyUrl
         '{{PUBLIC_TERMS_URL}}'     = $termsUrl
         '{{PUBLIC_OPERATOR_URL}}'  = $operatorUrl
-        '{{PRIVACY_LAST_UPDATED}}' = 'October 4, 2026'
-        '{{TERMS_EFFECTIVE}}'      = 'October 4, 2026'
-        '{{TERMS_VERSION}}'        = '1'
+        '{{PRIVACY_LAST_UPDATED}}' = 'October 22, 2026'
+        '{{TERMS_EFFECTIVE}}'      = 'October 22, 2026'
+        '{{TERMS_VERSION}}'        = '2'
+        '{{TERMS_PRODUCT_BODY_EXTRA}}' = ''
+        '{{TERMS_DATA_BODY_EXTRA}}' = ''
+        '{{TERMS_PAYMENTS_PARAGRAPH}}' = '<p>Purchases, subscriptions, or paid tiers, when offered, are processed by the applicable app store or platform. Platform store policies apply to checkout. We do not receive your full payment card number from the store.</p>'
         '{{OPERATOR_EFFECTIVE}}'   = 'October 4, 2026'
         '{{OPERATOR_VERSION}}'     = '1'
         '{{PERMISSIONS_APPENDIX}}' = $PermissionsAppendixHtml
+    }
+    foreach ($key in $ExtraReplacements.Keys) {
+        $map[$key] = [string]$ExtraReplacements[$key]
     }
     $out = $TemplateText
     foreach ($key in $map.Keys) {

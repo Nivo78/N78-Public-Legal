@@ -27,6 +27,9 @@ When Privacy or Terms body text is shown from embedded/offline plain text (not a
    - Bullets: hanging bullet column; selectable text (APP-UI-UNIVERSAL-TEXT-SELECTION)
    - Compose: LegalFormattedDocumentBody (or kit copy with identical block mapping)
    - WinForms: RichTextBox (or equivalent) populated via shared block styling — not Assign whole file to .Text on a Label
+   - WinForms margins: legal gate, Privacy, and Terms dialogs MUST follow
+     reference/NIVO78_LEGAL_GATE_WINFORMS_PRESENTATION.txt (symmetric ~12px scaled left/right
+     gutters; document host padding; no RichTextBox RightMargin/SelectionIndent hacks).
 
 4. **Repository paths** that load bundled baselines MUST apply normalizeForDisplay to content before persistence in UI state (LegalSnapshotRepository or equivalent).
 
