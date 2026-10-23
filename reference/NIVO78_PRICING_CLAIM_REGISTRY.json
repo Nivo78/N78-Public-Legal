@@ -1,0 +1,263 @@
+{
+  "schema_version": 1,
+  "authority": "reference/NIVO78_APP_STANDARD.txt",
+  "rule_ids": {
+    "registry_static": "FAMILY-PRICING-CLAIM-REGISTRY",
+    "marketing_qa": "FAMILY-MARKETING-CLAIM-EVIDENCE"
+  },
+  "release_models": {
+    "R1": {
+      "name": "Free Forever",
+      "primary_tagline": "Free Means Free.",
+      "supporting_message": "No Trial Clock. No Subscription. No Surprise."
+    },
+    "R2": {
+      "name": "Free Forever + One-Time Purchase",
+      "primary_tagline": "Start Free. Pay Once. Keep Using It.",
+      "supporting_message": "No Monthly Meter Running. No Hidden Costs."
+    },
+    "R3": {
+      "name": "Free Forever + Subscription",
+      "primary_tagline": "Start Free. Upgrade When You're Ready.",
+      "supporting_message": "More Capability. One Clear Price."
+    },
+    "R4": {
+      "name": "Time-Limited Trial + One-Time Purchase",
+      "primary_tagline": "Try It. Test It. Buy It Only If It Works for You.",
+      "requires_justification": true
+    }
+  },
+  "claims": [
+    {
+      "id": "free_forever",
+      "label": "Free forever",
+      "definition": "Stated free functionality remains usable indefinitely without mandatory payment for that functionality.",
+      "applicability": "Product primary_release_model is R1, R2, or R3 and marketing uses free-forever language.",
+      "evidence_required": ["product.identity.json primary_release_model", "in-app entitlement behavior", "store listing or hub copy alignment"],
+      "automated_check": "verify-nivo78-family-philosophy-registry.ps1 claim schema; product gate adapters when assigned",
+      "manual_evidence": "Release notes and tier documentation showing free tier boundaries.",
+      "failure_condition": "Trial clock, paywall, or subscription required for functionality described as free forever.",
+      "unsupported_marketing_rule": "Do not use free-forever claims unless primary_release_model and shipped behavior match."
+    },
+    {
+      "id": "one_time_purchase",
+      "label": "One-time purchase",
+      "definition": "Customer may buy a defined capability once without mandatory recurring billing for that purchase.",
+      "applicability": "R2 or R4 products or explicit one-time SKU.",
+      "evidence_required": ["store SKU or license terms", "no silent subscription conversion"],
+      "automated_check": "manual until product billing manifest is machine-readable",
+      "manual_evidence": "Store console and in-app upgrade copy review.",
+      "failure_condition": "Purchase silently converts to subscription or hides recurring charges.",
+      "unsupported_marketing_rule": "No one-time purchase claim without license terms disclosure."
+    },
+    {
+      "id": "no_subscription",
+      "label": "No subscription",
+      "definition": "Product or tier does not require recurring payment for the described capability.",
+      "applicability": "R1 and one-time tiers; never for R3 paid tiers.",
+      "evidence_required": ["primary_release_model", "billing configuration"],
+      "automated_check": "claim id must not appear in MARKETING_COPY when primary_release_model is R3",
+      "manual_evidence": "Hub will/won't sections.",
+      "failure_condition": "Marketing says no subscription while product requires subscription for core work.",
+      "unsupported_marketing_rule": "Claim only when primary_release_model and tier docs support it."
+    },
+    {
+      "id": "no_account_required",
+      "label": "No account required",
+      "definition": "Ordinary core use does not require creating a Nivo78 or product-vendor account.",
+      "applicability": "All products unless documented unavoidable exception.",
+      "evidence_required": ["no mandatory login gate for core workflows", "privacy policy accuracy"],
+      "automated_check": "APP-DATA-NO-TELEMETRY and legal guardrails where present",
+      "manual_evidence": "First-run and offline workflow QA.",
+      "failure_condition": "Core workflow blocked without account when claim is published.",
+      "unsupported_marketing_rule": "Document exceptions explicitly in Help and privacy."
+    },
+    {
+      "id": "no_ads",
+      "label": "No ads",
+      "definition": "No in-app advertising, banners, or sponsored content in customer workflows.",
+      "applicability": "All Nivo78 customer applications.",
+      "evidence_required": ["manifest and dependency scan", "UI source scan"],
+      "automated_check": "APP-PRIVACY-NO-AD-ID gate where applicable",
+      "manual_evidence": "Shipped build visual QA.",
+      "failure_condition": "Advertising SDK or ad UI in production paths.",
+      "unsupported_marketing_rule": "Never claim no ads if any ad network is linked."
+    },
+    {
+      "id": "no_nags",
+      "label": "No nags",
+      "definition": "No intrusive upgrade nags, notification spam, or manipulative dark patterns.",
+      "applicability": "All products.",
+      "evidence_required": ["Help check-for-updates is user-initiated", "no startup upgrade modal"],
+      "automated_check": "source guardrails for APP-SUPPORT-CHECK-FOR-UPDATES pattern",
+      "manual_evidence": "Fresh install UX review.",
+      "failure_condition": "Repeated unsolicited upgrade or review prompts.",
+      "unsupported_marketing_rule": "Do not claim no nags if timed popups push upgrades."
+    },
+    {
+      "id": "no_tracking",
+      "label": "No tracking",
+      "definition": "No behavioral tracking, advertising surveillance, or undisclosed analytics profiles.",
+      "applicability": "All products.",
+      "evidence_required": ["privacy policy", "APP-DATA-NO-TELEMETRY gate", "data safety forms"],
+      "automated_check": "APP-DATA-NO-TELEMETRY",
+      "manual_evidence": "Network traffic review for release builds.",
+      "failure_condition": "Undisclosed third-party analytics or ad ID use.",
+      "unsupported_marketing_rule": "Security diagnostics require separate disclosure and consent."
+    },
+    {
+      "id": "local_first",
+      "label": "Local-first",
+      "definition": "Core workflows operate on device-local data without requiring continuous cloud access.",
+      "applicability": "Products advertising local-first or offline core work.",
+      "evidence_required": ["APP-TEST-OFFLINE", "architecture docs"],
+      "automated_check": "APP-TEST-OFFLINE gate",
+      "manual_evidence": "Airplane-mode workflow QA.",
+      "failure_condition": "Essential advertised workflow fails offline.",
+      "unsupported_marketing_rule": "Do not claim local-first if cloud is mandatory for core jobs."
+    },
+    {
+      "id": "offline_operation",
+      "label": "Offline operation",
+      "definition": "Advertised functionality works without network for the stated scope.",
+      "applicability": "When marketing or Help claims offline use.",
+      "evidence_required": ["APP-TEST-OFFLINE", "Help accuracy"],
+      "automated_check": "APP-TEST-OFFLINE",
+      "manual_evidence": "Device QA checklist.",
+      "failure_condition": "Claimed offline feature requires network.",
+      "unsupported_marketing_rule": "Scope offline claims to tested workflows."
+    },
+    {
+      "id": "optional_cloud",
+      "label": "Optional cloud",
+      "definition": "Cloud features are additive; core workflows do not require Nivo78 cloud.",
+      "applicability": "Products with any cloud or sync feature.",
+      "evidence_required": ["feature flags and Help", "no hard cloud gate on core save path"],
+      "automated_check": "manual",
+      "manual_evidence": "Disable cloud account workflow test.",
+      "failure_condition": "Unrelated core workflow blocked without cloud login.",
+      "unsupported_marketing_rule": "Label cloud-dependent features explicitly."
+    },
+    {
+      "id": "portable_import_export",
+      "label": "Portable import/export",
+      "definition": "Industry-appropriate import/export paths exist with documented limitations.",
+      "applicability": "Products with interop_applicable true or data exchange surface.",
+      "evidence_required": ["INTEROPERABILITY_MATRIX", "automated format tests"],
+      "automated_check": "FAMILY-INTEROP-MATRIX QA checklist",
+      "manual_evidence": "Sample file round-trip results.",
+      "failure_condition": "Marketing claims portability without matrix or tests.",
+      "unsupported_marketing_rule": "No complete portability claim when lossy conversion exists."
+    },
+    {
+      "id": "no_lock_in",
+      "label": "No lock-in",
+      "definition": "No artificial vendor lock-in; practical export and migration paths documented.",
+      "applicability": "All products storing customer data.",
+      "evidence_required": ["export UI or docs", "FAMILY-CUSTOMER-DATA-USABLE QA"],
+      "automated_check": "manual",
+      "manual_evidence": "Export completeness review.",
+      "failure_condition": "Subscription cancellation or license expiry blocks data export unreasonably.",
+      "unsupported_marketing_rule": "Do not claim no lock-in if export requires undocumented proprietary-only path."
+    },
+    {
+      "id": "security",
+      "label": "Security",
+      "definition": "Security controls implemented per FAMILY-SECURITY-BASELINE; no false certification claims.",
+      "applicability": "All products.",
+      "evidence_required": ["docs/SECURITY_BASELINE.md or equivalent", "APP-SEC-* gates"],
+      "automated_check": "APP-SEC-* gates where applicable",
+      "manual_evidence": "Threat model and dependency review.",
+      "failure_condition": "Claimed certification or guarantee without evidence.",
+      "unsupported_marketing_rule": "Never claim verified security property without audit evidence."
+    },
+    {
+      "id": "responsive_feedback",
+      "label": "Responsive feedback",
+      "definition": "Discoverable feedback path and family acknowledgement target (not a public SLA).",
+      "applicability": "All shippable products.",
+      "evidence_required": ["Feedback UI", "NIVO78_FEEDBACK_RESPONSE_STANDARD.txt"],
+      "automated_check": "portfolio feedback pathway scan",
+      "manual_evidence": "Track intake workflow.",
+      "failure_condition": "No intake path or marketing promises impossible response times.",
+      "unsupported_marketing_rule": "Do not advertise response SLAs unless measured and approved."
+    },
+    {
+      "id": "affordable_pricing",
+      "label": "Affordable pricing",
+      "definition": "Pricing presented clearly; affordability is objective, not competitive superlatives.",
+      "applicability": "Public pricing copy.",
+      "evidence_required": ["published prices", "no lowest-cost superlatives"],
+      "automated_check": "grep guardrail for prohibited superlatives in MARKETING_COPY",
+      "manual_evidence": "Copy review.",
+      "failure_condition": "Hidden fees or unsubstantiated lowest-cost claims.",
+      "unsupported_marketing_rule": "Prohibited: lowest cost in the industry without substantiation."
+    },
+    {
+      "id": "lifetime_updates",
+      "label": "Lifetime updates",
+      "definition": "Updates included for the period defined in license terms only.",
+      "applicability": "When license or marketing mentions lifetime updates.",
+      "evidence_required": ["license text", "EULA alignment"],
+      "automated_check": "manual",
+      "manual_evidence": "Legal review.",
+      "failure_condition": "Marketing promises lifetime updates license does not grant.",
+      "unsupported_marketing_rule": "Match lifetime language to actual license duration."
+    },
+    {
+      "id": "complete_export",
+      "label": "Complete export",
+      "definition": "Export includes all customer-created data within documented exclusions.",
+      "applicability": "When export completeness is claimed.",
+      "evidence_required": ["export tests", "matrix limitations section"],
+      "automated_check": "interop acceptance tests when present",
+      "manual_evidence": "Export audit on sample vault.",
+      "failure_condition": "Claimed complete export omits documented categories silently.",
+      "unsupported_marketing_rule": "State explicit export exclusions."
+    },
+    {
+      "id": "full_function_trial",
+      "label": "Full-function trial",
+      "definition": "During a disclosed time-limited trial, advertised paid features are available without artificial caps imposed solely to force conversion; limits are disclosed before activation.",
+      "applicability": "Product offers a time-limited trial and marketing uses full-function, full-featured, or equivalent trial language.",
+      "evidence_required": [
+        "reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt",
+        "APP-TRIAL-FULL-FUNCTION gate tests",
+        "trial disclosure in hub, Help, and in-app status"
+      ],
+      "automated_check": "APP-TRIAL-FULL-FUNCTION gate adapter; verify-nivo78-family-philosophy-registry.ps1",
+      "manual_evidence": "Trial UX walkthrough and entitlement matrix review.",
+      "failure_condition": "Trial withholds material advertised paid capability, uses undisclosed artificial usage caps, or silently charges on expiry.",
+      "unsupported_marketing_rule": "Do not advertise a full-function trial when material paid functionality is unavailable during the trial."
+    },
+    {
+      "id": "trial_tagline_primary",
+      "label": "Primary trial tagline",
+      "definition": "Try Everything. Decide for Yourself. — trial provides meaningful access to the paid functionality being evaluated.",
+      "applicability": "Product offers a time-limited trial and uses the family primary trial tagline or equivalent Try Everything wording.",
+      "evidence_required": [
+        "reference/NIVO78_TRIAL_MESSAGING.json",
+        "APP-TRIAL-TAGLINE-TRUTH gate",
+        "trial disclosure adjacent to tagline in MARKETING_COPY or hub"
+      ],
+      "automated_check": "TrialTaglineVerifier unit tests; APP-TRIAL-TAGLINE-TRUTH gate adapter",
+      "manual_evidence": "Marketing review against entitlement matrix.",
+      "failure_condition": "Primary tagline used while material paid capability is withheld or trial context is omitted.",
+      "unsupported_marketing_rule": "Do not use the primary tagline without trial/evaluation disclosure and behavior that supports meaningful paid-feature access."
+    },
+    {
+      "id": "trial_no_obligation",
+      "label": "No obligation to buy (trial)",
+      "definition": "Trial participation alone does not obligate purchase; payment method, auto-conversion, renewal, and cancellation are accurately disclosed before activation.",
+      "applicability": "Supporting statement or copy includes no obligation to buy or equivalent.",
+      "evidence_required": [
+        "billing/cancellation markers in MARKETING_COPY",
+        "APP-TRIAL-BILLING-DISCLOSURE gate"
+      ],
+      "automated_check": "APP-TRIAL-BILLING-DISCLOSURE gate adapter; TrialTaglineVerifier",
+      "manual_evidence": "Store listing and in-app trial activation flow review.",
+      "failure_condition": "No-obligation language paired with undisclosed auto-billing or silent subscription conversion.",
+      "unsupported_marketing_rule": "Disclose payment, renewal, and cancellation before trial activation when using no-obligation language."
+    }
+  ]
+}

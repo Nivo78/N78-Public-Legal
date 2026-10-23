@@ -1,0 +1,55 @@
+NIVO78 FAMILY INTEROPERABILITY & DATA PORTABILITY — v1.0
+========================================================
+Authority: Level 2. Implements North Star interoperability and customer data usability.
+Rule IDs: FAMILY-INTEROP-STANDARD [STATIC], FAMILY-INTEROP-MATRIX [QA], FAMILY-INTEROP-ACCEPTANCE [QA].
+
+PRINCIPLE
+---------
+Interoperability is a first-class product requirement. Adoption must not force customers to
+rebuild existing data unnecessarily. Exact formats are product-specific; each product maintains
+an interoperability matrix (see below).
+
+PRODUCT INTEROPERABILITY MATRIX (REQUIRED WHEN IMPORT/EXPORT APPLIES)
+--------------------------------------------------------------------
+Each applicable product MUST maintain docs/INTEROPERABILITY_MATRIX.md (or approved equivalent path
+registered in product.identity.json as interoperability_matrix_path) with rows containing:
+  - Product and data category
+  - Format name and specification/version
+  - Import or export direction
+  - Relevant vendors, applications, equipment, or workflows
+  - Supported fields and data relationships
+  - Units, precision, identifiers, conversion rules
+  - Known unsupported fields and limitations
+  - Licensing or redistribution restrictions
+  - Representative sample files and provenance
+  - Automated test coverage reference
+  - Round-trip verification results (when executed)
+  - Current compatibility status
+  - Maintenance owner or responsible role
+
+INTEROPERABILITY TIERS (PRIORITIZATION)
+---------------------------------------
+Tier 1 — Open standards and portable formats: most relevant open or documented formats for the category.
+Tier 2 — Common industry formats: widely used formats customers rely on (evidence-based priority).
+Tier 3 — Vendor-specific integrations: when value justifies cost and legal terms permit.
+
+Do not promise universal vendor format support. Prioritize using documented product decisions.
+
+ACCEPTANCE RULES (FAMILY-INTEROP-ACCEPTANCE)
+--------------------------------------------
+- Import/export preserves supported fields within documented precision limits.
+- Lossy conversions are detected and disclosed.
+- Unknown or unsupported fields are not silently discarded without warning and documentation.
+- Malformed files fail safely without corrupting existing data.
+- Import does not silently overwrite unrelated user data.
+- Units and numeric precision are validated.
+- Duplicates, identifiers, relationships handled deterministically.
+- Round-trip tests compare semantic content, not file existence alone.
+- Every supported format has representative automated test fixtures where feasible.
+- Vendor format changes trigger compatibility review and regression testing.
+- Export remains available without an unnecessary online service.
+
+NOT APPLICABLE
+--------------
+Products with no import/export surface (e.g. pure standards tooling) document N/A in the matrix
+file or product.identity.json (interop_applicable: false).

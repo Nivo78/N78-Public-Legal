@@ -1,0 +1,323 @@
+# NIVO78 FAMILY MANDATORY AUTOMATED TESTING STANDARD
+
+**Standard ID:** N78-TEST-001  
+**Applies to:** Every application in the Nivo78 family, including all future applications  
+**Enforcement:** Mandatory; blocking  
+**Authority:** Nivo78 North Star → Nivo78 Family Standards → Mandatory Automated Testing Standard → application-specific requirements → implementation  
+**Compliance rule:** FAIL CLOSED
+
+## 1. Non-negotiable requirements
+
+1. Every new feature, modified feature, bug fix, and behavioral change MUST include new or updated automated tests appropriate to the change.
+2. Testing MUST cover all three required layers:
+   - **Logic tests:** Business rules, calculations, state transitions, validation, error handling, and data transformations.
+   - **Rendered-UI tests:** Actual screens, controls, navigation, visual state, layout, accessibility, and user interaction.
+   - **Device-level tests:** Automated execution against the application running in its target runtime, on a real device or a documented, representative device-level environment.
+3. Tests MUST execute successfully before a feature can be declared complete.
+4. Tests MUST verify observable behavior and expected outcomes, not merely that methods execute without throwing exceptions.
+5. Existing automated tests MUST continue to pass. A feature change MUST NOT silently weaken, delete, skip, or bypass existing tests.
+6. Required tests MUST be committed with the feature implementation. Creating test files without executing them does not satisfy this standard.
+7. Cursor MUST identify the changed functionality, determine the affected test layers, implement the necessary tests, execute them, inspect failures, correct defects, and report verifiable results.
+8. Missing test infrastructure, unavailable devices, incomplete execution, or insufficient evidence MUST NOT be reported as PASS.
+9. The standard applies equally to small changes, large features, refactoring that affects behavior, and changes made by AI agents.
+10. Application-specific testing requirements MAY be stricter but MUST NOT weaken this family standard.
+
+## 2. Required test layers
+
+### 2.1 Logic and component tests
+
+For every changed behavior, add or update automated tests covering all applicable cases:
+
+- Normal successful operation.
+- Minimum, maximum, boundary, and out-of-range values.
+- Empty, missing, malformed, and invalid input.
+- Invalid state transitions and prohibited operations.
+- Error conditions, exceptions, and recovery.
+- Relevant combinations of inputs and application states.
+- Data persistence, reload, backup, restore, and migration when affected.
+- Financial calculations, rounding, units, totals, and validation when applicable.
+- Date, time, locale, numeric precision, and formatting where applicable.
+- Offline operation and interrupted operations when applicable.
+- Security, privacy, authorization, and data isolation when applicable.
+- Regression cases for every defect fixed.
+
+Tests MUST assert the correct result, state change, side effect, or error. They MUST NOT merely assert that the code ran.
+
+Use unit tests for isolated logic and integration tests where behavior depends on multiple collaborating components, databases, files, services, or platform APIs.
+
+### 2.2 Rendered-UI tests
+
+Tests MUST exercise the actual rendered application interface, not just its view-models, handlers, or underlying functions.
+
+Cover every affected screen, dialog, panel, navigation path, and interactive control, as applicable.
+
+Tests MUST verify:
+
+- The correct screen and controls appear.
+- Text, values, labels, status messages, and enabled states are correct.
+- User input is accepted, validated, rejected, and preserved correctly.
+- Buttons, menus, navigation, dialogs, and other controls produce the intended outcomes.
+- Changes in application state are reflected in the visible interface.
+- Loading, empty, success, failure, and disabled states render correctly.
+- Layout remains usable at supported window sizes, display scaling levels, and resolutions.
+- Text is not clipped, controls do not overlap, and required actions remain accessible.
+- Keyboard, touch, focus, accessibility labels, and other supported interaction methods work.
+- Validation and error messages are displayed at the correct time and place.
+- Data remains correct after navigation, closing and reopening views, and refreshing the interface where applicable.
+
+Use semantic selectors, accessible names, stable automation identifiers, and observable application state. Avoid brittle selectors based on screen coordinates, incidental visual structure, or generated element positions.
+
+A screenshot comparison MAY supplement UI assertions but MUST NOT be the sole proof of correctness.
+
+### 2.3 Device-level automated tests
+
+Automated tests MUST launch and exercise the application in its actual target runtime or a documented representative runtime.
+
+For desktop applications, this means the installed or packaged application, or an equivalent production-faithful build, running on the supported operating system. For mobile applications, it means the app running on a real device or representative emulator/simulator.
+
+Tests MUST cover affected end-to-end user workflows, including:
+
+- Application launch and initialization.
+- The user's actual interaction with the affected feature.
+- Correct visible results and persisted state.
+- Navigation away from the feature and return to it.
+- Closing and reopening the application when relevant.
+- Restart, recovery, and interrupted operations when relevant.
+- Integration with files, local databases, operating-system APIs, hardware, or external services when affected.
+- Relevant error paths and recovery behavior.
+
+At least one device-level automated workflow MUST verify the complete user-visible outcome of every changed feature. Add further workflows for materially different paths, risks, and failure conditions.
+
+A unit test or simulated UI test MUST NOT be represented as a device-level test.
+
+When a real device is required but unavailable, Cursor MUST report the device-level requirement as NOT VERIFIED. It MUST still run every feasible automated test and provide the missing device test as an explicit release-blocking item.
+
+### 2.4 File input and output verification (APP-TEST-FILE-IO-VERIFY) — GATE
+
+Whenever application behavior **reads an input file** or **writes an output file** (images, exports, imports, batch folders, profiles, settings, backups, caches, or any persisted artifact on disk), automated QA MUST prove the I/O works as expected. This requirement is mandatory and fail-closed.
+
+For every affected read or write path introduced or changed:
+
+1. **Logic / integration tests** MUST assert observable file outcomes — not merely that a method returned without throwing. At minimum:
+   - **Read:** the source file exists (or the test documents the expected missing-file error), opens successfully, and loaded content or metadata matches expectations (size, dimensions, parsed fields, record counts, or equivalent).
+   - **Write:** the output file exists at the intended path, is non-zero when applicable, and matches expectations (format, dimensions, checksum, round-trip reload, or documented skip/overwrite rules).
+2. **Mocks alone are insufficient** when the shipped feature performs real file I/O. Tests that only mock streams or paths do not satisfy this rule unless the capability is genuinely mock-only by design (document NOT APPLICABLE with evidence).
+3. **Device-level / on-device tests** MUST re-verify the same read/write behavior in the target runtime using production-faithful builds and isolated fixture folders (never the operator’s personal documents as the sole test harness).
+4. **On-device visual confirmation** (where the product standard requires it) MUST use artifacts that prove the file was actually written or read (for example output PNG/JPEG on disk, profile store round-trip, or a screenshot/contact sheet of real output files).
+5. A change that adds or modifies file I/O without adding or updating tests that assert those files is **FAIL** until covered.
+6. **Negative and edge paths** (missing file, empty folder, zero-byte input, corrupt/unreadable store, skip-existing output rules) MUST be covered when the product handles them; document NOT APPLICABLE only with evidence the path cannot occur.
+
+Product repos SHOULD maintain a **file I/O test map** (JSON or txt) listing each artifact, logic tests, and on-device tests. Executable guardrails SHOULD fail when the map is missing or stale.
+
+Registry rule ID: **APP-TEST-FILE-IO-VERIFY** (GATE). Product repos MUST mirror enforcement in mandatory change-testing copy and executable guardrails.
+
+## 3. Change impact and test planning
+
+Before implementation, Cursor MUST:
+
+1. Identify the feature's intended behavior and acceptance criteria.
+2. Identify affected application modules, screens, controls, data stores, interfaces, dependencies, and existing tests.
+3. Identify relevant shared family components and other features that could regress.
+4. Define a test matrix mapping each acceptance criterion to its logic, UI, and device-level tests.
+5. Identify boundary conditions, failure modes, supported configurations, and regression risks.
+6. Determine which existing tests must be updated and which additional regression tests are necessary.
+
+Cursor MUST NOT assume that testing only the edited source file is sufficient.
+
+When a shared component changes, Cursor MUST identify all known consumers and test the shared behavior and materially affected applications.
+
+## 4. Coverage and test completeness
+
+Coverage MUST be measured using the tooling appropriate to the language and framework.
+
+- Measure changed-code line and branch coverage where supported.
+- Target at least 90% line coverage and 85% branch coverage for new or materially modified business logic.
+- Require 100% coverage of identified critical business rules, safety-relevant conditions, financial calculation rules, and permission or authorization decisions, where applicable.
+- Explain framework-generated, unreachable, or genuinely untestable code exclusions and verify them independently.
+- Do not exclude difficult code solely to improve a coverage report.
+- Do not treat a coverage percentage as proof that behavior is correct.
+
+The thresholds above are minimum targets, not permission to omit meaningful tests. If a threshold cannot be met, compliance remains FAIL unless a formally approved, narrowly scoped exception explicitly permits the deviation. A coverage waiver MUST NOT waive the required test layers or acceptance criteria.
+
+## 5. Test quality and reliability
+
+All automated tests MUST be:
+
+- Repeatable and deterministic under the documented test environment.
+- Independent of execution order unless ordering is explicitly part of the behavior being tested.
+- Isolated from production customer data and production accounts.
+- Safe to execute repeatedly.
+- Explicit about setup, inputs, expected outcomes, and cleanup.
+- Designed to avoid arbitrary sleeps, timing assumptions, network dependence, and unrelated environmental dependencies.
+- Capable of failing when the tested behavior is incorrect.
+
+Use controlled clocks, deterministic identifiers, isolated temporary storage, seeded test data, and fake or simulated external dependencies where appropriate.
+
+Mocks MUST NOT replace the behavior that a test is intended to verify. Integration and device-level tests MUST exercise the real integration boundaries relevant to the feature.
+
+Flaky tests MUST be investigated and corrected. Repeated retries MUST NOT be used to manufacture a passing result. A known flaky required test remains a compliance failure until fixed or formally dispositioned under an approved policy.
+
+Tests MUST NOT depend on existing customer files, undocumented machine configuration, developer-specific paths, manually prepared state, or secrets embedded in source code.
+
+## 6. Regression protection
+
+For every confirmed defect:
+
+1. Add a regression test that reproduces the defect before the fix, where practical.
+2. Confirm the regression test fails against the defective behavior.
+3. Implement the fix.
+4. Confirm the regression test passes.
+5. Run the relevant existing test suites and affected end-to-end workflows.
+
+Cursor MUST NOT delete, weaken, skip, disable, or loosen assertions in an existing test merely to obtain a passing build.
+
+Any intentional change to established behavior MUST have an approved requirement or acceptance criterion and corresponding updated tests.
+
+## 7. Accessibility, display configurations, and platform behavior
+
+Where applicable, automated UI and device-level tests MUST cover:
+
+- Supported display resolutions and scaling factors.
+- Window resizing and minimum supported window dimensions.
+- High-DPI rendering and text scaling.
+- Keyboard navigation, focus order, and accessibility semantics.
+- Supported touch and pointer interactions.
+- Localization, long text, and relevant formatting variations.
+- Platform-specific behaviors and operating-system integration.
+
+For mobile applications, include supported screen sizes, orientations, lifecycle transitions, and relevant permission states.
+
+For desktop applications, include the supported scaling and window configurations specified by the application standards. Tests MUST verify the actual rendered result, not merely the stored configuration value.
+
+## 8. Data integrity, privacy, and offline behavior
+
+Where applicable, tests MUST verify:
+
+- Correct persistence and retrieval of application data.
+- Backup and restore integrity.
+- Upgrade and migration compatibility.
+- Safe handling of interrupted writes and failed operations.
+- Prevention of accidental data loss, duplication, corruption, or unauthorized access.
+- Appropriate handling of sensitive data in logs, temporary files, and test artifacts.
+- Offline-first operation without an unintended dependency on cloud access or login.
+- Correct behavior when external services are unavailable.
+
+Tests MUST use synthetic or explicitly authorized test data. Production customer data MUST NOT be copied into test fixtures or test artifacts.
+
+## 9. Continuous integration and release enforcement
+
+The repository MUST provide a repeatable, documented automated test command or test pipeline.
+
+Where the platform supports it, automated checks MUST run on pull requests, proposed merges, and release candidates.
+
+The required pipeline MUST:
+
+1. Validate the code and test configuration.
+2. Build the application using the documented build process.
+3. Run relevant unit and logic tests.
+4. Run integration tests.
+5. Run rendered-UI tests.
+6. Run applicable device-level end-to-end tests.
+7. Collect coverage and test-result reports.
+8. Detect and report skipped, failed, missing, or unexecuted required tests.
+9. Enforce the mandatory quality gates.
+10. Preserve machine-readable results and actionable failure details.
+11. Before each release QA orchestrator run (`run-{product}-qa-suite.ps1` and delegated release verify scripts), clear the product Desktop Results folder (`Desktop\Results\{ProductRootName}\`) so only artifacts from the current run remain. Family implementation: `Clear-N78ProductDesktopResultsBeforeReleaseQa` from `Start-N78Test001OrchestratedQaRun` (N78-Ops/tools/lib/N78Test001OrchestrationStandard.ps1). Products with custom Desktop Results resolution MUST set `N78_DESKTOP_RESULTS_DIR` (or product-equivalent) before calling `Start-N78Test001OrchestratedQaRun`.
+
+Tests that cannot run in every pull-request environment MUST run in an enforced downstream gate before release. A skipped gate MUST be reported as NOT VERIFIED, never PASS.
+
+A successful compilation, static analysis report, or green unit-test suite alone MUST NOT authorize feature completion or release.
+
+## 10. Cursor implementation requirements
+
+Cursor MUST follow this sequence for every feature change:
+
+1. **Inspect:** Read the applicable North Star, Family Standards, application standards, relevant Cursor rules, and existing testing infrastructure.
+2. **Plan:** Document acceptance criteria, impact analysis, required test layers, and the affected regression surface.
+3. **Implement:** Write or modify production code and corresponding automated tests together.
+4. **Validate logic:** Execute the relevant unit and integration tests.
+5. **Validate UI:** Launch the application or the appropriate production-faithful test target and execute the affected UI tests.
+6. **Validate device behavior:** Execute the required end-to-end workflows on the applicable target runtime or device.
+7. **Run regression tests:** Execute all required suites for the affected modules and integrations.
+8. **Measure:** Generate coverage and machine-readable test reports.
+9. **Investigate:** Diagnose failures and fix the underlying defects. Do not suppress failures to achieve a green result.
+10. **Verify:** Rerun affected tests after the final production-code or test changes.
+11. **Report:** Provide a concise, evidence-backed compliance report.
+12. **Gate:** Declare PASS only when every applicable mandatory requirement has been satisfied.
+
+If any code changes after verification, rerun all tests affected by those changes before declaring PASS.
+
+Cursor MUST NOT claim that a test ran, a device was used, a workflow passed, or coverage was achieved without corresponding execution evidence.
+
+## 11. Mandatory evidence and compliance report
+
+Each feature change MUST produce a machine-readable test report and a human-readable summary.
+
+The report MUST identify:
+
+- Application and feature.
+- Change or revision identifier.
+- Acceptance criteria and corresponding test identifiers.
+- Logic, integration, rendered-UI, and device-level test results.
+- Test commands or pipeline jobs executed.
+- Environment, platform, and device or emulator/simulator details.
+- Tests passed, failed, skipped, and not executed.
+- Changed-code coverage results and required-threshold compliance.
+- Known failures, limitations, and unresolved risks.
+- Links or repository paths to test logs, coverage reports, and relevant artifacts.
+- Final compliance status and any approved exception identifiers.
+
+Use machine-readable output, preferably JUnit XML or an equivalent standard format, plus a coverage format supported by the project's tooling.
+
+Screenshots, recordings, logs, and other artifacts MUST be retained when useful to establish UI or end-to-end results. Avoid recording sensitive information.
+
+Evidence MUST correspond to the final code revision being evaluated.
+
+## 12. Fail-closed enforcement
+
+The following conditions MUST prevent a PASS:
+
+- Required tests have not been created.
+- Any applicable required test layer is missing.
+- Required tests have not executed.
+- Required tests fail.
+- Required coverage thresholds are not met.
+- Required device-level verification is unavailable or incomplete.
+- Test results cannot be tied to the evaluated code revision.
+- Required test reports or evidence are missing.
+- Test configuration or assertions have been weakened to bypass a gate.
+- The compliance verifier cannot establish the required evidence.
+
+Permitted final statuses:
+
+- **PASS:** All applicable mandatory requirements are satisfied and verified.
+- **FAIL:** One or more requirements are violated or a required test fails.
+- **NOT VERIFIED:** Evidence or execution is insufficient to establish compliance.
+
+FAIL and NOT VERIFIED MUST block feature completion and release approval under the applicable gate. Cursor MUST identify the precise blocker and must not silently downgrade the requirement.
+
+## 13. Exceptions and governance
+
+Cursor MUST NOT grant itself an exception.
+
+Any exception must be explicit, narrowly scoped, documented, approved by the designated human authority, and recorded with its rationale, affected requirement, risk, compensating controls, and expiration or review condition.
+
+An exception to a test threshold MUST NOT remove the obligation to create and execute logic, UI, and device-level tests applicable to the changed feature.
+
+No application-specific rule, local Cursor instruction, prompt, generated code, or convenience setting may override this standard without the governed approval required by the Nivo78 authority hierarchy.
+
+## 14. Definition of done
+
+A feature is NOT DONE until:
+
+- Acceptance criteria are satisfied.
+- Required logic and integration tests exist and pass.
+- Required rendered-UI tests exist and pass.
+- Required device-level end-to-end tests exist and pass.
+- Relevant regression suites pass.
+- Coverage requirements are satisfied.
+- No required test has been silently skipped or bypassed.
+- Test evidence is generated and associated with the final revision.
+- The compliance report states PASS.
+
+**Mandatory principle: No test evidence, no PASS. No required layer, no PASS. No verified execution, no PASS.**

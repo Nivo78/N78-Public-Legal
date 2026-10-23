@@ -1,5 +1,5 @@
 # NIVO78 FAMILY QA TESTING STANDARD
-## Document ID: NIVO78-QA-STD-2026-V1.53
+## Document ID: NIVO78-QA-STD-2026-V1.54
 ## Classification: Architecture Governance & Universal Testing Standard
 ## Target: Universal Nivo78 Mobile, Desktop, and KMP Codebases
 
@@ -7,7 +7,7 @@ Canonical companion: `reference/NIVO78_FAMILY_QA_TESTING_STANDARD.txt` (full lan
 
 ---
 
-## 1. Governance Rules (Rules 160–162)
+## 1. Governance Rules (Rules 160–163)
 
 ### RULE 160: APP-TEST-TEXT-ORCHESTRATOR
 Every application repository must provide a dedicated, standalone text-based scenario orchestrator:
@@ -29,8 +29,8 @@ Every application repository must provide an integrated, multi-lane automated re
   1. Static Guardrails / Source Linting (`run-{product}-guardrails.ps1`).
   2. KMP Shared Engine Tests (`:shared:desktopTest`).
   3. Headless UI Regression (`:desktop:desktopTest`).
-  4. Watchable On-Screen Exploration (`:desktop:visibleUiQa` when visual desktop shell exists).
-  5. Native Host Subsystem Tests (e.g., `dotnet test` for WinForms or platform-specific CLI harnesses).
+  4. Watchable On-Screen Exploration (`:desktop:visibleUiQa` for Compose; `:winforms:visibleUiQa` for WinForms-primary).
+  5. Native Host Subsystem Tests (headless `dotnet test` excluding `Category=WinFormsVisibleUiQa`).
   6. Text Scenario Orchestrator (`tools/text-tests/run-text-scenarios.ps1`).
 
 ### RULE 162: APP-TEST-VAULT-BACKUP-QA
@@ -42,12 +42,20 @@ Every application must implement deterministic verification of its security boun
   - Automated engine tests must execute full in-memory serialization round-trips and file export/import parity checks.
   - UI tests must verify the on-screen display of restored data fields.
 
+### RULE 163: APP-TEST-WINFORMS-ON-DEVICE-UI
+WinForms-primary desktop products MUST ship maximum on-device UI automation (family standard §3f):
+* `tools/verify/run-{product}-winforms-visible-ui-qa.ps1` invoked from the on-device QA lane.
+* xUnit trait `Category=WinFormsVisibleUiQa` on STA tests that **Show** the shipping MainForm (Opacity=1).
+* Granular JSON → `Desktop\Results\N78-{Product}\winforms-visible-ui-qa\LATEST-results.json` merged into ALL-RESULTS.html.
+* Minimum catalog: main menus, command bar, primary modes, transforms, sliders/readouts, Help hub, tier menus, legal QA prep.
+* Reference: N78-Estimate `EstimateWinFormsDeviceQaTests`; N78-Frame `FrameWinFormsDeviceQaTests`.
+
 ---
 
-## 2. On-Screen Exhaustive Interaction Specification (§ 3d)
+## 2. On-Screen Exhaustive Interaction Specification (§ 3d–3f)
 
 ### 2.1 Interaction Requirements
-Superficial slideshows or non-interactive step-throughs are strictly prohibited. When `:desktop:visibleUiQa` runs, the automation agent must explore every visible interactive component:
+Superficial slideshows or non-interactive step-throughs are strictly prohibited. When `:desktop:visibleUiQa` or `:winforms:visibleUiQa` runs, the automation agent must explore every visible interactive component on the **rendered** shell:
 
 1. **Text Fields and Input Boxes:**
    * Focus the input field.
@@ -68,7 +76,7 @@ Superficial slideshows or non-interactive step-throughs are strictly prohibited.
 
 ### 2.2 Visual Execution and Human Observability
 * Host Window: `:desktop:visibleUiQa` must run within a **visible, bordered desktop window frame** on the operator's primary display. Headless off-screen harnesses (`runSkikoComposeUiTest` without a physical window) are strictly reserved for `:desktop:desktopTest`.
-* Implementation: Use `runDesktopComposeUiTest` (Compose Desktop) or the product's native visible shell (WinForms exe harness).
+* Implementation: Use `runDesktopComposeUiTest` (Compose Desktop) or WinForms `Show()` harness with `Category=WinFormsVisibleUiQa` (not headless-only dotnet for on-device proof).
 * Visual Step HUD: A blue informational banner must sit at the top of the viewport indicating the active step, target component, and intended assertion.
 * Pacing Clamps: An intentional pacing delay of **50ms to 150ms** (default: **100ms**) must be injected between discrete interaction steps so human operators can visibly observe field mutations, focus switches, and layout transitions.
 
@@ -95,6 +103,11 @@ Every desktop product MUST automate a **full page sweep** before release:
    - **Overlapping** interactive controls (buttons, tabs, checkboxes) beyond family tolerance.
 3. **Implementation:** Compose Desktop products call `N78FamilyDesktopPageLayoutQa.assertPageLayoutIntegrity` from `openModuleTab` / `displayEveryPageLayoutSweep` in the CombinedReleaseQaTest runner and `:shared:visibleUiQa` (or `:desktop:visibleUiQa`). WinForms products document the equivalent dotnet sweep in `docs/QA_RELEASE_SUITE.md`.
 4. **Results:** Each page probe is a discrete pass/fail row in ALL-RESULTS.html when the visible lane emits granular JSON.
+
+### 2.6 WinForms maximum on-device lane (`:winforms:visibleUiQa`, § 3f)
+* Headless release gate MUST NOT be the only dotnet pass — exclude `WinFormsVisibleUiQa` from verify-tests and run the dedicated winforms-visible script in on-device QA.
+* Text-test segment markers (01–07) remain mandatory manual/Agent depth; they do not satisfy § 3f.
+* Each `Record(name, action)` from the WinForms reporter is one ALL-RESULTS row under lane `:winforms:visibleUiQa`.
 
 ### 2.4 Unified Consolidation (single-file law)
 * Each visible interaction assertion emits a discrete pass/fail record.

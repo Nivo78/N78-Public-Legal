@@ -104,6 +104,31 @@ data from real customer/business data.
 \- Test automation must not transmit or expose real
 business data.
 
+
+
+APP-TEST-FILE-IO-VERIFY [GATE]
+
+\- Any read/write of real files requires automated assertions on disk
+and on-device re-verification where the product defines a runtime lane.
+See reference/NIVO78_FAMILY_MANDATORY_AUTOMATED_TESTING_STANDARD.txt §2.4.
+
+
+
+FAMILY-N78-TEST-001 [GATE]
+
+\- Standard ID N78-TEST-001: three test layers (logic, rendered UI,
+device/runtime), fail-closed PASS, release orchestrator hook.
+Primary projection: n78-test-001-orchestration-runner.mdc (alwaysApply).
+
+
+
+APP-TEST-WINFORMS-ON-DEVICE-UI [GATE]
+
+\- WinForms products MUST run rendered/on-device UI QA (visible UI +
+layout/DPI where applicable) via documented orchestrator scripts.
+
 ## Rule-ID coverage
 
-Primary attachment for: APP-TEST-FRESH-UPGRADE, APP-TEST-INTEGRATION, APP-TEST-OFFLINE, APP-TEST-REAL-DATA-SAFETY, APP-TEST-RECOVERY, APP-TEST-REGRESSION, APP-TEST-UI-CRITICAL, APP-TEST-UNIT.
+Primary attachment for: APP-TEST-FRESH-UPGRADE, APP-TEST-INTEGRATION, APP-TEST-OFFLINE, APP-TEST-REAL-DATA-SAFETY, APP-TEST-RECOVERY, APP-TEST-REGRESSION, APP-TEST-UI-CRITICAL, APP-TEST-UNIT, APP-TEST-DESKTOP-PAGE-LAYOUT, APP-TEST-FILE-IO-VERIFY, APP-TEST-WINFORMS-ON-DEVICE-UI, FAMILY-INTEROP-ACCEPTANCE, APP-TRIAL-FULL-FUNCTION.
+
+When a product ships a time-limited trial, add or extend guardrail/regression tests for paid-feature access during trial, documented usage limits, expiration (no silent purchase), data retention, export after expiry, and license transitions — required evidence for **APP-TRIAL-FULL-FUNCTION** GATE.

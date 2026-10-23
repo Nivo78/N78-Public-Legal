@@ -1,0 +1,75 @@
+---
+description: Mandatory test orchestration runner and verification gate for all apps (N78-TEST-001)
+globs: "*"
+alwaysApply: true
+---
+
+**Rank:** Family mandatory workflow (N78-TEST-001). Family STATIC, GATE, and QA (`nivo78-core.mdc`, `reference/NIVO78_STANDARD_RULE_IDS.txt`) outrank this file. Canonical text: `reference/NIVO78_FAMILY_MANDATORY_AUTOMATED_TESTING_STANDARD.txt` (mirrored under each product `reference/` after standards install).
+
+# Mandatory Test Orchestration Runner (N78-TEST-001)
+
+**Registry rule ID:** **FAMILY-N78-TEST-001** (GATE). **Standard ID:** N78-TEST-001.
+
+## Policy and compliance rule
+
+- **Enforcement:** Strict — evidence required before **PASS** (internal policy label: *fail-closed*). Missing, skipped, or failing applicable layers block release; do not treat that as a failed test run by itself.
+- Any change (feature, refactor, bug fix) MUST execute all three required layers applicable to that change:
+  1. **Logic and calculation tests**
+  2. **Rendered-UI tests**
+  3. **Device / target-runtime tests**
+- Never declare **PASS** if any applicable layer is missing, unexecuted, skipped, or failing.
+- Never weaken, bypass, or delete existing assertions or tests to green a gate.
+- Question-only or review-only turns with **no** production/test harness changes: orchestration may be **NOT APPLICABLE** — say so explicitly; do not invent PASS.
+
+## Orchestration workflow
+
+Before completing any task that changes behavior, run the project-appropriate orchestrator in the terminal (or the smallest focused subset that still covers every affected layer).
+
+### Discovery and verification commands
+
+Detect harnesses and run the correct lane:
+
+| Stack | Layer 1 — Logic | Layer 2 — Rendered UI | Layer 3 — Device / runtime |
+| ----- | ----------------- | --------------------- | --------------------------- |
+| **Gradle / KMP** | `gradlew.bat` / `gradlew` — `allTests`, `:shared:desktopTest`, `:common:testDebugUnitTest`, or product doc | Compose `desktopTest`, Android `androidTest`, screen-reading suite | `connectedDebugAndroidTest`, `:desktop:visibleUiQa`, or product on-screen orchestrator |
+| **npm / Node** | `npm run test:logic` or `npm test` | `npm run test:ui` | `npm run test:e2e` or `npm run test:all` |
+| **Python** | `pytest` (unit paths) | integration/UI paths per project | E2E per product QA doc |
+
+On **Windows**, prefer `gradlew.bat` and `pwsh -NoProfile -File tools/...` from the product repo root.
+
+Inspect exit codes and JUnit (or equivalent) XML. Fix failures; do not suppress.
+
+Each product MUST document a release orchestrator (`run-*-qa-suite.ps1`, `*ReleaseGate.bat`, or equivalent) that maps the three layers when the product ships user-facing behavior.
+
+## Required compliance output
+
+When behavior or tests changed, end the turn with:
+
+```text
+N78-TEST-001 compliance
+Standard: N78-TEST-001
+Enforcement: Strict (evidence required — no PASS without executed tests)
+Change scope: [one line]
+
+Layer 1 — Logic:          PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Layer 2 — Rendered UI:    PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Layer 3 — Device/runtime: PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Regression / guardrails:  PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+
+Artifacts: [paths to reports/logs]
+
+Final status: PASS | FAIL | NOT VERIFIED
+Blockers: [if not PASS]
+```
+
+**PASS** only when every applicable layer is **PASS** with execution evidence. **No test evidence, no PASS.**

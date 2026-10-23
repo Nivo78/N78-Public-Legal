@@ -28,6 +28,7 @@ A. Global plugin (all projects on this machine)
 
    AlwaysApply:
      - nivo78-core.mdc
+     - n78-test-001-orchestration-runner.mdc
      - anticipate-before-implementing.mdc
      - fix-propagation-audit.mdc
      - desktop-launcher-bats.mdc

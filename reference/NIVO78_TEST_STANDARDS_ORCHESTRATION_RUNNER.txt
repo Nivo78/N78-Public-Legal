@@ -1,0 +1,56 @@
+NIVO78 — Test Standards orchestration runner (N78-TEST-001 summary)
+================================================================
+
+**Standard ID:** N78-TEST-001
+**Full authority:** reference/NIVO78_FAMILY_MANDATORY_AUTOMATED_TESTING_STANDARD.txt
+**Enforcement:** FAIL CLOSED — applies to every Nivo78 application orchestrator (run-{product}-qa-suite.ps1, release gates, and delegated verify scripts).
+
+## Policy
+
+- Every feature, refactor, and bug fix MUST run all three applicable layers:
+  1. Logic and calculation tests
+  2. Rendered-UI tests
+  3. Device / target-runtime tests
+- Never declare PASS if any applicable layer is missing, unexecuted, skipped, or failing.
+- Never weaken, bypass, or delete existing assertions or tests.
+
+## Orchestration workflow (agents and maintainers)
+
+Before completing a behavioral change:
+
+1. Detect the product test harness and run the documented orchestrator (Windows: `gradlew.bat`, `pwsh -NoProfile -File tools/maintain/run-{product}-qa-suite.ps1`, or `N78-{Product}-QA-Suite.bat`).
+2. Release QA MUST clear the product folder under Desktop\Results before the run starts (family gate inside Start-N78Test001OrchestratedQaRun) so stale ALL-RESULTS, qa-runs, and Gradle copies cannot be mistaken for the latest run.
+3. Execute commands in the terminal; inspect exit codes and JUnit XML under module `build/test-results/`.
+4. Fix failures at the root cause; rerun affected tests after the final code revision.
+
+Family library (orchestrator banner + reference assert): N78-Ops/tools/lib/N78Test001OrchestrationStandard.ps1
+
+## Required compliance output (closing summary)
+
+```text
+N78-TEST-001 compliance
+Standard: N78-TEST-001 (FAIL CLOSED)
+Change scope: [one line]
+
+Layer 1 — Logic:          PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Layer 2 — Rendered UI:    PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Layer 3 — Device/runtime: PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+  Evidence:
+
+Regression / guardrails:  PASS | FAIL | NOT VERIFIED | N/A
+  Command(s):
+
+Artifacts: [JUnit XML, ALL-RESULTS.html, visible-ui JSON, logs]
+
+Final status: PASS | FAIL | NOT VERIFIED
+Blockers: [if not PASS]
+```
+
+**Mandatory principle:** No test evidence, no PASS. No required layer, no PASS. No verified execution, no PASS.

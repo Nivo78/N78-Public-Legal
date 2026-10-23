@@ -1,0 +1,51 @@
+NIVO78 MANDATORY STANDARD — FULL-FUNCTION TRIALS
+================================================
+Rule IDs: FAMILY-FULL-FUNCTION-TRIAL [STATIC], APP-TRIAL-FULL-FUNCTION [GATE]
+Primary projections: 01-product-philosophy.mdc, 11-testing-quality.mdc, 17-web-marketing.mdc
+Related: NIVO78_RELEASE_TAXONOMY.txt (R3/R4), NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt (post-trial),
+NIVO78_PRICING_CLAIM_REGISTRY.json (claim: full_function_trial)
+
+Applies to: Every Nivo78 product that offers a **time-limited trial**, regardless of trial duration
+or whether the trial precedes a one-time purchase (R4) or subscription (R3 configuration).
+
+Does not apply when the product has no time-limited trial (permanent free tier only, R1/R2 free paths).
+
+================================================================================
+REQUIREMENTS
+================================================================================
+
+1. All advertised paid features MUST be available during the trial period.
+2. Artificial feature restrictions and arbitrary usage caps MUST NOT be imposed solely to pressure conversion.
+3. Customers MUST be able to evaluate the product using real-world workflows, subject to legitimate
+   technical, legal, safety, and third-party service constraints.
+4. Trial limitations MUST be disclosed before activation and MUST NOT be misrepresented as full functionality.
+5. Trial expiration MUST NOT silently authorize a charge or subscription.
+6. Customer-created data MUST remain reasonably accessible and exportable after expiration.
+7. Trial duration, activation behavior, expiration behavior, purchase price, and applicable license
+   terms MUST be clearly disclosed.
+8. Automated tests MUST verify paid-feature access, usage-limit behavior, expiration, data retention,
+   export, and applicable licensing transitions (where a trial exists).
+9. The release gate MUST reject a trial configuration that introduces undocumented feature restrictions
+   or artificial usage caps.
+10. Any exception MUST have a documented justification, an identified approving authority, and clear
+    customer-facing disclosure.
+
+Advertising rule: A trial MUST NOT be advertised as full-function if a material portion of the
+advertised paid functionality is unavailable during the trial.
+
+Approved trial taglines and truthful-use rules: reference/NIVO78_TRIAL_MESSAGING.txt and
+NIVO78_TRIAL_MESSAGING.json (FAMILY-TRIAL-TAGLINE-CANONICAL, APP-TRIAL-TAGLINE-TRUTH).
+Taglines are permitted only when entitlements and disclosures match the claim.
+
+================================================================================
+VERIFICATION (APP-TRIAL-FULL-FUNCTION)
+================================================================================
+
+Family structure: reference file present; rule IDs in APP_STANDARD and registry.
+Product GATE (when trial surface exists): guardrail or regression tests named or tagged for trial
+transitions; docs/MARKETING_COPY or hub copy must not claim full-function while omitting disclosed limits.
+Release gate product adapters exit non-zero when trial caps are undocumented in MARKETING_COPY.txt or
+reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt exception block is absent.
+
+NOT APPLICABLE: Product documents no time-limited trial in product.identity.json (trial_offered: false)
+and no trial entitlement implementation in shipping source.

@@ -227,4 +227,4 @@ secrets from clipboard after a short timeout when supported.
 
 ## Rule-ID coverage
 
-Primary attachment for: .
+Primary attachment for: APP-DATA-DELETION, APP-DATA-EXPORT-TRUTH, APP-DATA-LIFECYCLE, APP-DATA-OPEN-EXPORT, APP-DATA-PORTABILITY, APP-DATA-SCHEMA-MIGRATION, FAMILY-INTEROP-STANDARD, FAMILY-INTEROP-MATRIX.

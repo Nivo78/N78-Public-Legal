@@ -1,0 +1,28 @@
+NIVO78 FAMILY FEEDBACK & RESPONSE TARGET — v1.0
+===============================================
+Authority: Level 2. Implements North Star responsive customer feedback (FAMILY-FEEDBACK-RESPONSE-TARGET).
+Complements APP-FEEDBACK-* rules.
+
+REQUIREMENTS (EVERY APPLICABLE PRODUCT)
+---------------------------------------
+- Discoverable in-app or documented path to report bugs and request features.
+- Intake supports classification (bug vs feature vs support), reproducibility where relevant,
+  and severity/priority assessment workflow (Track/TRK or equivalent).
+- Status tracking and honest communication about acceptance, limitations, and decisions.
+- No unsupported promises of delivery, resolution time, or universal feature implementation.
+- Confirmed defects receive regression tests when the pattern is re-breakable.
+
+FAMILY RESPONSE TARGET (MEASURED, GOVERNED)
+-------------------------------------------
+Default acknowledgement target for new bug and feature intake sent through the family Feedback
+mailto / structured flow:
+  - **Best effort initial acknowledgement within 5 business days** for messages that include
+    valid contact information and a clear report type.
+  - This is a planning and measurement target, not a contractual SLA or marketing claim.
+  - Change the target only through an update to this file with owner, rationale, and review date.
+
+MEASUREMENT
+-----------
+Business operations may track acknowledgement against this target using support mailbox and
+Track records. Products MUST NOT advertise stricter response guarantees unless backed by
+measured performance and approved copy review (FAMILY-MARKETING-CLAIM-EVIDENCE).

@@ -1,0 +1,57 @@
+NIVO78 FAMILY RELEASE TAXONOMY — v1.0
+======================================
+Authority: Level 2 (Nivo78 Family Standards). Implements North Star honest economics.
+Machine-readable release types: reference/NIVO78_PRICING_CLAIM_REGISTRY.json (release_models).
+Rule IDs: FAMILY-RELEASE-TAXONOMY [STATIC], FAMILY-RELEASE-MODEL-REGISTER [QA].
+
+NORMAL MODELS (R1–R3)
+---------------------
+R1 — Free Forever
+  Definition: Specified functionality remains usable indefinitely without required payment.
+  Primary tagline (when accurate): Free Means Free.
+  Supporting message (when accurate): No Trial Clock. No Subscription. No Surprise.
+  Mandatory: No trial countdown for promised free functionality; no silent conversion to paid;
+  clearly identify separately paid optional products; free tier delivers meaningful value.
+
+R2 — Free Forever + One-Time Purchase
+  Definition: Permanent free tier plus separately purchased license or upgrade.
+  Primary tagline (when accurate): Start Free. Pay Once. Keep Using It.
+  Supporting message (when accurate): No Monthly Meter Running. No Hidden Costs.
+  Mandatory: Free tier remains indefinitely within documented capabilities; purchase price and
+  unlocked features clear; purchase does not silently become subscription; license duration,
+  update rights, support, and major-version policy explicit; data export policies clear.
+
+R3 — Free Forever + Subscription
+  Definition: Permanent free tier with optional recurring paid functionality.
+  Primary tagline (when accurate): Start Free. Upgrade When You're Ready.
+  Supporting message (when accurate): More Capability. One Clear Price.
+  Mandatory: Free tier remains after cancellation within documented limits; subscription price,
+  billing frequency, renewal, and cancellation clear before purchase; defensible continuing value;
+  cancellation straightforward; customer data remains accessible and exportable; trial periods are
+  R3 configuration options, not separate release types.
+  Time-limited trials within R3 MUST comply with reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt
+  (APP-TRIAL-FULL-FUNCTION).
+
+EXCEPTIONAL MODEL
+-----------------
+R4 — Time-Limited Trial + One-Time Purchase
+  Definition: Defined trial of paid experience followed by optional one-time purchase.
+  Requires documented justification why a meaningful permanent free tier is not practical.
+  Primary tagline (when accurate): Try It. Test It. Buy It Only If It Works for You.
+  Mandatory: Trial duration and post-expiry behavior clear; expiration must not silently charge
+  or subscribe; purchase terms disclosed; reasonable data access and export; avoid payment method
+  at trial start when avoidable; trial behavior tested (fresh install, expiration, restart, clock
+  manipulation, offline, license recovery as applicable).
+  MUST comply with reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt (APP-TRIAL-FULL-FUNCTION).
+
+TAXONOMY RULES
+--------------
+- R1–R3 are normal release models; R4 requires documented approval.
+- Subscription trial is an R3 configuration, not an additional release type.
+- Trial duration is configuration, not a new release type.
+- Plan names (Basic, Pro, Premier, etc.) do not create additional release types.
+- Each shippable product MUST declare exactly one primary_release_model (R1–R4) in
+  product.identity.json or product specification before public marketing claims reference a model.
+- Do not select or change a product release model merely because recurring revenue is attractive.
+- Product-specific release decisions and pricing are product-owner decisions; this file defines
+  family rules only.

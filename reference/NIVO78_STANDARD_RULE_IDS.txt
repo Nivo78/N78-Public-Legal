@@ -1,4 +1,4 @@
-NIVO78 STANDARD RULE ID REGISTRY — 1.42
+NIVO78 STANDARD RULE ID REGISTRY — 1.46
 
 Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 
@@ -164,11 +164,36 @@ Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 159 | WEB-PRODUCT-TRIAL-AFTER-COPY | QA | 17-web-marketing.mdc
 160 | APP-LEGAL-IN-APP-DIALOG | GATE | 07-overrides-legal.mdc
 161 | APP-TEST-DESKTOP-PAGE-LAYOUT | GATE | 11-testing-quality.mdc
-162 | APP-LEGAL-GITHUB-CANONICAL-FALLBACK | GATE | 07-overrides-legal.mdc (N78-STD-LEGAL-01)
-163 | APP-LEGAL-TRIPLE-SYNC | GATE | 07-overrides-legal.mdc (NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt)
-164 | APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | GATE | desktop-launcher-bats.mdc (reference/NIVO78_DESKTOP_LAUNCH.txt)
-165 | APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | GATE | store-legal-gate-open-before-accept.mdc (NIVO78_STORE_LEGAL_GATE_OPEN_BEFORE_ACCEPT.txt)
-166 | APP-LEGAL-FORMATTED-PLAIN-DISPLAY | GATE | legal-formatted-plain-display.mdc (NIVO78_LEGAL_FORMATTED_PLAIN_DISPLAY.txt)
+162 | APP-LEGAL-GITHUB-CANONICAL-FALLBACK | GATE | 07-overrides-legal.mdc
+163 | APP-LEGAL-TRIPLE-SYNC | GATE | 07-overrides-legal.mdc
+164 | APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | GATE | desktop-launcher-bats.mdc
+165 | APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | GATE | store-legal-gate-open-before-accept.mdc
+166 | APP-LEGAL-FORMATTED-PLAIN-DISPLAY | GATE | legal-formatted-plain-display.mdc
+167 | FAMILY-NORTH-STAR-CANONICAL | STATIC | nivo78-core.mdc
+168 | FAMILY-RELEASE-TAXONOMY | STATIC | 01-product-philosophy.mdc
+169 | FAMILY-PRICING-CLAIM-REGISTRY | STATIC | 01-product-philosophy.mdc
+170 | FAMILY-MARKETING-CLAIM-EVIDENCE | QA | 17-web-marketing.mdc
+171 | FAMILY-INTEROP-STANDARD | STATIC | 09-data-recovery-migrations.mdc
+172 | FAMILY-INTEROP-MATRIX | QA | 09-data-recovery-migrations.mdc
+173 | FAMILY-INTEROP-ACCEPTANCE | QA | 11-testing-quality.mdc
+174 | FAMILY-SECURITY-BASELINE | QA | 10-security.mdc
+175 | FAMILY-FEEDBACK-RESPONSE-TARGET | QA | 06-output-support.mdc
+176 | FAMILY-CUSTOMER-DATA-USABLE | QA | 01-product-philosophy.mdc
+177 | FAMILY-RELEASE-MODEL-REGISTER | QA | 12-release-supply-chain.mdc
+178 | FAMILY-FULL-FUNCTION-TRIAL | STATIC | 01-product-philosophy.mdc
+179 | APP-TRIAL-FULL-FUNCTION | GATE | 11-testing-quality.mdc
+180 | FAMILY-TRIAL-TAGLINE-CANONICAL | STATIC | 17-web-marketing.mdc
+181 | APP-TRIAL-TAGLINE-TRUTH | GATE | 17-web-marketing.mdc
+182 | APP-TRIAL-DISCLOSURE | GATE | 17-web-marketing.mdc
+183 | APP-TRIAL-BILLING-DISCLOSURE | GATE | 17-web-marketing.mdc
+184 | FAMILY-WEBSITE-TRUST-TRUTHFULNESS | STATIC | 17-web-marketing.mdc
+185 | WEB-CLAIM-VERIFICATION-REGISTER | STATIC | 17-web-marketing.mdc
+186 | WEB-CLAIM-MATCHES-IMPLEMENTATION | GATE | 17-web-marketing.mdc
+187 | WEB-TRUST-STOP-AND-ASK | QA | web-trust-truthfulness.mdc
+188 | WEB-TRUST-RELEASE-BLOCK | GATE | 17-web-marketing.mdc
+189 | APP-TEST-WINFORMS-ON-DEVICE-UI | GATE | 11-testing-quality.mdc
+190 | APP-TEST-FILE-IO-VERIFY | GATE | 11-testing-quality.mdc
+191 | FAMILY-N78-TEST-001 | GATE | n78-test-001-orchestration-runner.mdc
 
 CLASS DEFINITIONS
 - STATIC = source/configuration requirement suitable for automated/static enforcement.

@@ -1,0 +1,45 @@
+NIVO78 CANONICAL TRIAL MESSAGING — v1.0
+=======================================
+Rule IDs: FAMILY-TRIAL-TAGLINE-CANONICAL [STATIC], APP-TRIAL-TAGLINE-TRUTH [GATE],
+APP-TRIAL-DISCLOSURE [GATE], APP-TRIAL-BILLING-DISCLOSURE [GATE]
+Machine-readable: reference/NIVO78_TRIAL_MESSAGING.json
+Behavior standard: reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt (APP-TRIAL-FULL-FUNCTION)
+
+Applies only to products that offer a time-limited trial.
+
+APPROVED MESSAGING HIERARCHY
+----------------------------
+Primary Nivo78 trial tagline (family default):
+  Try Everything. Decide for Yourself.
+
+Supporting statement:
+  Full access to paid features during your trial. No artificial usage limits. No obligation to buy.
+
+Approved supplementary taglines (use when space and product fit allow):
+  - Full Functionality. No Trial Restrictions.
+  - Test It on Real Work. Then Decide.
+  - Take Your Time. Make an Informed Decision.
+
+TRUTHFUL USE RULES
+------------------
+- Primary tagline: use when the trial provides meaningful access to the paid functionality being evaluated.
+- "Full Functionality. No Trial Restrictions.": use only when all advertised paid functionality is available
+  and no material trial-specific restriction undermines that claim.
+- "Test It on Real Work. Then Decide.": use when the product can be evaluated through realistic workflows.
+- "Take Your Time. Make an Informed Decision.": must not imply a longer trial duration or unrestricted
+  extension than the product actually provides.
+- "No obligation to buy" (supporting statement): trial participation itself does not obligate purchase.
+  Required payment details, automatic conversion, recurring billing, and cancellation requirements must be
+  disclosed accurately before activation.
+
+Do not imply every feature, integration, service, or capability is unrestricted when a legitimate
+disclosed limitation exists.
+
+Taglines are approved only when actual product behavior and disclosures support the claims
+(FAMILY-MARKETING-CLAIM-EVIDENCE, APP-TRIAL-FULL-FUNCTION).
+
+VERIFICATION
+------------
+Family: NIVO78_TRIAL_MESSAGING.json schema + TrialTaglineVerifier unit tests (N78-Standards).
+Product GATE: APP-TRIAL-TAGLINE-TRUTH, APP-TRIAL-DISCLOSURE, APP-TRIAL-BILLING-DISCLOSURE when trial_offered
+or trial implementation detected — see tools/verify/N78TrialMarketingGate.ps1.

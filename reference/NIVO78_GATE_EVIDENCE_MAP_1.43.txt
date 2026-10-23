@@ -1,0 +1,59 @@
+NIVO78 GATE EVIDENCE MAP — v1.46
+================================
+
+RULE_ID | VERIFIER | REQUIRED PRODUCT ADAPTER | EVIDENCE
+
+APP-ASSETS-TOP-LEVEL | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-ASSETS-TOP-LEVEL | tools/verify/nivo78-gates/APP-ASSETS-TOP-LEVEL.ps1 | adapter exit 0 + captured output
+APP-BACKUP-ATOMIC | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-BACKUP-ATOMIC | tools/verify/nivo78-gates/APP-BACKUP-ATOMIC.ps1 | adapter exit 0 + captured output
+APP-BACKUP-INTEGRITY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-BACKUP-INTEGRITY | tools/verify/nivo78-gates/APP-BACKUP-INTEGRITY.ps1 | adapter exit 0 + captured output
+APP-DATA-DOCUMENTS-ROOT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DATA-DOCUMENTS-ROOT | tools/verify/nivo78-gates/APP-DATA-DOCUMENTS-ROOT.ps1 | adapter exit 0 + captured output
+APP-DATA-NO-TELEMETRY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DATA-NO-TELEMETRY | tools/verify/nivo78-gates/APP-DATA-NO-TELEMETRY.ps1 | adapter exit 0 + captured output
+APP-DATA-TEMPORARY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DATA-TEMPORARY | tools/verify/nivo78-gates/APP-DATA-TEMPORARY.ps1 | adapter exit 0 + captured output
+APP-DEPENDENCY-LICENSE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DEPENDENCY-LICENSE | tools/verify/nivo78-gates/APP-DEPENDENCY-LICENSE.ps1 | adapter exit 0 + captured output
+APP-DEPENDENCY-VULNERABILITY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DEPENDENCY-VULNERABILITY | tools/verify/nivo78-gates/APP-DEPENDENCY-VULNERABILITY.ps1 | adapter exit 0 + captured output
+APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | tools/verify/nivo78-gates/APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS.ps1 | adapter exit 0 + captured output
+APP-LEGAL-FORMATTED-PLAIN-DISPLAY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-LEGAL-FORMATTED-PLAIN-DISPLAY | tools/verify/nivo78-gates/APP-LEGAL-FORMATTED-PLAIN-DISPLAY.ps1 | adapter exit 0 + captured output
+APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | tools/verify/nivo78-gates/APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS.ps1 | adapter exit 0 + captured output
+APP-LEGAL-GITHUB-CANONICAL-FALLBACK | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-LEGAL-GITHUB-CANONICAL-FALLBACK | tools/verify/nivo78-gates/APP-LEGAL-GITHUB-CANONICAL-FALLBACK.ps1 | adapter exit 0 + captured output
+APP-LEGAL-IN-APP-DIALOG | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-LEGAL-IN-APP-DIALOG | tools/verify/nivo78-gates/APP-LEGAL-IN-APP-DIALOG.ps1 | adapter exit 0 + captured output
+APP-LEGAL-TRIPLE-SYNC | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-LEGAL-TRIPLE-SYNC | tools/verify/nivo78-gates/APP-LEGAL-TRIPLE-SYNC.ps1 | adapter exit 0 + captured output
+APP-PRIVACY-NO-AD-ID | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-PRIVACY-NO-AD-ID | tools/verify/nivo78-gates/APP-PRIVACY-NO-AD-ID.ps1 | adapter exit 0 + captured output
+APP-PRIVACY-THIRD-PARTY-SDK | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-PRIVACY-THIRD-PARTY-SDK | tools/verify/nivo78-gates/APP-PRIVACY-THIRD-PARTY-SDK.ps1 | adapter exit 0 + captured output
+APP-RELEASE-ARTIFACT-INTEGRITY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-ARTIFACT-INTEGRITY | tools/verify/nivo78-gates/APP-RELEASE-ARTIFACT-INTEGRITY.ps1 | adapter exit 0 + captured output
+APP-RELEASE-DEBUG-CLEAN | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-DEBUG-CLEAN | tools/verify/nivo78-gates/APP-RELEASE-DEBUG-CLEAN.ps1 | adapter exit 0 + captured output
+APP-RELEASE-DEFINITION-OF-DONE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-DEFINITION-OF-DONE | tools/verify/nivo78-gates/APP-RELEASE-DEFINITION-OF-DONE.ps1 | adapter exit 0 + captured output
+APP-RELEASE-PUBLISH-SPINE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-PUBLISH-SPINE | tools/verify/nivo78-gates/APP-RELEASE-PUBLISH-SPINE.ps1 | adapter exit 0 + captured output
+APP-RELEASE-SIGNING | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-SIGNING | tools/verify/nivo78-gates/APP-RELEASE-SIGNING.ps1 | adapter exit 0 + captured output
+APP-RELEASE-VERSION-CONSISTENCY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RELEASE-VERSION-CONSISTENCY | tools/verify/nivo78-gates/APP-RELEASE-VERSION-CONSISTENCY.ps1 | adapter exit 0 + captured output
+APP-RESTORE-NO-DATA-LOSS | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RESTORE-NO-DATA-LOSS | tools/verify/nivo78-gates/APP-RESTORE-NO-DATA-LOSS.ps1 | adapter exit 0 + captured output
+APP-RESTORE-VALIDATE-FIRST | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-RESTORE-VALIDATE-FIRST | tools/verify/nivo78-gates/APP-RESTORE-VALIDATE-FIRST.ps1 | adapter exit 0 + captured output
+APP-SEC-CRYPTOGRAPHY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-CRYPTOGRAPHY | tools/verify/nivo78-gates/APP-SEC-CRYPTOGRAPHY.ps1 | adapter exit 0 + captured output
+APP-SEC-EXTERNAL-CONTENT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-EXTERNAL-CONTENT | tools/verify/nivo78-gates/APP-SEC-EXTERNAL-CONTENT.ps1 | adapter exit 0 + captured output
+APP-SEC-FAIL-CLOSED | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-FAIL-CLOSED | tools/verify/nivo78-gates/APP-SEC-FAIL-CLOSED.ps1 | adapter exit 0 + captured output
+APP-SEC-IMPORT-VALIDATION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-IMPORT-VALIDATION | tools/verify/nivo78-gates/APP-SEC-IMPORT-VALIDATION.ps1 | adapter exit 0 + captured output
+APP-SEC-KEY-DERIVATION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-KEY-DERIVATION | tools/verify/nivo78-gates/APP-SEC-KEY-DERIVATION.ps1 | adapter exit 0 + captured output
+APP-SEC-PATH-SAFETY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-PATH-SAFETY | tools/verify/nivo78-gates/APP-SEC-PATH-SAFETY.ps1 | adapter exit 0 + captured output
+APP-SEC-RANDOMNESS | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-RANDOMNESS | tools/verify/nivo78-gates/APP-SEC-RANDOMNESS.ps1 | adapter exit 0 + captured output
+APP-SEC-RELEASE-DEBUG | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-SEC-RELEASE-DEBUG | tools/verify/nivo78-gates/APP-SEC-RELEASE-DEBUG.ps1 | adapter exit 0 + captured output
+APP-TEST-DESKTOP-PAGE-LAYOUT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-DESKTOP-PAGE-LAYOUT | tools/verify/nivo78-gates/APP-TEST-DESKTOP-PAGE-LAYOUT.ps1 | adapter exit 0 + captured output
+APP-TEST-FILE-IO-VERIFY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-FILE-IO-VERIFY | tools/verify/nivo78-gates/APP-TEST-FILE-IO-VERIFY.ps1 | adapter exit 0 + captured output
+APP-TEST-WINFORMS-ON-DEVICE-UI | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-WINFORMS-ON-DEVICE-UI | tools/verify/nivo78-gates/APP-TEST-WINFORMS-ON-DEVICE-UI.ps1 | adapter exit 0 + captured output
+FAMILY-N78-TEST-001 | tools/verify/verify-n78-test-001-family.ps1 | tools/verify/nivo78-gates/FAMILY-N78-TEST-001.ps1 | family wiring PASS + product orchestrator hook when run per product
+APP-TEST-INTEGRATION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-INTEGRATION | tools/verify/nivo78-gates/APP-TEST-INTEGRATION.ps1 | adapter exit 0 + captured output
+APP-TEST-OFFLINE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-OFFLINE | tools/verify/nivo78-gates/APP-TEST-OFFLINE.ps1 | adapter exit 0 + captured output
+APP-TEST-RECOVERY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-RECOVERY | tools/verify/nivo78-gates/APP-TEST-RECOVERY.ps1 | adapter exit 0 + captured output
+APP-TEST-REGRESSION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-REGRESSION | tools/verify/nivo78-gates/APP-TEST-REGRESSION.ps1 | adapter exit 0 + captured output
+APP-TEST-UI-CRITICAL | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-UI-CRITICAL | tools/verify/nivo78-gates/APP-TEST-UI-CRITICAL.ps1 | adapter exit 0 + captured output
+APP-TEST-UNIT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-UNIT | tools/verify/nivo78-gates/APP-TEST-UNIT.ps1 | adapter exit 0 + captured output
+APP-TRIAL-FULL-FUNCTION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TRIAL-FULL-FUNCTION | tools/verify/nivo78-gates/APP-TRIAL-FULL-FUNCTION.ps1 | adapter exit 0 + captured output
+APP-TRIAL-TAGLINE-TRUTH | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TRIAL-TAGLINE-TRUTH | tools/verify/nivo78-gates/APP-TRIAL-TAGLINE-TRUTH.ps1 | adapter exit 0 + captured output
+APP-TRIAL-DISCLOSURE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TRIAL-DISCLOSURE | tools/verify/nivo78-gates/APP-TRIAL-DISCLOSURE.ps1 | adapter exit 0 + captured output
+APP-TRIAL-BILLING-DISCLOSURE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TRIAL-BILLING-DISCLOSURE | tools/verify/nivo78-gates/APP-TRIAL-BILLING-DISCLOSURE.ps1 | adapter exit 0 + captured output
+WEB-CLAIM-MATCHES-IMPLEMENTATION | N78-Website/tools/verify/verify-website-mandatory.ps1 + verify-website-web-integrity-static.ps1 | tools/verify/nivo78-gates/WEB-CLAIM-MATCHES-IMPLEMENTATION.ps1 | adapter exit 0
+WEB-TRUST-RELEASE-BLOCK | tools/verify/nivo78-gates/WEB-TRUST-RELEASE-BLOCK.ps1 | tools/verify/nivo78-gates/WEB-TRUST-RELEASE-BLOCK.ps1 | register has no CONTRADICTED or OWNER_DECISION_REQUIRED
+APP-TRIAL-READONLY-EXPORT-LOCK | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TRIAL-READONLY-EXPORT-LOCK | tools/verify/nivo78-gates/APP-TRIAL-READONLY-EXPORT-LOCK.ps1 | adapter exit 0 + captured output
+APP-UI-UNIFORM-SURFACE-VIEWPORT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UI-UNIFORM-SURFACE-VIEWPORT | tools/verify/nivo78-gates/APP-UI-UNIFORM-SURFACE-VIEWPORT.ps1 | adapter exit 0 + captured output
+APP-UPGRADE-BACKUP | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-BACKUP | tools/verify/nivo78-gates/APP-UPGRADE-BACKUP.ps1 | adapter exit 0 + captured output
+APP-UPGRADE-INTERRUPTION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-INTERRUPTION | tools/verify/nivo78-gates/APP-UPGRADE-INTERRUPTION.ps1 | adapter exit 0 + captured output
+
+A missing product adapter is NOT VERIFIABLE and blocks certification.

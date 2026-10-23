@@ -3,7 +3,7 @@ NIVO78 LEGAL — IN-APP DIALOG CONTAINMENT
 Rule ID: APP-LEGAL-IN-APP-DIALOG
 Class: GATE (family store and business utilities with Privacy/Terms)
 Primary projection: .cursor/rules/07-overrides-legal.mdc
-Companion: APP-LEGAL-GATE, APP-LEGAL-FORMATTED-PLAIN-DISPLAY, APP-UI-DIALOG-CANCEL-BUTTON, APP-UI-UNIVERSAL-TEXT-SELECTION
+Companion: APP-LEGAL-GATE, APP-UI-DIALOG-CANCEL-BUTTON, APP-UI-UNIVERSAL-TEXT-SELECTION
 
 Principle
 ---------
@@ -22,10 +22,9 @@ Required
 --------
 - Dedicated in-app modal (Compose Dialog / DialogWindow) with:
   - Scrollable, selectable document body (SelectionContainer on read-only text)
-  - Bundled plain-text/offline snapshot bodies use formatted block display (APP-LEGAL-FORMATTED-PLAIN-DISPLAY) — not a raw full-file text dump
   - Explicit Close / Cancel (APP-UI-DIALOG-CANCEL-BUTTON); Esc on desktop where supported
   - Bundled offline HTML fallback (n78-legal/ or product-equivalent) when network is absent
-- First-run gate: View Privacy / View Terms open the modal; acceptance checkbox stays disabled until BOTH were opened this session (APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS); Accept stays disabled until checkbox checked
+- First-run gate: View Privacy / View Terms open the modal; acceptance checkboxes unlock
   after the operator opened each document in-app (not after external browser).
 - Help menu Privacy and Terms use the same in-app viewer — not openExternalUri for legal URIs.
 

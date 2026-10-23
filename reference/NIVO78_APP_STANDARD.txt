@@ -68,9 +68,40 @@ Cursor rules are AI guidance, not a security boundary. Mandatory `[GATE]` requir
 
 
 
-Version: 1.41
+Version: 1.45
 
 Changelog:
+
+  1.45
+(2026-10-22) — Website trust and truthfulness (FAMILY-WEBSITE-TRUST-TRUTHFULNESS,
+WEB-CLAIM-VERIFICATION-REGISTER, WEB-CLAIM-MATCHES-IMPLEMENTATION, WEB-TRUST-STOP-AND-ASK,
+WEB-TRUST-RELEASE-BLOCK): marketing must match shipped code; claim register with verification
+states; mandatory stop-and-ask for ambiguous copy; release block on CONTRADICTED or unresolved
+OWNER_DECISION_REQUIRED. Canonical: reference/NIVO78_WEBSITE_TRUST_TRUTHFULNESS_STANDARD.txt,
+reference/NIVO78_WEBSITE_CLAIM_VERIFICATION_REGISTER.json.
+
+  1.44
+(2026-10-22) — Canonical trial taglines and truthful marketing (FAMILY-TRIAL-TAGLINE-CANONICAL,
+APP-TRIAL-TAGLINE-TRUTH, APP-TRIAL-DISCLOSURE, APP-TRIAL-BILLING-DISCLOSURE): approved hierarchy
+Try Everything. Decide for Yourself.; supporting statement; supplementary taglines; usage rules;
+machine-readable NIVO78_TRIAL_MESSAGING.json; TrialTaglineVerifier tests; GATE adapters for tagline,
+duration/expiration/data disclosure, and billing disclosure when a trial is offered.
+
+  1.43
+(2026-10-22) — Mandatory full-function trials (FAMILY-FULL-FUNCTION-TRIAL, APP-TRIAL-FULL-FUNCTION):
+time-limited trials must expose advertised paid functionality without artificial conversion caps;
+disclosure, no silent charge, data export after expiry, automated tests, release-gate rejection of
+undocumented trial restrictions. Canonical: reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt.
+
+  1.42
+(2026-10-22) — North Star philosophy integration, release taxonomy (R1–R4), pricing claim
+registry, interoperability standard, feedback response target, and family rule IDs
+FAMILY-NORTH-STAR-CANONICAL through FAMILY-RELEASE-MODEL-REGISTER. Canonical North Star:
+reference/NIVO78_NORTH_STAR.md; claim registry: reference/NIVO78_PRICING_CLAIM_REGISTRY.json;
+release taxonomy: reference/NIVO78_RELEASE_TAXONOMY.txt; interoperability:
+reference/NIVO78_INTEROPERABILITY_STANDARD.txt; feedback target:
+reference/NIVO78_FEEDBACK_RESPONSE_STANDARD.txt. Verifier:
+tools/verify/verify-nivo78-family-philosophy-registry.ps1.
 
   1.41
 (2026-09-22) — Desktop vertical chrome order (APP-DESKTOP-CHROME-VERTICAL-ORDER):
@@ -2084,6 +2115,86 @@ separate “LLC · Tyler” line above it).
 
 \================================================================================
 
+FAMILY RELEASE TAXONOMY, CLAIMS, INTEROPERABILITY, SECURITY BASELINE, AND FEEDBACK TARGET
+================================================================================
+
+Authority: Implements Nivo78 North Star sections 27.1–27.10 (reference/NIVO78_NORTH_STAR.md).
+Product-specific release models, prices, and format lists are out of scope here — each product
+declares those in product.identity.json and product specifications.
+
+Release taxonomy (FAMILY-RELEASE-TAXONOMY) [STATIC]
+- Canonical definitions: reference/NIVO78_RELEASE_TAXONOMY.txt (R1 Free Forever, R2 Free + One-Time,
+  R3 Free + Subscription, R4 Trial + One-Time exceptional).
+- Each shippable product MUST document primary_release_model (R1|R2|R3|R4) before public claims reference a model.
+- R4 requires documented justification and approval recorded in product spec or override registry.
+- Subscription trials are R3 configuration, not separate release types.
+
+Pricing and marketing claims (FAMILY-PRICING-CLAIM-REGISTRY) [STATIC]
+- Machine-readable claim definitions: reference/NIVO78_PRICING_CLAIM_REGISTRY.json.
+- Every public claim category (free forever, no subscription, no ads, local-first, complete export, etc.)
+  MUST match registry definition, applicability, and evidence — prose alone is not PASS.
+- FAMILY-MARKETING-CLAIM-EVIDENCE [QA]: marketing records, hub copy, and store listings reviewed against registry.
+
+Customer data usability (FAMILY-CUSTOMER-DATA-USABLE) [QA]
+- Export without unnecessary cloud account; cancellation/expiry must not hostage data.
+- Document export exclusions; test export completeness when completeness is claimed.
+
+Interoperability (FAMILY-INTEROP-STANDARD) [STATIC], (FAMILY-INTEROP-MATRIX) [QA], (FAMILY-INTEROP-ACCEPTANCE) [QA]
+- Canonical rules: reference/NIVO78_INTEROPERABILITY_STANDARD.txt.
+- Maintained matrix when interop_applicable (default true for data products): docs/INTEROPERABILITY_MATRIX.md.
+- Acceptance rules: safe import, disclosed lossy conversion, round-trip semantic tests, fixtures per format.
+
+Security baseline (FAMILY-SECURITY-BASELINE) [QA]
+- Each product maintains docs/SECURITY_BASELINE.md (or registered equivalent) covering classification,
+  permissions, network dependencies, secrets, dependency vulnerabilities, import validation, backup/recovery,
+  privacy lifecycle, and security testing scope. Extends APP-SEC-* gates — does not replace them.
+
+Feedback response target (FAMILY-FEEDBACK-RESPONSE-TARGET) [QA]
+- reference/NIVO78_FEEDBACK_RESPONSE_STANDARD.txt — family acknowledgement target (5 business days best effort).
+- Not a public SLA; do not advertise stricter guarantees without measured performance and approval.
+
+Release model register (FAMILY-RELEASE-MODEL-REGISTER) [QA]
+- product.identity.json SHOULD include primary_release_model when product is store- or web-marketed;
+  infrastructure/library products document N/A in FAMILY_CONTRACT.md.
+
+Full-function trials (FAMILY-FULL-FUNCTION-TRIAL) [STATIC], (APP-TRIAL-FULL-FUNCTION) [GATE]
+- Canonical: reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt — applies to every time-limited trial
+  (R3 trial configuration, R4, or store Read-Only/Export-Lock trial phase).
+- During trial: all advertised paid features available; no artificial caps solely to pressure conversion;
+  real-world evaluation subject only to legitimate technical, legal, safety, and third-party constraints.
+- Disclose all trial limits before activation; never advertise full-function when material paid capability
+  is withheld; expiration must not silently charge; post-expiry data access and export per standard.
+- Automated tests and release gate MUST reject undocumented trial restrictions or artificial usage caps.
+- Exceptions require governance metadata and customer-facing disclosure.
+
+Trial taglines and truthful marketing (FAMILY-TRIAL-TAGLINE-CANONICAL) [STATIC],
+(APP-TRIAL-TAGLINE-TRUTH) [GATE], (APP-TRIAL-DISCLOSURE) [GATE], (APP-TRIAL-BILLING-DISCLOSURE) [GATE]
+- Canonical copy hierarchy and usage rules: reference/NIVO78_TRIAL_MESSAGING.txt,
+  reference/NIVO78_TRIAL_MESSAGING.json.
+- Primary tagline (family default): Try Everything. Decide for Yourself.
+- Supporting statement: Full access to paid features during your trial. No artificial usage limits.
+  No obligation to buy.
+- Supplementary taglines only when product behavior and space support the claim (see messaging file).
+- Products with a trial MUST disclose duration, expiration, billing/purchase behavior, and post-trial
+  data access in MARKETING_COPY / hub before using approved taglines.
+- Family verification: TrialTaglineVerifier (N78-Standards); product GATE adapters when trial_offered
+  or trial implementation detected.
+
+Website trust and truthfulness (FAMILY-WEBSITE-TRUST-TRUTHFULNESS) [STATIC],
+(WEB-CLAIM-VERIFICATION-REGISTER) [STATIC], (WEB-CLAIM-MATCHES-IMPLEMENTATION) [GATE],
+(WEB-TRUST-STOP-AND-ASK) [QA], (WEB-TRUST-RELEASE-BLOCK) [GATE]
+- Canonical: reference/NIVO78_WEBSITE_TRUST_TRUTHFULNESS_STANDARD.txt and
+  reference/NIVO78_WEBSITE_CLAIM_VERIFICATION_REGISTER.json.
+- Every material website claim about product behavior must match shipped code; register states:
+  VERIFIED, CONTRADICTED, NOT VERIFIED, OWNER_DECISION_REQUIRED, NOT_APPLICABLE.
+- Cursor MUST stop and ask the owner before substantive change to questionable marketing (no silent rewrite).
+- WEB-CLAIM-MATCHES-IMPLEMENTATION: N78-Website mandatory + WEB-INTEGRITY (STATIC) gates.
+- WEB-TRUST-RELEASE-BLOCK: fail closed when register has CONTRADICTED or unresolved OWNER_DECISION_REQUIRED.
+
+North Star authority (FAMILY-NORTH-STAR-CANONICAL) [STATIC]
+- reference/NIVO78_NORTH_STAR.md is Level 1 authority; Business/Docs/Nivo78 North Star.docx is the
+  formatted operator copy — markdown source wins on conflict until docx is regenerated from source.
+
 FEEDBACK, BUG REPORT, SUPPORT, AND CONTACT — ONE
 INTERFACE CONTRACT
 
@@ -2715,11 +2826,6 @@ before accepting — in-app modal viewers (APP-LEGAL-IN-APP-DIALOG); never the
 system browser for Privacy or Terms. Canonical:
 reference/NIVO78_LEGAL_IN_APP_DIALOG.txt.
 
-\- Store apps showing bundled/offline plain-text legal
-bodies MUST use formatted block display (APP-LEGAL-FORMATTED-PLAIN-DISPLAY);
-canonical reference/NIVO78_LEGAL_FORMATTED_PLAIN_DISPLAY.txt; reference
-implementation N78-Estimate LegalFormattedDocumentBody.
-
 \- No silent acceptance on install, upgrade, or terms
 bump.
 
@@ -2818,66 +2924,6 @@ when consent, terms version, or legal copy changes.
 
 \- Run updocs after ApaLegalCopy (or product
 equivalent) or privacy/terms HTML changes.
-
-
-
-
-
-\================================================================================
-
-LEGAL, PRIVACY, AND TERMS — THREE-SURFACE SYNC (MANDATORY)
-
-\================================================================================
-
-Rule ID: APP-LEGAL-TRIPLE-SYNC [GATE]
-
-Canonical detail: reference/NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt
-
-Applies to every product that ships Privacy Policy and/or Terms of Use. When
-body prose changes, update all three surfaces in the same release — not
-app-only, not website-only, not a orphan commit in a sibling repo.
-
-The three surfaces
-
-1. In-app bundled legal — offline-capable privacy/terms inside the install
-   (assets, baselines, or product-equivalent bundled HTML).
-
-2. N78-Public-Legal — GitHub Pages product privacy/terms HTML synced from the
-   product authoritative source (not hand-edited competing prose).
-
-3. N78-Website — hosted legal bodies, embed fragments, and marketing/support
-   legal links on nivo78.com where the product has them (privacy_body.html,
-   terms_body.html, or documented successor paths).
-
-Source of truth
-
-\- Edit authoritative privacy/terms in the product repo first (e.g. N78-Ops
-app/src/main/assets/privacy_policy.html and terms_of_use.html; APA engine
-legal copy plus in-repo HTML).
-
-\- Never treat nivo78.com or N78-Public-Legal alone as the master copy for
-store legal prose when product sync tooling exists.
-
-Mandatory workflow
-
-\- Edit product source → run privacy/legal sync (N78-Ops:
-tools/deploy/sync_privacy_policy.ps1; full doc pass: run-updocs.ps1) →
-regenerate embedded baselines when N78-STD-LEGAL-01 applies → bump disclosure
-version when material → commit product + N78-Public-Legal (+ N78-Website when
-bodies changed) → ship new build with bundled legal → deploy website when live
-hosted copy must match.
-
-Gate evidence
-
-\- Product legal guardrails, privacy sync script success, website static legal
-integrity when embeds exist, N78-STD-LEGAL-01 verify when snapshots apply.
-
-Never waivable
-
-\- Shipping privacy/terms prose on only one surface when the others apply.
-\- Competing authoritative legal HTML outside the sync pipeline.
-
-Pairs with N78-STD-LEGAL-01 (GitHub canonical + embedded offline fallback).
 
 
 
@@ -3513,8 +3559,37 @@ APP-TEST-REGRESSION [GATE]
 \- Every release must run the applicable regression
 suite. A release-blocking test failure must be
 
-  resolved or
+  resolved or
 formally covered by an approved override before release.
+
+
+
+FAMILY-N78-TEST-001 [GATE]
+
+\- Every application MUST satisfy Standard ID N78-TEST-001
+(reference/NIVO78_FAMILY_MANDATORY_AUTOMATED_TESTING_STANDARD.txt):
+
+  logic tests, rendered-UI tests, and device-level tests for
+every behavioral change; fail-closed PASS; release QA orchestrator
+(run-*-qa-suite.ps1) MUST call Start-N78Test001OrchestratedQaRun.
+
+
+
+APP-TEST-FILE-IO-VERIFY [GATE]
+
+\- Whenever the app reads or writes real files, automated tests
+MUST assert observable file outcomes on disk (existence, size,
+format, round-trip, or documented error paths). Mocks alone are
+insufficient for shipped file I/O. On-device re-verification is
+required where the product defines a device/runtime lane.
+
+
+
+APP-TEST-WINFORMS-ON-DEVICE-UI [GATE]
+
+\- WinForms desktop products MUST run rendered and on-device UI QA
+(visible main-form tests, layout/DPI where applicable) through
+documented orchestrator scripts and ALL-RESULTS reporting.
 
 
 
@@ -5514,7 +5589,6 @@ APP-INPUT-FOCUS-EDIT-ONLY | [QA] | 04-input-architecture.mdc
 APP-INPUT-FORMAT-ON-COMMIT | [QA] | 04-input-architecture.mdc
 APP-LEAVE-DIRTY-PROMPT | [QA] | 04-input-architecture.mdc
 APP-LEGAL-GATE | [QA] | 07-overrides-legal.mdc
-APP-LEGAL-TRIPLE-SYNC | [GATE] | 07-overrides-legal.mdc
 APP-MOBILE-PHONE-INPUT | [QA] | 02-ui-input-save.mdc
 APP-OVERRIDE-CLEANUP | [QA] | 19-operating-model-release-certification.mdc
 APP-OVERRIDE-OWNER | [QA] | 19-operating-model-release-certification.mdc
@@ -5561,6 +5635,8 @@ APP-TEST-RECOVERY | [GATE] | 11-testing-quality.mdc
 APP-TEST-REGRESSION | [GATE] | 11-testing-quality.mdc
 APP-TEST-UI-CRITICAL | [GATE] | 11-testing-quality.mdc
 APP-TEST-UNIT | [GATE] | 11-testing-quality.mdc
+APP-TEST-FILE-IO-VERIFY | [GATE] | 11-testing-quality.mdc
+FAMILY-N78-TEST-001 | [GATE] | n78-test-001-orchestration-runner.mdc
 APP-UI-A11Y-FLOOR | [QA] | 05-accessibility-i18n.mdc
 APP-UI-EXPLAIN-JARGON | [QA] | 05-accessibility-i18n.mdc
 APP-UPGRADE-BACKUP | [GATE] | 14-backup-upgrade-lifecycle.mdc
@@ -5627,3 +5703,37 @@ WEB-TERMS-VERSION-SYNC | [QA] | 16-web-standards-a.mdc
 WEB-FREE-APP-TIP-JAR | [QA] | 16-web-standards-a.mdc
 WEB-TYPOGRAPHY-MIN-SIZE | [QA] | 16-web-standards-a.mdc
 APP-WEBSITE-LINKS-STANDARD | [QA] | 06-output-support.mdc
+FAMILY-NORTH-STAR-CANONICAL | [STATIC] | nivo78-core.mdc
+FAMILY-RELEASE-TAXONOMY | [STATIC] | 01-product-philosophy.mdc
+FAMILY-PRICING-CLAIM-REGISTRY | [STATIC] | 01-product-philosophy.mdc
+FAMILY-MARKETING-CLAIM-EVIDENCE | [QA] | 17-web-marketing.mdc
+FAMILY-INTEROP-STANDARD | [STATIC] | 09-data-recovery-migrations.mdc
+FAMILY-INTEROP-MATRIX | [QA] | 09-data-recovery-migrations.mdc
+FAMILY-INTEROP-ACCEPTANCE | [QA] | 11-testing-quality.mdc
+FAMILY-SECURITY-BASELINE | [QA] | 10-security.mdc
+FAMILY-FEEDBACK-RESPONSE-TARGET | [QA] | 06-output-support.mdc
+FAMILY-CUSTOMER-DATA-USABLE | [QA] | 01-product-philosophy.mdc
+FAMILY-RELEASE-MODEL-REGISTER | [QA] | 12-release-supply-chain.mdc
+FAMILY-FULL-FUNCTION-TRIAL | [STATIC] | 01-product-philosophy.mdc
+FAMILY-TRIAL-TAGLINE-CANONICAL | [STATIC] | 17-web-marketing.mdc
+APP-TRIAL-FULL-FUNCTION | [GATE] | 11-testing-quality.mdc
+APP-TRIAL-TAGLINE-TRUTH | [GATE] | 17-web-marketing.mdc
+APP-TRIAL-DISCLOSURE | [GATE] | 17-web-marketing.mdc
+APP-TRIAL-BILLING-DISCLOSURE | [GATE] | 17-web-marketing.mdc
+FAMILY-WEBSITE-TRUST-TRUTHFULNESS | [STATIC] | 17-web-marketing.mdc
+WEB-CLAIM-VERIFICATION-REGISTER | [STATIC] | 17-web-marketing.mdc
+WEB-CLAIM-MATCHES-IMPLEMENTATION | [GATE] | 17-web-marketing.mdc
+WEB-TRUST-STOP-AND-ASK | [QA] | web-trust-truthfulness.mdc
+WEB-TRUST-RELEASE-BLOCK | [GATE] | 17-web-marketing.mdc
+APP-UI-UNIFORM-SURFACE-VIEWPORT | [GATE] | uniform-ui-surface-viewport.mdc
+APP-ASSETS-TOP-LEVEL | [GATE] | 03-family-identity.mdc
+APP-RELEASE-PUBLISH-SPINE | [GATE] | 12-release-supply-chain.mdc
+APP-TRIAL-READONLY-EXPORT-LOCK | [GATE] | 01-product-philosophy.mdc
+APP-TEST-DESKTOP-PAGE-LAYOUT | [GATE] | 11-testing-quality.mdc
+APP-TEST-WINFORMS-ON-DEVICE-UI | [GATE] | 11-testing-quality.mdc
+APP-LEGAL-IN-APP-DIALOG | [GATE] | 07-overrides-legal.mdc
+APP-LEGAL-GITHUB-CANONICAL-FALLBACK | [GATE] | 07-overrides-legal.mdc
+APP-LEGAL-TRIPLE-SYNC | [GATE] | 07-overrides-legal.mdc
+APP-DESKTOP-FIXED-BUILD-INSTALL-PATHS | [GATE] | desktop-launcher-bats.mdc
+APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS | [GATE] | store-legal-gate-open-before-accept.mdc
+APP-LEGAL-FORMATTED-PLAIN-DISPLAY | [GATE] | legal-formatted-plain-display.mdc

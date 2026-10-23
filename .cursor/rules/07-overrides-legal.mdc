@@ -101,10 +101,6 @@ again
 
 Never waivable
 
-\- Privacy/Terms body prose shipped on only one of the three APP-LEGAL-TRIPLE-SYNC
-surfaces (in-app bundled legal, N78-Public-Legal, N78-Website hosted legal) when
-the others apply to that product — see reference/NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt
-
 \- Silent data upload, silent diagnostics, background
 bug reporting
 
@@ -333,31 +329,6 @@ fail silently.
 
 \================================================================================
 
-LEGAL, PRIVACY, AND TERMS — THREE-SURFACE SYNC (APP-LEGAL-TRIPLE-SYNC [GATE])
-
-\================================================================================
-
-Canonical: reference/NIVO78_LEGAL_PRIVACY_TERMS_TRIPLE_SYNC.txt
-
-When Privacy or Terms **body prose** changes, update **all three** in the same release:
-
-1. **In-app bundled legal** — offline-capable install (assets / baselines).
-2. **N78-Public-Legal** — GitHub Pages HTML synced from product source.
-3. **N78-Website** — hosted legal bodies and nivo78.com legal links where the product has them.
-
-Edit authoritative source in the **product repo first** → run privacy/legal sync
-(N78-Ops: tools/deploy/sync_privacy_policy.ps1; APA: run-updocs privacy phase) →
-regenerate embedded baselines (N78-STD-LEGAL-01) → bump disclosure version when
-material → commit product + Public-Legal (+ Website when bodies change) → ship
-new build → deploy website when live hosted copy must match.
-
-Do not hand-edit hosted privacy_body.html / terms_body.html or Public-Legal pages
-for store-legal prose when sync tooling exists.
-
-
-
-\================================================================================
-
 LEGAL GATING AND CUSTOMER ACKNOWLEDGEMENT — EVERY APP
 
 \================================================================================
@@ -498,4 +469,4 @@ equivalent) or privacy/terms HTML changes.
 
 ## Rule-ID coverage
 
-Primary attachment for: APP-LEGAL-GATE, APP-LEGAL-IN-APP-DIALOG, APP-LEGAL-FORMATTED-PLAIN-DISPLAY, APP-LEGAL-TRIPLE-SYNC, APP-LEGAL-GITHUB-CANONICAL-FALLBACK, APP-LEGAL-GATE-STORE-OPEN-DOCUMENTS, AUDIT-VECTOR-LEGAL-GATE, LEGAL-GATE.
+Primary attachment for: APP-LEGAL-GATE, APP-LEGAL-IN-APP-DIALOG, APP-LEGAL-GITHUB-CANONICAL-FALLBACK, APP-LEGAL-TRIPLE-SYNC, AUDIT-VECTOR-LEGAL-GATE, LEGAL-GATE.

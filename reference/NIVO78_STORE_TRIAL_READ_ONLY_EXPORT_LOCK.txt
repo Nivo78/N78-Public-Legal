@@ -1,6 +1,6 @@
 NIVO78 STORE TRIAL — READ-ONLY / EXPORT-LOCK FREEMIUM
 =====================================================
-Rule IDs: APP-TRIAL-READONLY-EXPORT-LOCK, WEB-PRODUCT-TRIAL-AFTER-COPY
+Rule IDs: APP-TRIAL-READONLY-EXPORT-LOCK, APP-TRIAL-FULL-FUNCTION, WEB-PRODUCT-TRIAL-AFTER-COPY
 Primary projections: .cursor/rules/01-product-philosophy.mdc, 17-web-marketing.mdc
 Hub layout: templates/PRODUCT_HUB_PAGE_LAYOUT.txt (clarity + Phase C after-trial paragraph)
 
@@ -21,7 +21,8 @@ Not a hard time bomb that shuts down the entire app or hides the user's workspac
 TRIAL PHASE (30–60 DAYS — PRODUCT CHOOSES DURATION)
 ================================================================================
 
-- Unrestricted access: create, edit, calculate, export — full product job.
+- Unrestricted access: create, edit, calculate, export — full product job (mandatory full-function trial:
+  reference/NIVO78_FULL_FUNCTION_TRIAL_STANDARD.txt).
 - Trial length MUST appear in: product hub (how you pay), store listing, in-app trial status, and Help.
 - In-app countdown or expiry date MUST be visible while the trial runs (no surprise midnight lock).
 

@@ -6,6 +6,10 @@ alwaysApply: true
 # Nivo78 Core Enforcement
 
 The canonical Nivo78 standard and rule-ID registry are authoritative.
+Level 1 philosophy: `reference/NIVO78_NORTH_STAR.md` (formatted copy: Business/Docs/Nivo78 North Star.docx).
+Level 2 release taxonomy, claim registry, interoperability, and feedback target:
+`reference/NIVO78_RELEASE_TAXONOMY.txt`, `reference/NIVO78_PRICING_CLAIM_REGISTRY.json`,
+`reference/NIVO78_INTEROPERABILITY_STANDARD.txt`, `reference/NIVO78_FEEDBACK_RESPONSE_STANDARD.txt`.
 Cursor rule files are maintained enforcement projections of that policy.
 The canonical standard and registry must agree before implementation proceeds.
 
@@ -13,7 +17,7 @@ The canonical standard and registry must agree before implementation proceeds.
 
 Family STATIC, GATE, and QA outrank product-specific always-on Cursor rules (Play shipping, feature lock, platform remount, branding, docs sync, hardening, and similar). Those files constrain how that product repo is run. They are not equal to the family registry and MUST NOT weaken, skip, or silently bypass a family rule. A conflict requires an approved override with required governance metadata.
 
-Nivo78 products are local-first utilities. Cloud is optional, never required. Do not add Nivo78 accounts, ads, or product telemetry for convenience. When changing brand, Help, marketing, or privacy copy, load `01-product-philosophy.mdc`. When changing production behavior (engine, persistence, UI, backup, restore, navigation), load `11-testing-quality.mdc` and the GATE evidence map even if no test file is open.
+Nivo78 products are local-first utilities. Cloud is optional, never required. Do not add Nivo78 accounts, ads, or product telemetry for convenience. When changing brand, Help, marketing, or privacy copy, load `01-product-philosophy.mdc` and verify claims against `NIVO78_PRICING_CLAIM_REGISTRY.json`. When changing import/export, update the product interoperability matrix. When changing production behavior (engine, persistence, UI, backup, restore, navigation), load `11-testing-quality.mdc` and the GATE evidence map even if no test file is open. Run `tools/verify/verify-nivo78-family-philosophy-registry.ps1` when changing family philosophy artifacts.
 
 Before changing code:
 1. Identify the applicable Nivo78 rule IDs.
@@ -48,3 +52,7 @@ Certification:
 
 Do not modify standards, rule projections, or verification infrastructure
 unless explicitly instructed to work on the standards themselves.
+
+## Rule-ID coverage (family philosophy)
+
+Primary attachment for: **FAMILY-NORTH-STAR-CANONICAL**, **FAMILY-RELEASE-TAXONOMY**, **FAMILY-PRICING-CLAIM-REGISTRY**.

@@ -402,6 +402,20 @@ STORE TRIAL — AFTER-TRIAL HUB COPY (WEB-PRODUCT-TRIAL-AFTER-COPY)
 
 \================================================================================
 
+Full-function trial copy (APP-TRIAL-FULL-FUNCTION / claim full_function_trial):
+
+\- Do not claim "full-function" or "full-featured" trial unless every **advertised paid** capability is available during the trial.
+\- Disclose any trial limits **before** activation in How you pay, Help, and in-app trial status.
+\- Hub and store listing MUST state expiration behavior (no silent charge) and post-trial data access.
+
+Canonical trial taglines (FAMILY-TRIAL-TAGLINE-CANONICAL / reference/NIVO78_TRIAL_MESSAGING.txt):
+
+\- **Primary (family default):** Try Everything. Decide for Yourself.
+\- **Supporting:** Full access to paid features during your trial. No artificial usage limits. No obligation to buy.
+\- **Supplementary (when accurate and space allows):** Full Functionality. No Trial Restrictions.; Test It on Real Work. Then Decide.; Take Your Time. Make an Informed Decision.
+\- Usage rules: primary tagline only with meaningful paid-feature trial access; strict full-functionality line only without material undisclosed restrictions; Take Your Time must not imply longer trial than documented; no-obligation language requires billing/cancellation disclosure before activation.
+\- GATE: APP-TRIAL-TAGLINE-TRUTH, APP-TRIAL-DISCLOSURE, APP-TRIAL-BILLING-DISCLOSURE when product offers a trial.
+
 When a product ships APP-TRIAL-READONLY-EXPORT-LOCK:
 
 \- **How you pay** (clarity item 7): one sentence — trial length → what stays free forever (read saved work) → what requires paid unlock (new work, full runs, exports).
@@ -418,4 +432,6 @@ Canonical behavior spec: reference/NIVO78_STORE_TRIAL_READ_ONLY_EXPORT_LOCK.txt 
 
 ## Rule-ID coverage
 
-Primary attachment for: KB-COPY-DRIFT, MARKETING-HUB-WILL-DRIFT, MARKETING-HUB-WONT-DRIFT, WEB-PRODUCT-TRIAL-AFTER-COPY.
+Website trust (FAMILY-WEBSITE-TRUST-TRUTHFULNESS): every material claim must match shipped product code; track verification in `NIVO78_WEBSITE_CLAIM_VERIFICATION_REGISTER.json`; **WEB-TRUST-STOP-AND-ASK** before substantive edits to questionable copy (see `web-trust-truthfulness.mdc`).
+
+Primary attachment for: KB-COPY-DRIFT, MARKETING-HUB-WILL-DRIFT, MARKETING-HUB-WONT-DRIFT, WEB-PRODUCT-TRIAL-AFTER-COPY, FAMILY-MARKETING-CLAIM-EVIDENCE, FAMILY-WEBSITE-TRUST-TRUTHFULNESS, WEB-CLAIM-VERIFICATION-REGISTER, WEB-CLAIM-MATCHES-IMPLEMENTATION, WEB-TRUST-RELEASE-BLOCK, FAMILY-TRIAL-TAGLINE-CANONICAL, APP-TRIAL-FULL-FUNCTION, APP-TRIAL-TAGLINE-TRUTH, APP-TRIAL-DISCLOSURE, APP-TRIAL-BILLING-DISCLOSURE.

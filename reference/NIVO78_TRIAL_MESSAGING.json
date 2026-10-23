@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "authority": "reference/NIVO78_TRIAL_MESSAGING.txt",
+  "rule_ids": {
+    "canonical_static": "FAMILY-TRIAL-TAGLINE-CANONICAL",
+    "tagline_gate": "APP-TRIAL-TAGLINE-TRUTH",
+    "disclosure_gate": "APP-TRIAL-DISCLOSURE",
+    "billing_gate": "APP-TRIAL-BILLING-DISCLOSURE",
+    "entitlement_gate": "APP-TRIAL-FULL-FUNCTION"
+  },
+  "primary_tagline": "Try Everything. Decide for Yourself.",
+  "supporting_statement": "Full access to paid features during your trial. No artificial usage limits. No obligation to buy.",
+  "supplementary_taglines": [
+    "Full Functionality. No Trial Restrictions.",
+    "Test It on Real Work. Then Decide.",
+    "Take Your Time. Make an Informed Decision."
+  ],
+  "usage_rules": [
+    {
+      "id": "primary_try_everything",
+      "applies_to": "primary_tagline",
+      "allowed_when": "Trial provides meaningful access to the paid functionality being evaluated.",
+      "forbidden_when": "Material advertised paid capability is withheld during trial without disclosure."
+    },
+    {
+      "id": "supp_full_functionality",
+      "applies_to": "Full Functionality. No Trial Restrictions.",
+      "allowed_when": "All advertised paid functionality is available and no material trial-specific restriction undermines the claim.",
+      "forbidden_when": "Any material trial-only restriction on advertised paid features is undisclosed."
+    },
+    {
+      "id": "supp_real_work",
+      "applies_to": "Test It on Real Work. Then Decide.",
+      "allowed_when": "Product can be evaluated through realistic workflows for its category.",
+      "forbidden_when": "Trial blocks workflows customers reasonably expect from paid marketing."
+    },
+    {
+      "id": "supp_take_your_time",
+      "applies_to": "Take Your Time. Make an Informed Decision.",
+      "allowed_when": "Copy does not imply longer trial duration or unrestricted extension than the product provides.",
+      "forbidden_when": "Wording suggests open-ended trial or extension beyond documented trial duration."
+    },
+    {
+      "id": "no_obligation_to_buy",
+      "applies_to": "supporting_statement",
+      "allowed_when": "Trial participation alone does not obligate purchase; payment method, auto-conversion, renewal, and cancellation are accurately disclosed before activation.",
+      "forbidden_when": "Silent auto-billing, hidden subscription conversion, or undisclosed payment capture at trial start."
+    }
+  ],
+  "required_disclosure_markers_when_trial_offered": {
+    "duration": ["trial", "day", "duration", "evaluation period"],
+    "expiration": ["expir", "after trial", "when the trial ends", "end of trial"],
+    "billing": ["price", "subscription", "purchase", "pay", "cancel", "renew", "billing"],
+    "data_after": ["export", "after trial", "saved", "read", "access"]
+  }
+}

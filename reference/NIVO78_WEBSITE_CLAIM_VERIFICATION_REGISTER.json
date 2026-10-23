@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "authority": "reference/NIVO78_WEBSITE_TRUST_TRUTHFULNESS_STANDARD.txt",
+  "verification_states": [
+    "VERIFIED",
+    "CONTRADICTED",
+    "NOT_VERIFIED",
+    "OWNER_DECISION_REQUIRED",
+    "NOT_APPLICABLE"
+  ],
+  "rule_ids": {
+    "family_static": "FAMILY-WEBSITE-TRUST-TRUTHFULNESS",
+    "register_static": "WEB-CLAIM-VERIFICATION-REGISTER",
+    "implementation_gate": "WEB-CLAIM-MATCHES-IMPLEMENTATION",
+    "stop_and_ask": "WEB-TRUST-STOP-AND-ASK",
+    "release_block": "WEB-TRUST-RELEASE-BLOCK"
+  },
+  "entries": [
+    {
+      "id": "web_claim_machining_60day_full_eval",
+      "wording_ref": "N78-Website/include/n78_product_hub_clarity_configs.php — 60-day full evaluation",
+      "page_location": "machining hub clarity / how you pay",
+      "product": "N78-Machining",
+      "platform": "windows-microsoft-store",
+      "category": "trial",
+      "pricing_claim_id": "full_function_trial",
+      "implementation_hints": ["MachiningLicenseEngine", "isEvaluationActive", "EVALUATION_PERIOD_DAYS"],
+      "automated_checks": ["verify-website-product-hub-audit.ps1 -Target machining", "APP-TRIAL-FULL-FUNCTION"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Hub clarity states 60-day eval and post-day-60 behavior; MachiningLicenseEngine.EVALUATION_PERIOD_DAYS=60; trial gate scans desktop/shared sources."
+    },
+    {
+      "id": "web_claim_ops_basic_free_forever",
+      "wording_ref": "N78-Website/include/n78_ops_marketing_sections.php — Basic free forever",
+      "page_location": "ops hub, clarity, FAQ",
+      "product": "N78-Ops",
+      "platform": "play-app-store",
+      "category": "pricing",
+      "pricing_claim_id": "free_forever_tier",
+      "implementation_hints": ["TierCatalog.kt", "BrandConfig", "docs/EDITIONS.md"],
+      "automated_checks": ["verify-website-mandatory.ps1", "verify-website-web-integrity-static.ps1"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "TierCatalog documents Basic (free forever) with published caps; website clarity matches EDITIONS.md and Play Basic tier."
+    },
+    {
+      "id": "web_claim_index_100_offline_utilities",
+      "wording_ref": "N78-Website/index.php — local-first portfolio tagline",
+      "page_location": "site home tagline",
+      "product": "Nivo78 portfolio",
+      "platform": "web",
+      "category": "functionality",
+      "pricing_claim_id": null,
+      "implementation_hints": [],
+      "automated_checks": ["verify-website-mandatory.ps1"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Owner direction 2026-10-22: replaced absolute 100% offline-capable with local-first + optional online per product; matches North Star local-first posture."
+    },
+    {
+      "id": "web_claim_electrical_100_offline",
+      "wording_ref": "N78-Website/electrical/index.php — local-first core modules",
+      "page_location": "electrical product hub",
+      "product": "N78-Electrical",
+      "platform": "windows-store-planned",
+      "category": "functionality",
+      "pricing_claim_id": null,
+      "implementation_hints": ["product.identity.json trial_days", "N78-Electrical offline core"],
+      "automated_checks": ["verify-website-product-hub-audit.ps1 -Target electrical"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Copy qualified to core NEC modules on device; 30-day trial target and perpetual pricing marked confirm-in-Store; workflow labeled planned."
+    },
+    {
+      "id": "web_claim_electrical_planned_workflow",
+      "wording_ref": "electrical/index.php — Planned workflow (in development)",
+      "page_location": "electrical hub body",
+      "product": "N78-Electrical",
+      "platform": "web",
+      "category": "functionality",
+      "pricing_claim_id": null,
+      "implementation_hints": [],
+      "automated_checks": [],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Explicit in-development qualification present in copy; monitor for drift if wording becomes unconditional."
+    },
+    {
+      "id": "web_claim_estimate_30day_store_trial",
+      "wording_ref": "N78-Website/include/n78_product_hub_clarity_configs.php — 30-day free trial (Estimate)",
+      "page_location": "estimate hub clarity / how you pay",
+      "product": "N78-Estimate",
+      "platform": "windows-microsoft-store",
+      "category": "trial",
+      "pricing_claim_id": "full_function_trial",
+      "implementation_hints": ["EstimateStoreTrialPolicy", "EVALUATION_PERIOD_DAYS", "MARKETING_COPY.txt"],
+      "automated_checks": ["verify-website-product-hub-audit.ps1 -Target estimate", "APP-TRIAL-FULL-FUNCTION", "APP-TRIAL-DISCLOSURE"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Hub clarity states 30-day full create/save/export trial then one-time purchase; product gates and MARKETING_COPY disclosure aligned in development."
+    },
+    {
+      "id": "web_claim_apa_one_time_upgrade",
+      "wording_ref": "N78-Website/include/n78_product_hub_clarity_configs.php — APA one-time upgrade (not subscription)",
+      "page_location": "apa hub clarity / how you pay",
+      "product": "N78-APA",
+      "platform": "windows-microsoft-store",
+      "category": "pricing",
+      "pricing_claim_id": "one_time_purchase",
+      "implementation_hints": ["product.identity.json trial_offered", "Store listing tier copy"],
+      "automated_checks": ["verify-website-product-hub-audit.ps1 -Target apa"],
+      "verification_status": "VERIFIED",
+      "last_verification": "2026-10-22",
+      "notes": "Hub states free Microsoft prep tier plus optional one-time paid upgrade for multi-store prep; product declares no time-limited full-function trial (trial_offered false)."
+    }
+  ]
+}

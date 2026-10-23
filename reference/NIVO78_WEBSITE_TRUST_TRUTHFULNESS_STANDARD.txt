@@ -1,0 +1,61 @@
+NIVO78 MANDATORY STANDARD — WEBSITE TRUST AND TRUTHFULNESS
+==========================================================
+Rule IDs: FAMILY-WEBSITE-TRUST-TRUTHFULNESS [STATIC], WEB-CLAIM-VERIFICATION-REGISTER [STATIC],
+WEB-CLAIM-MATCHES-IMPLEMENTATION [GATE], WEB-TRUST-STOP-AND-ASK [QA], WEB-TRUST-RELEASE-BLOCK [GATE]
+Related: NIVO78_NORTH_STAR.md (§27 honest economics, privacy), NIVO78_PRICING_CLAIM_REGISTRY.json,
+NIVO78_TRIAL_MESSAGING.txt, NIVO78_WEBSITE_CLAIM_VERIFICATION_REGISTER.json
+
+Applies to: All nivo78.com content and marketing — every page, component, asset, SEO surface,
+mobile/responsive variant, and store-linked copy under Website repo control.
+
+GOVERNING PRINCIPLE
+-------------------
+If a material claim cannot be demonstrated to be true, do not present it as fact.
+If a reasonable customer could be misled, stop and ask the owner before substantive change.
+Never trade customer trust for marketing impact, convenience, or conversion.
+
+ABSOLUTE REQUIREMENT
+--------------------
+Every claim about functionality, capabilities, limitations, behavior, compatibility, data handling,
+or performance MUST accurately describe what the shipped application code actually does.
+Documentation, comments, and existing marketing are not proof. Implementation and executable tests
+are primary evidence. A passing test supports a claim; it does not automatically verify every
+broader marketing sentence.
+
+MANDATORY STOP-AND-ASK (WEB-TRUST-STOP-AND-ASK)
+------------------------------------------------
+When copy, design, omission, or behavior might reasonably be interpreted as false, exaggerated,
+incomplete, or misleading — including technically defensible wording with a false impression —
+Cursor MUST stop and ask the owner. Do not silently rewrite, delete, weaken, or disclaimer-away
+questionable claims. Present wording, location, customer impact, evidence, and options; wait for
+direction before substantive publication changes.
+
+CLAIM VERIFICATION REGISTER
+---------------------------
+Material claims MUST be tracked in reference/NIVO78_WEBSITE_CLAIM_VERIFICATION_REGISTER.json with
+states: VERIFIED, CONTRADICTED, NOT VERIFIED, OWNER_DECISION_REQUIRED, NOT_APPLICABLE.
+Only VERIFIED may be treated as verified. Missing evidence is NOT VERIFIED, never PASS.
+
+HIGH-RISK AREAS (summary)
+-------------------------
+- Functionality: shipped version only; platform scope; offline vs cloud dependencies.
+- Free / price / trial: align with NIVO78_RELEASE_TAXONOMY and pricing claim registry.
+- Privacy / security: no absolutes; code and operational behavior govern statements.
+- Compatibility / performance: evidence required; no invented benchmarks.
+- Images / demos: real UI vs mockups labeled; no misleading edits.
+- Testimonials / endorsements: no fabrication; permission and context preserved.
+
+WEBSITE CHANGE PROCEDURE
+------------------------
+Identify affected claims → trace implementation → check cross-page consistency → run automated
+website verifiers → escalate ambiguous items → update register → release gate evaluates register
+and changed content.
+
+AUTOMATED ENFORCEMENT (extend existing; no parallel standard)
+-------------------------------------------------------------
+Family STATIC: canonical files + register schema (verify-nivo78-website-trust.ps1).
+WEB-CLAIM-MATCHES-IMPLEMENTATION GATE: N78-Website/tools/verify/verify-website-mandatory.ps1 +
+verify-website-web-integrity-static.ps1 (structural/legal/sync); behavioral truth remains register + QA.
+WEB-TRUST-RELEASE-BLOCK GATE: block when register contains CONTRADICTED or unresolved
+OWNER_DECISION_REQUIRED on material claims targeted for release.
+Website deploy: include verify-website-mandatory.ps1 in pre-deploy path (existing N78-Website tooling).
