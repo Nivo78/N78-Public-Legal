@@ -1,5 +1,5 @@
-NIVO78 FAMILY QA AND TEXT-TEST STANDARD — v1.54
-Document ID: NIVO78-QA-STD-2026-V1.54
+NIVO78 FAMILY QA AND TEXT-TEST STANDARD — v1.55
+Document ID: NIVO78-QA-STD-2026-V1.55
 On-screen interaction detail: reference/NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md
 ================================================
 
@@ -87,6 +87,31 @@ Every product MUST ship:
   Desktop/Apps/N78-{Product}/N78-{Product}-QA-Suite.bat (Apps twin)
   Desktop/Apps/N78-{Product}/N78-{Product}-QA-Suite-Visible.bat (Apps twin)
   docs/QA_RELEASE_SUITE.md
+
+  Mandatory operator console (every release QA suite run — APP-TEST-RELEASE-QA-SUITE):
+    - Operators MUST launch QA through tools/launchers/N78-{Product}-QA*.bat
+      (start "…" pwsh.exe -NoExit …) so progress is visible; do not treat a
+      hidden IDE terminal as the ship gate console.
+    - run-{product}-qa-suite.ps1 MUST dot-source tools/lib/N78QaOperatorConsole.ps1
+      (reference: N78-Ops) and use Write-N78QaPhase / Write-N78QaPass /
+      Write-N78QaFail / Write-N78QaHeartbeat on long steps.
+    - Heartbeats: N78QaHeartbeatIntervalSeconds = 30 (30-second still-working
+      notices while Gradle, dotnet, or phone scripts run).
+    - Color semantics: Cyan = phase, Green = PASS, Red = FAIL / errors,
+      Yellow = caution / heartbeat.
+    - GATE: Assert-N78QaOperatorConsoleStandard (family verify or product
+      guardrail) on suite script + QA launchers.
+
+  Always-visible progress monitor (FAMILY-QA-VISIBLE-PROGRESS-MONITOR — GATE):
+    - reference/NIVO78_FAMILY_QA_VISIBLE_PROGRESS_MONITOR.txt
+    - tools/lib/N78QaProgressMonitor.ps1 (run ID, stages, streamed output,
+      30s heartbeats with NO RECENT OUTPUT vs PROGRESS CONFIRMED, run-state JSON)
+    - run-{product}-qa-suite.ps1 MUST Initialize-N78QaProgressRun,
+      Invoke-N78QaMonitoredProcess for long steps, Complete-N78QaProgressRun
+    - Windows interactive: Start-N78QaVisibleOperatorConsoleIfNeeded (no silent
+      bypass); title pattern Nivo78 QA Progress — {Product} — {Lane}
+    - GATE: tools/verify/verify-n78-qa-progress-monitor.ps1 (wired in
+      verify-n78-test-001-family.ps1 for N78-Ops reference)
 
 Headless suite — minimum lanes (adapt module names to stack):
 

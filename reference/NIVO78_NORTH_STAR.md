@@ -738,6 +738,7 @@ The following principles apply to **every** Nivo78 product. Level 2 mandatory ru
 - Minimize permissions, data exposure, dependencies, and attack surface; protect local data appropriately.
 - Validate imported data; provide backup, restore, and recovery appropriate to the product.
 - Never claim security certification or guarantees without evidence.
+- **Evidence-based verification (N78-QA-001):** Shipping products maintain a machine-readable product enforcement matrix (Appendix B of `reference/NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt`), governed exceptions where GATE tests are deferred, and release QA suite wiring that executes blocking verifiers — Cursor rules alone are not compliance proof. See `reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_STANDARD.txt`.
 
 ### 27.7 Responsive customer feedback
 - Discoverable bug and feature intake with classification, prioritization, and status workflow.

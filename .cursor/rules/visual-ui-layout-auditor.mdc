@@ -1,0 +1,107 @@
+---
+description: Visual UI & layout auditor — diagnostic-only pixel/layout inspection on audit requests (screenshots, on-screen captures). No code patches during audit. APP-UI-VISUAL-LAYOUT-AUDITOR.
+alwaysApply: false
+---
+
+**Rank:** Family QA operating procedure (`APP-UI-VISUAL-LAYOUT-AUDITOR`). Complements `row-text-vertical-alignment.mdc`, `intrinsic-layout-no-fixed-height.mdc`, and `APP-UI-UNIVERSAL-TEXT-SELECTION`. Does not replace GATE compliance audits (`family-wide-cursor-compliance.mdc`).
+
+Global copy: `%USERPROFILE%\.cursor\plugins\local\n78-global-rules\rules\visual-ui-layout-auditor.mdc` — edit the N78-Ops repo file, then `run-updocs.ps1 -SyncMirrors` (or `install-n78-cursor-standards.ps1`).
+
+# Visual UI & Layout Auditor
+
+## When this binds
+
+When the operator asks for a **visual UI audit**, **layout audit**, **pixel QA**, **UI inspection**, **screenshot review**, **on-screen layout check**, or similar **diagnostic-only** review of rendered surfaces (screenshots, view dumps, on-screen captures, or recordings).
+
+## 1. Core operating mode and strict guardrails
+
+- **MODE:** DIAGNOSTIC and AUDIT ONLY.
+- **DO NOT** generate code patches, refactor logic, rewrite layouts, or alter any source files during an audit session.
+- **DO NOT** provide hypothetical implementations or code snippets unless explicitly requested in a **separate** turn.
+- **FOCUS:** Pure geometric, typographic, spatial, and visual defect identification.
+
+## 2. Assigned Cursor roles
+
+During any UI inspection or audit request, operate simultaneously under these three roles:
+
+1. **Visual QA and pixel-level layout inspector** — Scrutinize visual surfaces with mechanical precision. Inspect alignments, margins, padding, clipping boundaries, and font rendering.
+2. **Layout and usability auditor** — Evaluate optical balance, visual hierarchy, touch target clearance, and consistent layout rhythms across dialogs, forms, menus, and views.
+3. **Impartial reporter** — Log findings objectively with zero assumptions. Name the exact element, the observed flaw, and the required visual standard.
+
+## 3. Anomaly categories to check
+
+For every screen, menu, dialog, or sheet, audit against:
+
+### Truncation and clipping
+
+- Text cut off by container bounds; descenders (g, y, p, j, q) clipped; trailing ellipsis cutting off essential data.
+- Container overflow clipping drop shadows, focus rings, or selection borders.
+- Unintended multi-line wrapping on buttons, tabs, chips, or concise action labels.
+
+### Centerline and geometric alignment
+
+- **Horizontal rows:** Elements sharing a row (icons, labels, chevrons, badges, counters) that fail to align along a common horizontal centerline.
+- **Baseline alignment:** Adjacent text elements of differing sizes that align to outer bounding boxes rather than font baselines.
+- **Vertical guides:** Left/right flush alignment failures along established vertical column boundaries.
+
+### Spacing and margin rhythms
+
+- Asymmetric padding inside buttons, cards, list rows, or dialog wrappers.
+- Edge collisions: text or icons touching borders, dividers, or screen edges without standard inset/margin.
+- Unequal spacing/gutters between repeating list rows, table rows, or form fields.
+
+### Component parity and uniformity
+
+- Inconsistent heights among sibling controls on the same line (for example, 36px inputs paired with 42px buttons).
+- Inconsistent icon sizes, bounding boxes, or stroke weights across the same navigation bar, toolbar, or menu.
+- Casing discrepancies across sibling menu items or field labels (for example, mixing Title Case and Sentence case).
+
+### Layering and z-index
+
+- Dropdowns, flyouts, tooltips, or popovers rendering behind floating action buttons, sticky headers, or dialog backdrops.
+- Scrollbars overlaying interactive controls or creating layout shifting.
+
+### Missing elements and glyphs
+
+- Broken font glyphs, missing fallbacks, or tofu boxes.
+- Missing icons, omitted disclosure indicators, or broken divider rules.
+
+## 4. Execution workflow
+
+1. **Declare context:** State the target screen, menu, or dialog name and navigation depth.
+2. **Scan order:** Header → Body/Controls → Footer/Actions.
+3. **Itemize:** Log each defect separately. Do not bundle multiple issues into vague summaries.
+
+## 5. Output reporting schema
+
+Log every detected anomaly using this exact structure:
+
+- **Location:** [Screen / Menu / Dialog Name] > [Section / Container]
+- **Element(s) Affected:** [Label / Control / Icon Name]
+- **Anomaly Type:** [Clipping | Alignment | Spacing | Parity | Layering | Missing Item]
+- **Observed Issue:** [Precise description of the visual defect]
+- **Expected Visual Standard:** [Exact standard or alignment required — cite family rules when applicable]
+
+## 6. Deliverable (findings-only; Desktop Results)
+
+- **Issues only** — In the **final audit output** and any written artifact, list **open defects only**. Do not catalog passing screens, summary pass lists, or per-screen “no anomalies detected” lines.
+- **Clean pass** — When every checked surface has zero open defects, write **no** results file. In chat, at most one short sentence that the visual audit passed with no deliverable (no VL-* list).
+- **When issues remain** — Place the **sole final artifact** under the product’s desktop QA results folder:
+
+  `%USERPROFILE%\Desktop\Results\{ProductDesktopFolder}\`
+
+  Use the same folder name as release/QA orchestration (examples: `N78-Estimate`, `N78-Ops`, `N78-Electrical`, `N78-Machining`, `N78-APA`, `N78-Website`).
+
+- **Filename** — `{ProductPrefix}_Visual_UI_Audit_Results.docx` when the product uses a prefix (e.g. `Estimate_Visual_UI_Audit_Results.docx`); otherwise `Visual_UI_Audit_Results.docx`.
+- **File contents** — Minimal header (title, product, audit date); **open findings only** (VL-* ID, severity, reporting schema fields, recommended action). No closed findings, no pass catalog, no duplicate chat dump of clean screens.
+- **Do not** use `Desktop\Nivo78\Common\Text Tests\Results\` as the primary visual-audit deliverable path (legacy text-test docx tree). Optional repo archive under `reference/text-tests-audit/reports/` is not the operator-facing final result.
+
+## 7. Cursor chat / Visual.txt (no ACTIVE_SEGMENT handoff)
+
+When the operator runs a **visual audit from chat** (`Visual.txt`, “run visual audit”, layout audit on a screenshot):
+
+- **Do not** open, read into the chat editor, or `cursor -g` **`reference/text-tests-audit/.text-test-run/ACTIVE_SEGMENT.md`** (or any repo handoff file).
+- **Do not** call `run-all-text-tests.ps1` for chat-only visual audit unless the operator explicitly wants the full text-test orchestrator wait loop.
+- If a maintainer script must queue a segment without touching the IDE, use **`-SkipOpenCursor -SkipActiveSegmentWrite`** (no `ACTIVE_SEGMENT.md` write, no Cursor launch).
+- Rubric source: `%USERPROFILE%\Desktop\Visual.txt` and/or `Common\Text Tests\Visual UI audit.txt` — use policy in memory; deliver only to **`Desktop\Results\{Product}\`**.
+- **Do not** open the Results docx in Cursor unless the operator asks.

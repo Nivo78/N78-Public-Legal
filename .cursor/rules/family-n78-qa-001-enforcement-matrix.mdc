@@ -1,0 +1,38 @@
+---
+description: N78-QA-001 Appendix B — product enforcement matrix (family GATE; canonical reference only)
+globs: reference/**/*QA_001*,tools/verify/verify-n78-qa-001*.ps1,tools/verify/verify-nivo78-qa-001-product-enforcement-family.ps1,tools/qa/verify-gate.ps1,tools/maintain/run-*-qa-suite.ps1,.cursor/rules/*n78-qa-001*.mdc
+alwaysApply: false
+---
+
+**Rank:** Family **GATE** (**FAMILY-N78-QA-001-ENFORCEMENT-MATRIX**). Outranked only by explicit operator override with governance metadata. Complements **FAMILY-N78-QA-001**; does not replace inventory, modes Appendix A, or evidence manifest rules.
+
+# N78-QA-001 — Product enforcement matrix (Appendix B)
+
+**Canonical specification:** `reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_STANDARD.txt`  
+**Template:** `reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_MATRIX_TEMPLATE.json`  
+**Parent standard:** `reference/NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt` (Appendix B)  
+**North Star:** `reference/NIVO78_NORTH_STAR.md` §27.6
+
+## When this binds
+
+Any product claiming **N78-QA-001** release certification, or any edit to `{ProductPrefix}_QA_001_ENFORCEMENT_MATRIX.json`, governed exceptions, `verify-gate.ps1`, or QA suite Layer 1 / final disk gate wiring.
+
+## Non-negotiable means
+
+A **blocking** row in the product matrix whose verifier **executed PASS** in the release QA suite — not an agent having read this `.mdc` file.
+
+## Required spine (product)
+
+1. `reference/{ProductPrefix}_QA_001_ENFORCEMENT_MATRIX.json` — `authority_chain` includes family QA standard + product enforcement standard + matrix self-path.
+2. Layer 1: product matrix verifier + matrix execute verifier (dotnet or Gradle filters).
+3. Family check: `tools/verify/verify-nivo78-qa-001-product-enforcement-family.ps1`.
+4. Release QA suite must invoke family + product matrix scripts before heavy lanes.
+
+**Reference products:** N78-Frame (WinForms + `.nivo78`), N78-Ops (`N78_OPS_QA_001_ENFORCEMENT_MATRIX.json`, `verify-n78-ops-qa-001-enforcement-matrix.ps1`), KMP siblings (`verify-n78-qa-001-enforcement-matrix-product.ps1`, `Invoke-N78Qa001EnforcementMatrixLayer1`). Non-negotiable means a blocking row in the product matrix passes in the release QA suite.
+
+## Cursor MUST NOT
+
+- Treat `.mdc` projections as GATE evidence.
+- Ship or certify without a product matrix and executed blocking verifiers.
+
+Sync: `install-n78-cursor-standards.ps1` / `run-updocs.ps1 -SyncMirrors`.

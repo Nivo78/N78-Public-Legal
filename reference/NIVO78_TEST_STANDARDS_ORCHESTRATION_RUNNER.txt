@@ -24,6 +24,7 @@ Before completing a behavioral change:
 4. Fix failures at the root cause; rerun affected tests after the final code revision.
 
 Family library (orchestrator banner + reference assert): N78-Ops/tools/lib/N78Test001OrchestrationStandard.ps1
+Operator console (visible window, 30s heartbeats, color): N78-Ops/tools/lib/N78QaOperatorConsole.ps1 — dot-source from every run-{product}-qa-suite.ps1
 
 ## Required compliance output (closing summary)
 

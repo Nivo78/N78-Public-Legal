@@ -1,0 +1,58 @@
+NIVO78 — N78-QA-001 product enforcement standard (family canonical)
+=====================================================================
+Standard ID: N78-QA-001 (Appendix B — product enforcement spine)
+Applies to: Every Nivo78 product that claims N78-QA-001 release certification
+Authority: Supplements reference/NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt §13
+North Star: reference/NIVO78_NORTH_STAR.md §27.6 (quality — evidence-based verification)
+
+PURPOSE
+-------
+Cursor rules, checklists, and prose alone are NOT enforcement. Each shipping product
+MUST ship a machine-readable enforcement registry, executable verifiers wired into the
+release QA orchestrator, and optional local pre-commit hooks. Non-negotiable means a
+blocking clause in the product matrix passes in the product release QA suite — not that
+an agent read an .mdc file.
+
+REQUIRED ARTIFACTS (every product)
+----------------------------------
+1. reference/{ProductPrefix}_QA_001_ENFORCEMENT_MATRIX.json
+   — Clone schema from reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_MATRIX_TEMPLATE.json
+   — blocking clauses: clause_id, summary, verifier_script and/or verifier_dotnet_filter,
+     qa_suite_layer, blocking: true
+   — authority_chain MUST include this file and NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt
+
+2. reference/{ProductPrefix}_QA_001_GOVERNED_EXCEPTIONS.json (when deferring GATE tests)
+   — owner, status, accepted_date, review_by, rationale, compensating_control
+   — Merged into DOCUMENTED_GAPS on inventory sync where applicable
+
+3. tools/verify/verify-n78-qa-001-enforcement-matrix.ps1 (product copy or shared lib)
+   — Validates matrix, QA suite wiring, .mdc projection phrases (mdc_projection_sync)
+
+4. Release QA suite MUST invoke (Layer 1 minimum):
+   — verify-n78-qa-001-enforcement-matrix.ps1
+   — verify-n78-qa-001-enforcement-matrix-dotnet.ps1 (all blocking dotnet filters)
+   — Product source gate (thin-test / forbidden-pattern scan)
+   — Product disk evidence gate (final stage — No Evidence, No Pass)
+
+5. tools/install-git-hooks.ps1 (recommended) — pre-commit on test/QA paths runs matrix + source gate
+
+6. Cursor projections (.cursor/rules/*) are mirrors only; canonical text lives under reference/
+
+REFERENCE IMPLEMENTATION
+------------------------
+N78-Frame: reference/N78_FRAME_QA_001_ENFORCEMENT_MATRIX.json, tools/qa/verify-gate.ps1,
+tools/verify/verify-n78-qa-001-*.ps1, tools/launchers/N78-Frame-QA-Suite.bat
+
+FAMILY GATE
+-----------
+Rule ID: FAMILY-N78-QA-001-ENFORCEMENT-MATRIX (GATE)
+Family verifier: tools/verify/verify-nivo78-qa-001-product-enforcement-family.ps1
+Product verifier: tools/verify/verify-n78-qa-001-enforcement-matrix.ps1 (or product-named equivalent)
+
+CERTIFICATION
+-------------
+No family or product N78-QA-001 PASS when the product matrix is missing, blocking clauses
+lack on-disk verifiers, the release QA suite omits matrix/dotnet/source/disk gates, or
+governed exceptions are expired.
+
+NO EVIDENCE, NO PASS. NO ENFORCEMENT MATRIX, NO RELEASE APPROVAL.

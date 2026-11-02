@@ -1,0 +1,825 @@
+NIVO78 FAMILY STANDARD: MANDATORY AUTOMATED AND ON-DEVICE TESTING
+
+Standard ID: N78-QA-001
+Status: Approved for implementation after project-specific capability assessment
+Scope: Application-agnostic. Applies to all Nivo78 applications, the currently loaded project, and future software utilities across desktop and mobile targets.
+
+1. PURPOSE
+
+Every Nivo78 application must be developed, verified, and released under a comprehensive, evidence-based testing standard.
+
+The objective is to automate as much testing as technically possible, verify actual application behavior rather than assume correctness, and minimize manual on-device testing without reducing quality, coverage, or confidence.
+
+Testing is not complete merely because code compiles, a test suite runs, a screen appears, or an automated agent reports success. Testing is complete only when the required behavior has been exercised and its results have been confirmed by verifiable evidence.
+
+This standard is mandatory for Cursor AI, developers, automated agents, local verification scripts, and release pipelines.
+
+Implementation must be incremental and compatible with the existing application architecture. Cursor MUST inspect the project and its current tooling before selecting commands, frameworks, device bridges, or CI integration. It MUST NOT invent successful execution, capabilities, device access, or test results.
+
+2. NON-NEGOTIABLE RULES
+
+2.1 No Evidence, No Pass
+
+A test MUST NOT be marked PASS without confirmed evidence that the test executed and the required result was actually observed.
+
+Every test result marked PASS must have:
+- A unique, stable test identifier.
+- A clearly defined requirement or behavior being tested.
+- A documented, reproducible test procedure or automated action.
+- A defined expected result and an objective pass criterion.
+- Machine-verifiable evidence that the test executed.
+- Machine-verifiable evidence confirming that the observed result matches the expected result.
+- A recorded outcome, execution time, and relevant environment/build identity.
+- A traceable relative path or URI reference to the evidence artifact.
+- A validation result showing that the evidence is present, readable, associated with the correct test run, and passes applicable evidence checks.
+
+Evidence may include assertion results, application state dumps, accessibility-tree snapshots, screenshots, navigation destinations, persisted file checks, file hashes, database integrity results, and sanitized device logs. Evidence type must be appropriate to the behavior under test.
+
+A test definition, planned action, code inspection, successful build, screenshot of an unchanged screen, empty log file, or unverified agent statement is not proof of a passing test. Evidence presence alone does not prove the expected result. The verifier must validate the evidence against the test's stated pass criteria.
+
+If evidence is missing, incomplete, ambiguous, contradictory, unreadable, or cannot be independently validated, the test MUST NOT be counted as PASS. Classify it as NOT VERIFIED, BLOCKED, or FAIL according to Section 2.2.
+
+2.2 MUTUALLY EXCLUSIVE TEST STATES
+
+Every test case MUST have exactly one of these states:
+- PASS: The test executed and validated evidence confirms that the expected result occurred.
+- FAIL: The test executed and the observed behavior violated the expected result, or the test exposed a reproducible defect.
+- NOT VERIFIED: Execution may have occurred, but outcome confirmation, evidence validation, or required assertions were incomplete or inconclusive.
+- BLOCKED: The test could not be completed because a required environment, device, permission, build artifact, or external dependency was unavailable.
+- NOT APPLICABLE (N/A): The test does not apply to the current target platform or configuration, with a documented and reviewed justification.
+- QUARANTINED: A previously identified flaky test is isolated for investigation under Section 9. This is an administrative execution status, not a successful result and not an exemption from reporting.
+
+A test that was not executed is never a pass. Failure to locate, interact with, or inspect a required control is a FAIL when the test environment is functioning and the control should be present. If the test environment itself prevents the test, use BLOCKED. If execution or result evidence is inconclusive, use NOT VERIFIED.
+
+Skipped, blocked, not-applicable, not-verified, and quarantined tests MUST be reported distinctly and excluded from the passed count. No test may be silently omitted from a report.
+
+2.3 ACTUAL BEHAVIOR, NOT JUST SOURCE INSPECTION
+
+Tests MUST verify observable application behavior and resulting state rather than rely solely on source-code inspection or mocked interfaces.
+
+Mocks and fakes may be used for isolated unit tests. They MUST NOT substitute for integration, UI, persistence, platform, file-system, database, entitlement, or physical-device verification when those operations are supported by the application and can be exercised in the relevant environment.
+
+A passing unit test does not prove an interface works. A successful UI click does not prove that underlying data persisted. A file appearing does not prove its contents are correct. A screenshot does not prove that an action succeeded unless the screenshot or associated evidence demonstrates the required outcome.
+
+2.4 NO FALSE COMPLETION CLAIMS
+
+Cursor MUST report only work actually performed and results actually observed. It MUST distinguish implemented, executed, verified, blocked, and not-yet-implemented work. It MUST NOT claim full compliance when a required gate, test, device run, evidence validation, or inventory reconciliation has not been completed.
+
+3. PROJECT DISCOVERY AND MACHINE-READABLE SURFACE INVENTORY
+
+3.1 REQUIRED INVENTORY
+
+Before implementing or verifying a feature, maintain a machine-readable inventory at the project root:
+
+.nivo78/inventory.json
+
+Before creating or changing this file, Cursor MUST inspect the repository, existing test conventions, UI frameworks, navigation structure, and available automation. It MUST preserve compatible existing infrastructure and document any necessary migration.
+
+The inventory MUST enumerate, where applicable:
+- Every screen, page, route, and root container.
+- Every button, icon action, toolbar control, and menu item.
+- Every input field, editor, toggle, slider, checkbox, selector, and picker.
+- Every dialog, modal, confirmation prompt, sheet, popup, toast, banner, and notification surface.
+- Every window, panel, split pane, tab, drawer, and expandable section.
+- Relevant form states, including empty, valid, invalid, loading, success, error, and disabled.
+- Every data operation, including create, read, update, delete, import, export, print, backup, restore, and share where supported.
+- Every entitlement gate, trial restriction, permission request, and permission-denied path.
+- Every keyboard accelerator, tab-order sequence, and shortcut key.
+- Every supported display scale factor, window dimension, orientation, and responsive layout breakpoint.
+- Relevant accessibility names, roles, and expected focus behavior.
+- Relevant error, cancellation, retry, and recovery paths.
+- Platform-specific behaviors and hardware-dependent operations.
+
+3.2 MINIMUM INVENTORY SCHEMA
+
+The inventory root MUST contain:
+- $schema: a project-local schema reference or documented schema identifier.
+- version: inventory schema version.
+- application: application identifier and display name.
+- generated_at: timestamp of generation or last reconciliation.
+- target_platforms: platforms and configurations in scope.
+- surfaces: array of surface records.
+- inventory_validation: last validation status and validation report reference, where generated.
+
+Each surface record MUST include:
+- surface_id: stable unique identifier.
+- name: human-readable name.
+- type: screen, page, route, dialog, window, panel, banner, or another documented type.
+- platform_scope: applicable target platforms/configurations.
+- controls: array of control records.
+- related_requirements: requirement identifiers where available.
+
+Each control record MUST include:
+- control_id: stable unique identifier.
+- type: button, field, menu_item, link, selector, toggle, or another documented type.
+- label_or_accessible_name.
+- states: relevant enabled, disabled, focused, selected, invalid, loading, success, and error states as applicable.
+- actions: supported actions such as click, tap, keyboard input, selection, shortcut, open, close, save, export, or cancel.
+- expected_outcomes: observable results for each required action.
+- test_ids: linked tests.
+- implementation_status: implemented, planned, deprecated, or not applicable.
+- platform_scope.
+- verification_status and evidence references maintained from the latest test run, or linked through the test manifest.
+
+The project MUST add a formal JSON Schema or equivalent machine-validated schema for the inventory. Exact schema filenames may follow existing project conventions but MUST be documented. Invalid JSON, duplicate identifiers, missing required fields, unknown status values, and broken test/evidence references MUST fail inventory validation.
+
+3.3 INVENTORY COMPLETENESS AND DRIFT DETECTION
+
+Inventory completeness MUST NOT depend only on Cursor remembering to list controls. Implement a repeatable reconciliation process using available framework metadata, route registries, UI semantics/accessibility trees, source-level discovery where reliable, runtime inspection, and manual review where automated discovery is not possible.
+
+No single discovery technique is assumed to find every control. The reconciliation report MUST identify its sources, detected items, matched inventory items, unmatched items, and limitations.
+
+Any detected user-facing surface or control not accounted for in the inventory MUST be reported as an inventory gap and MUST block the relevant feature/release gate until resolved or explicitly reviewed and documented as a justified exception.
+
+Deprecated controls must be marked and eventually removed from the active inventory according to a documented process. A control MUST NOT be removed from the inventory merely to make a failed test or uncovered behavior disappear.
+
+3.4 CONTROL-LEVEL VERIFICATION
+
+An entire screen being marked tested does not verify its constituent controls. Each implemented control must have its own verification status and evidence mapping for every applicable action and required state.
+
+For controls that cannot be discovered or reliably driven automatically, record the specific limitation and a deterministic manual procedure under Section 7. Such controls remain unverified until the procedure is completed with recorded evidence.
+
+4. CONTROL TESTING AND COMBINATORIAL SCOPE
+
+Every interactive control MUST be tested independently to establish that it accepts the expected input, triggers the expected logic, transitions state accurately, produces the required visible feedback, and causes no unintended side effects.
+
+4.1 REQUIRED INPUT COVERAGE
+
+- Equivalence partitioning: Identify valid and invalid input classes and test representative values from each relevant class.
+- Boundary value analysis: For bounded numeric, text-length, and collection inputs, test minimum, maximum, just below minimum, just above maximum, and nominal values where those cases are meaningful and valid for the input type. Document when a boundary does not exist or does not apply.
+- Pairwise testing: For complex forms with multiple parameters, use pairwise coverage as a baseline for parameter interactions. Add higher-order combinations when risk analysis, dependencies, security, calculations, or known defects justify them.
+- Discrete options: Verify every discrete dropdown, radio, segmented-control, and equivalent option at least once in an end-to-end flow when practical. If exhaustive end-to-end selection is not practical, test each option at the appropriate UI/integration layer and document remaining workflow combinations.
+- State coverage: Test relevant enabled, disabled, selected, unselected, focused, invalid, loading, success, error, empty, and recovery states.
+- Negative paths: Test cancellation, invalid input, permission denial, unavailable storage, failed exports, duplicate actions, and recoverable errors where applicable.
+- Repeated actions: Where relevant, verify double-clicks, repeated taps, retries, and repeated submission do not cause duplicate or corrupt operations.
+
+4.2 RISK-BASED DEPTH
+
+The standard requires comprehensive coverage, not blind exhaustive enumeration of every theoretical combination. The project MUST prioritize data loss, calculations, security/privacy, licensing, persistence, export/import, customer-critical workflows, and high-risk platform behavior. Any reduced coverage must have a recorded rationale, affected cases, risk assessment, and approval by the authorized reviewer. It must never be presented as full coverage.
+
+5. STRUCTURAL NAVIGATION, WINDOWS, AND PANELS
+
+Every structural surface, including windows, modals, sheets, panels, drawers, tabs, and popups, MUST be verified as an independent component where applicable.
+
+Automated verification MUST confirm:
+- Opening and initial layout rendering.
+- Correct title, content, enabled state, and initial focus where relevant.
+- Clean dismissal through primary/secondary actions, Escape, close controls, and system back actions where supported.
+- Correct navigation destinations for every navigation action.
+- Focus trapping for modal dialogs and focus restoration to the invoking control on closure where supported by the platform.
+- Keyboard navigation and accessible names/roles where supported.
+- Resizing, display scaling, orientation adaptation, and absence of unintended clipping or inaccessible controls across supported configurations.
+- Safe cancellation or completion when a view closes during an operation; no hangs, leaked tasks, or corrupt state.
+- Correct behavior when reopening the surface and when navigating away and back.
+- Error presentation and recovery behavior.
+- No unintended changes to unrelated state.
+
+Tests MUST use the platform's supported automation and inspection capabilities. If a behavior cannot be objectively automated, record the limitation and manual evidence requirement; do not claim it passed automatically.
+
+6. LAYERED TESTING ARCHITECTURE
+
+Verification MUST use the following seven layers. A layer may use more than one framework or test command. The project MUST document the actual command, environment, evidence output, and gate behavior for each applicable layer.
+
+Layer 1: Static and Build Analysis
+- Compile/build applicable targets.
+- Run available type checks, linters, format checks, dependency/security checks, and static analysis required by the project.
+- Treat warnings as errors where supported and appropriate. Where existing tooling cannot do so, document the exception and establish a plan to eliminate or explicitly classify warnings.
+- Verify build outputs and record the exact build identity.
+
+Layer 2: Unit and Domain Logic Tests
+- Test domain logic, calculations, validation, state machines, and business rules independently.
+- Use independently derived expected values for important calculations, not values copied from the implementation under test.
+- Include boundary, invalid-input, regression, and property-based tests where appropriate.
+- Avoid tests that simply repeat the implementation's algorithm and therefore reproduce the same defect.
+
+Layer 3: Integration and Persistence Tests
+- Exercise real application components and supported storage interfaces in isolated test environments.
+- Verify actual writes and reads, schema validation, database integrity, transactions, migrations, file I/O, import/export, backup/restore, and persistence behavior where applicable.
+- Validate output content and structure, not merely file existence.
+- Use synthetic fixtures and isolated test data.
+- Verify failures, partial operations, cancellation, and recovery where applicable.
+
+Layer 4: Automated UI Tests
+- Drive actual rendered UI controls using supported automation.
+- Verify input acceptance, visible feedback, state transitions, error messages, enabled/disabled states, navigation, and accessibility behavior where supported.
+- Verify each implemented control's required actions independently.
+- Capture screenshots, accessibility/state snapshots, or other objective evidence at designated checkpoints and on failures.
+
+Layer 5: End-to-End Workflow Tests
+- Exercise complete user journeys across multiple surfaces and real integration boundaries.
+- Verify resulting data and persistence, not just navigation or displayed messages.
+- Cover primary workflows, important alternate paths, cancellation, error recovery, and relevant entitlement/permission gates.
+- Example: create an entity, edit it, calculate, save, export, reopen, and verify the reopened content.
+
+Layer 6: On-Device and Platform Verification
+- Run automated tests on physical target devices where the platform and tooling support them.
+- Verify platform-specific lifecycle, permissions, file sandboxing, OS integration, sleep/resume, background/foreground transitions, memory constraints, display scaling, orientation, and device-specific behavior as applicable.
+- A simulator, emulator, desktop bridge, or browser automation run MUST be identified accurately and MUST NOT be described as a physical-device test.
+- Maintain a platform/device coverage matrix stating target OS/version, device or emulator identity, screen/configuration, automation method, required tests, evidence location, and last verified build.
+- Use physical-device tests for hardware, OS, sandbox, or lifecycle behavior that cannot be reliably established in other environments.
+
+Layer 7: Manual Verification
+- Reserve manual verification for behaviors that cannot reasonably be automated, exploratory usability review, physical interactions requiring human judgment, and final visual quality review.
+- Every manual test MUST have a deterministic procedure, expected result, actual result, operator identity or role, timestamp, build identity, and evidence reference.
+- Manual testing is not a substitute for feasible automation. Repeated manual checks must be evaluated for automation.
+
+7. AUTOMATION IMPERATIVE AND GAP GOVERNANCE
+
+Any manual verification step represents an automation opportunity that MUST be assessed. It is not automatically proof of a failure in the testing system if automation is technically impossible, unsafe, unreliable, or disproportionate to the risk. The reason must be documented and reviewed.
+
+When an automation gap is identified:
+1. Assign a unique tracking identifier.
+2. Document the behavior that remains unautomated.
+3. Document the specific technical limitation and attempted automation approach, where applicable.
+4. Define a reproducible, deterministic manual test as a temporary control.
+5. Record the gap in the test report and inventory/manifest references.
+6. Create a backlog item to automate the gap or formally justify why it remains manual.
+7. Assign an owner or responsible role and a review date.
+8. State whether the gap blocks feature completion, release, or neither, with a risk-based justification and approval.
+
+A gap MUST NOT be silently waived. A blocked device test cannot be converted to PASS through a manual note or by passing a different environment. Where a release requires unavailable device verification, the release gate remains BLOCKED unless an explicitly authorized, documented policy exception permits release. Any such exception must not be described as a completed test.
+
+8. EVIDENCE, MANIFESTS, VALIDATION, AND RETENTION
+
+8.1 REQUIRED LOCATIONS
+
+Store test artifacts under the project root:
+- .nivo78/evidence/<build_id>/<test_run_id>/
+- .nivo78/reports/TEST_RUN_<TIMESTAMP>.txt
+- .nivo78/reports/TEST_RUN_<TIMESTAMP>.json, or an equivalent structured report if the project uses a documented standard.
+- .nivo78/schemas/ for formal schemas, unless an existing documented schema location is retained.
+- .nivo78/inventory.json for the surface inventory.
+
+Use stable build and test-run identifiers. Timestamps must include an unambiguous timezone or UTC notation. Do not overwrite evidence from a different build or test run.
+
+8.2 REQUIRED TEST MANIFEST
+
+Every verification run MUST produce a machine-readable manifest validated against a formal schema. At minimum, it must include:
+- Manifest schema version.
+- Application/project identifier.
+- Source revision/commit when available, and a clear indication if unavailable.
+- Build identifier and build artifact identity or checksum where available.
+- Test run identifier, start/end timestamps, and environment.
+- Platform, OS version, device/emulator identity, screen configuration, and scaling where relevant.
+- Test identifiers, test names, linked requirements/surfaces/controls, status, and duration.
+- Expected result and the observed result or assertion summary.
+- Evidence artifact paths and SHA-256 checksums for evidence files where supported.
+- Evidence validation status and validation errors.
+- Defects, gaps, quarantined tests, exceptions, and links to related records.
+- Exact commands or automation entry points used.
+- Tool/framework versions where material to reproducibility.
+
+The manifest MUST distinguish a test result from evidence-validation status. A PASS is valid only if both the execution result and required evidence validation pass.
+
+8.3 EVIDENCE VALIDATION AND INTEGRITY
+
+Implement a verifier that checks, at minimum:
+- Manifest/schema validity.
+- Unique test, surface, control, build, and run identifiers where required.
+- Referenced artifacts exist, are readable, and are within the permitted evidence directory.
+- Artifact checksums match the recorded checksums.
+- Each PASS result has the required evidence types and a defined expected result.
+- Evidence references map to the correct test, build, and run.
+- Test counts reconcile with individual test records.
+- No test is omitted from summary counts.
+- No invalid or contradictory status is reported as PASS.
+- No unauthorized skips, disabled assertions, or unexplained missing tests are accepted.
+- No evidence path escapes the project evidence directory through path traversal or unsafe links.
+- Inventory and test manifest references resolve.
+- Required redaction checks and schema validation have run.
+
+Checksums demonstrate that an artifact has not changed since the checksum was recorded; they do not, by themselves, prove that the artifact is genuine or that it shows the expected behavior. Evidence authenticity must be strengthened by associating artifacts with the actual test process, build/run identifiers, execution logs, and verifier-generated manifests. Where signing or CI provenance is available, record it. Do not claim cryptographic authenticity unless the mechanism has actually been implemented and validated.
+
+A test's screenshot, log, or file output must be evaluated against its stated pass criteria. Merely finding an artifact is insufficient.
+
+8.4 ARTIFACT REQUIREMENTS
+
+- Structured output: machine-readable execution results such as JUnit XML or JSON, normalized into the project's manifest.
+- Visual evidence: capture screenshots for designated UI/E2E checkpoints and failures. Include timestamp, build/run identity, screen resolution, OS scaling, and platform/device context in associated metadata. Do not obscure the application result with annotations; keep annotations in a separate copy or metadata where possible.
+- Persistence proof: for save, export, backup, and restore tests, record relevant input/output checksums, structural validation results, and content-level assertions. Use hashes only where meaningful; hashes do not replace semantic checks.
+- Runtime telemetry: capture relevant stdout, stderr, application logs, crash output, and device logs where available.
+- Navigation evidence: record the resolved destination and relevant route/view identity.
+- Accessibility evidence: capture relevant accessibility-tree or semantic state where supported.
+
+8.5 SANITIZATION AND PRIVACY
+
+Evidence MUST be sanitized before it is written to persistent test artifacts whenever practical and before it is shared or archived:
+- Mask authentication tokens, passwords, private keys, secrets, license credentials, and real customer personal data.
+- Use synthetic test data in database dumps and fixtures.
+- Normalize personal usernames in file paths when not required for diagnosis.
+- Do not capture or retain unrelated personal information.
+- Restrict evidence permissions appropriately.
+- Document any artifact that cannot be sanitized automatically and prevent its external publication until reviewed.
+
+Do not destroy information needed for trustworthy verification. Where exact file paths or device identifiers are needed for diagnosis, retain them only in appropriately restricted local evidence and sanitize copies intended for wider distribution.
+
+8.6 RETENTION
+
+- Local feature-branch evidence: retain for at least 7 days or until branch integration, whichever is later, unless an active investigation or policy requires longer retention.
+- Release verification evidence: archive alongside the release artifacts and checksum manifest according to the project's release-retention policy.
+- Do not describe evidence as permanently retained unless the repository, archive, permissions, and retention controls actually provide that guarantee.
+- Failed, blocked, and not-verified results must be retained long enough to diagnose and resolve the issue, even when routine successful branch evidence expires.
+
+9. FLAKY TEST GOVERNANCE AND QUARANTINE
+
+A flaky test is one that produces inconsistent results under materially equivalent conditions without a relevant code or environment change. Silently retrying failures until they pass is prohibited.
+
+9.1 IDENTIFICATION AND DIAGNOSIS
+
+- Record the original failed result and evidence before any retry.
+- Retries may be used diagnostically only when explicitly configured, limited, and reported separately; a later pass MUST NOT erase or convert the original failure into a pass.
+- Investigate timing, race conditions, shared state, resource contention, network dependencies, environmental instability, and test isolation.
+- Create a tracking record containing the test ID, failure frequency, environment, evidence, suspected cause, owner, and review date.
+
+9.2 QUARANTINE RULES
+
+- A test may be quarantined only after the failure is recorded and the reason is documented.
+- Quarantined tests MUST remain in a separate execution group and continue to run where practical.
+- Quarantined tests are not PASS, are excluded from passed counts, and remain visible in all reports.
+- Quarantine does not automatically remove the underlying behavior from release requirements.
+- A release MUST NOT proceed with an unresolved quarantined test that covers a Sev-1/Sev-2 risk, a required core workflow, persistence/data integrity, a critical calculation, security/privacy, licensing/entitlement, or a mandatory platform gate.
+- No more than three active quarantined tests may exist at one time without explicit written approval from the designated release authority. Approval does not make those tests pass or remove their risk.
+- A quarantine must have a tracking ID, owner, reason, containment/mitigation, expiry or review date, and release impact assessment.
+- A quarantined test MUST be restored only after the root cause is addressed and the test meets a documented stability criterion. The default criterion is 50 consecutive successful runs under representative conditions, with no hidden retries and with evidence captured for the runs. A documented risk-based alternative may be approved when 50 runs are technically impractical, but it must not weaken required result validation.
+
+9.3 RELEASE ACCOUNTING FOR QUARANTINE
+
+Release reports MUST show quarantined tests separately and state which requirements and controls they cover. They must never be included in the passed count. A release gate may permit a quarantine only if the release policy explicitly permits it, the affected behavior is not subject to a mandatory blocking rule, residual risk is documented, and an authorized reviewer approves it. Otherwise the gate is BLOCKED or FAIL.
+
+10. DEFECT CLASSIFICATION AND RELEASE GATE
+
+10.1 DEFECT SEVERITY
+
+- Sev-1 (Blocker): Crash affecting use, data loss, silent data corruption, incorrect critical calculation, broken persistence, security/privacy breach, or failed critical entitlement enforcement. Release tolerance: zero unresolved defects.
+- Sev-2 (Critical): Broken primary workflow, missing or incorrect navigation destination, broken required import/export, or major clipping/accessibility failure that prevents a user from completing a core task. Release tolerance: zero unresolved defects.
+- Sev-3 (Major): Secondary feature failure with a documented, reliable workaround, or significant non-blocking defect. Release tolerance: at most two unresolved defects only with explicit written approval, documented risk, owner, and fix target.
+- Sev-4 (Minor): Cosmetic imperfection, spelling typo, non-critical spacing/padding issue, or minor focus-order discrepancy that does not materially prevent use. Release tolerance: at most five unresolved defects under this standard, logged with owner or maintenance disposition.
+
+Application-specific regulatory, contractual, security, platform-store, or product requirements may impose stricter limits. The stricter applicable requirement takes precedence.
+
+Severity must be assigned based on impact, not convenience. A workaround does not automatically reduce severity where data integrity, security, privacy, calculation correctness, or entitlement enforcement is involved.
+
+10.2 MANDATORY RELEASE GATE
+
+A build may be certified for release only when all of the following are true:
+- All required Layer 1, 2, and 3 tests pass.
+- All required Layer 4 and 5 tests pass for core customer workflows and every implemented control/action required by the inventory.
+- No unresolved Sev-1 or Sev-2 defects remain.
+- Inventory schema validation passes and no unexplained inventory gaps remain.
+- Every implemented interactive control has applicable test coverage and linked evidence, or an approved documented exception consistent with this standard.
+- Required platform/device tests pass on each mandatory target in the coverage matrix.
+- No required test is silently skipped, omitted, or counted as passed without evidence.
+- All required test manifests and evidence validate successfully.
+- Quarantined tests and automation gaps comply with Section 9 and Section 7, respectively.
+- Any allowed Sev-3/Sev-4 defects have the required approval and records.
+- A final verification report has been generated and approved by the designated release authority.
+
+If a required test cannot run because of an unavailable device, missing environment, or unsupported automation, the gate MUST be BLOCKED unless a specific policy exception is authorized under the documented exception process. BLOCKED is not PASS.
+
+10.3 GATE STATES
+
+The overall run/release gate must be one of:
+- PASS: All mandatory criteria passed and evidence is valid.
+- FAIL: A test or gate criterion failed, including a prohibited defect, invalid evidence, inventory drift, or unauthorized test skip.
+- BLOCKED: Required verification could not be completed due to missing environment, device, build artifact, or unresolved dependency.
+- NOT READY: Required implementation, inventory, test definitions, or enforcement infrastructure is incomplete.
+
+A report may contain both failures and blocked tests; the gate must reflect the most restrictive applicable condition. FAIL takes precedence when a demonstrated failure violates a mandatory criterion. BLOCKED applies when required verification cannot be completed and no failure has already determined the gate. NOT READY applies before the required verification system or inputs are sufficiently implemented to run a valid gate.
+
+11. CURSOR AI EXECUTION RESPONSIBILITIES
+
+When developing, refactoring, auditing, or testing code within Cursor, the agent MUST:
+
+1. Inspect the repository structure, existing standards, build system, test frameworks, CI configuration, supported platforms, and current verification tools before making changes.
+2. Read and validate .nivo78/inventory.json before modifying existing user-facing code, if it exists. If it does not exist, create the initial inventory and schema as part of establishing compliance; do not pretend it was already present.
+3. Identify affected surfaces, controls, requirements, tests, and platform targets before implementing the change.
+4. Update the inventory and tests for every added, changed, or removed user-facing behavior.
+5. Generate or update corresponding automated tests for applicable Layers 2 through 6 before requesting code review. Layer 6 tests must be added when the change affects device/platform behavior.
+6. Add tests before or alongside production changes where practical. Do not postpone testing until after declaring the feature complete.
+7. Run targeted tests and capture actual command output, exit codes, environment/build identity, and evidence artifacts.
+8. Inspect assertion results, state transitions, persisted data, file content, hashes, navigation destinations, and screenshots as appropriate to the test.
+9. Run evidence and inventory validators and include their outcomes in the report.
+10. Record every test result in the unified machine-readable manifest and human-readable report.
+11. Never report a test as PASS unless its execution and result evidence validate.
+12. Never claim a physical-device test occurred unless it actually ran on the identified physical device.
+13. Refuse to mark work complete when required tests have not been run, evidence is absent/invalid, assertions are commented out, required tests are skipped without authorization, inventory reconciliation is incomplete, or mandatory gates have not passed.
+14. Report blockers honestly and specifically, including the exact missing capability or dependency, tests affected, and next action required.
+15. Do not weaken a test, delete a test, relax an assertion, change expected results, exclude a control, or reduce a gate merely to obtain a passing result. Such changes require a demonstrated requirements change, regression-risk assessment, and authorized review.
+16. Preserve existing application architecture and established project conventions unless a change is necessary and justified. Do not rewrite unrelated infrastructure merely to satisfy this standard.
+17. Separate code implementation status from verification status. A feature may be implemented but remain unverified or blocked.
+18. Before declaring compliance, run negative tests against the verification system itself as defined in Section 14.
+
+12. STANDARD TEST REPORT AND MANIFEST SPECIFICATION
+
+Every verification cycle MUST generate:
+- A human-readable report at .nivo78/reports/TEST_RUN_<TIMESTAMP>.txt.
+- A machine-readable manifest at .nivo78/evidence/<build_id>/<test_run_id>/manifest.json, validated against the documented manifest schema.
+- A machine-readable summary report at .nivo78/reports/TEST_RUN_<TIMESTAMP>.json or an equivalent documented structured format.
+
+The timestamp must be unambiguous and include UTC or an explicit timezone. File naming must be deterministic enough to locate runs and must not overwrite a different run.
+
+The human-readable report MUST contain:
+
+Header:
+- Report/run ID.
+- Application and project name.
+- Source revision/commit where available.
+- Build ID and artifact checksum where available.
+- Environment, target platform, OS, device/emulator identity where relevant.
+- Start/end timestamps and exact commands executed.
+
+Executive Summary:
+- Total inventory surfaces and controls.
+- Total defined tests, tests executed, PASS, FAIL, BLOCKED, NOT VERIFIED, N/A, and QUARANTINED counts.
+- Inventory gaps and automation gaps.
+- Evidence validation status.
+- Defect counts by severity.
+- Release gate status.
+
+Gate Decision:
+- PASS, FAIL, BLOCKED, or NOT READY.
+- Exact reason for the decision.
+- Unresolved Sev-1/Sev-2 counts.
+- Approved exceptions and approver, if any.
+
+Evidence Traceability Matrix:
+- Test ID and name.
+- Related requirement, surface, and control IDs.
+- Result status.
+- Expected and observed result summary.
+- Build/run identity.
+- Evidence artifact path and checksum where applicable.
+- Evidence validation status.
+
+Known Gaps, Quarantined Tests, and Exceptions:
+- Tracking ID.
+- Description and reason.
+- Affected controls/workflows/platforms.
+- Risk and release impact.
+- Owner or responsible role.
+- Workaround/containment.
+- Review or expiry date.
+- Approval reference where applicable.
+
+13. CONTINUOUS ENFORCEMENT AND IMPLEMENTATION PLAN
+
+13.1 ENFORCEMENT
+
+Where the repository and tooling support it, local verification commands, pre-commit/commit hooks, and CI/release pipelines MUST enforce the standard automatically.
+
+At minimum, automated enforcement must fail or block the applicable gate for:
+- Invalid inventory or manifest schemas.
+- Duplicate identifiers or broken references.
+- Unexplained untracked controls or surfaces.
+- Required tests missing from the manifest.
+- PASS results with missing or invalid evidence.
+- Missing required test layers or required device/platform runs.
+- Unauthorized skips or disabled assertions.
+- Invalid summary counts or contradictory statuses.
+- Missing mandatory release artifacts.
+- Prohibited unresolved defects.
+- Quarantine limits or release-policy violations.
+- Evidence validation, privacy redaction, or integrity-check failures.
+
+A hook or CI command that has not been implemented and tested MUST be reported as not implemented. Do not claim enforcement merely because a document says it is required.
+
+13.2 STAGED IMPLEMENTATION
+
+Cursor MUST implement this standard in controlled stages:
+
+Stage 1 — Project Discovery and Baseline
+- Inspect the project and existing standards.
+- Identify supported targets, build/test commands, CI, UI automation, device automation, and current gaps.
+- Record the baseline without altering unrelated product behavior.
+- Produce an implementation plan tied to the actual repository.
+
+Stage 2 — Schemas and Inventory
+- Define and validate the inventory schema.
+- Create/reconcile the initial inventory.
+- Implement inventory completeness checks and a gap report.
+- Add automated tests for valid, invalid, duplicate, missing, and untracked inventory entries.
+
+Stage 3 — Manifest and Evidence Verifier
+- Define the test manifest and report schemas.
+- Implement artifact path validation, checksum checks, test-to-evidence mapping, status/count reconciliation, and evidence validation.
+- Ensure that a file existing is not treated as proof of the expected behavior.
+- Add negative tests for missing, malformed, mismatched, tampered, or unreferenced evidence.
+
+Stage 4 — Test Execution Integration
+- Integrate existing unit, integration, UI, and end-to-end test suites.
+- Capture actual commands, exit codes, results, environment details, and artifacts.
+- Add platform/device coverage tracking and gap reporting.
+- Avoid replacing working project test infrastructure without a justified need.
+
+Stage 5 — Gate Integration
+- Integrate validation with local workflows and CI/release gates where available.
+- Define exact blocking behavior and authorized exception handling.
+- Ensure reports distinguish FAIL, BLOCKED, NOT VERIFIED, N/A, and QUARANTINED.
+- Add negative tests for each gate rule.
+
+Stage 6 — Demonstration and Acceptance
+- Run the full available verification pipeline.
+- Deliberately inject invalid inventory, missing evidence, mismatched checksums, unreferenced controls, unauthorized skips, incorrect status counts, and prohibited quarantine scenarios in isolated test fixtures.
+- Confirm each invalid case is rejected and valid cases are accepted.
+- Run actual project tests and report any unavailable platform/device tests as BLOCKED, not PASS.
+- Produce the final evidence package and a list of remaining gaps.
+- Do not declare implementation complete until the acceptance criteria in Section 14 are met.
+
+14. VERIFICATION OF THE VERIFICATION SYSTEM
+
+The testing standard and its enforcement tooling are themselves software and MUST be tested. A verifier that only accepts valid inputs has not demonstrated that it can reject invalid inputs.
+
+14.1 REQUIRED POSITIVE TESTS
+
+Verify that:
+- A valid inventory passes schema and identifier validation.
+- A valid test manifest with complete, matching evidence is accepted.
+- Correctly generated checksums validate.
+- Test counts reconcile when all test records and statuses are correct.
+- A permitted, properly documented N/A status is accepted.
+- A properly documented exception is recognized without changing a test's status to PASS.
+- A clean release candidate with all mandatory criteria satisfied receives PASS.
+
+14.2 REQUIRED NEGATIVE TESTS
+
+In isolated fixtures that cannot damage real project data, verify that:
+- Invalid JSON or schema-invalid inventory is rejected.
+- Duplicate surface, control, or test identifiers are rejected.
+- An implemented control missing required test coverage is reported.
+- A detected but untracked control or surface blocks the relevant gate.
+- A PASS result without evidence is rejected.
+- An evidence path that does not exist, is unreadable, or escapes the permitted evidence directory is rejected.
+- A checksum mismatch is rejected.
+- Evidence associated with the wrong build, run, or test is rejected.
+- Evidence that exists but fails the expected-result assertion is rejected.
+- A skipped test, disabled assertion, missing test record, or contradictory status cannot be counted as PASS.
+- Summary counts inconsistent with individual test records are rejected.
+- An unauthorized quarantine, excessive quarantine count, or quarantine of a prohibited critical test blocks release.
+- A required physical-device test reported only from an emulator is rejected as physical-device evidence.
+- A required device test that cannot run produces BLOCKED rather than PASS.
+- An unresolved Sev-1 or Sev-2 defect blocks release.
+- Missing required reports, manifests, or inventory validation blocks the gate.
+- A tampered manifest or artifact is detected to the extent supported by the implemented integrity checks.
+
+14.3 ACCEPTANCE CRITERIA
+
+The implementation of this standard is accepted only when:
+- The inventory and manifest schemas are implemented and validated.
+- Inventory reconciliation and gap reporting run reproducibly.
+- Evidence validation is automated and has positive and negative test coverage.
+- Test reports and manifests are generated from actual execution results, not manually fabricated summaries.
+- Gate rules are implemented and tested against representative valid and invalid fixtures.
+- Existing project tests are integrated without silently weakening their assertions or removing coverage.
+- Target-platform requirements and physical-device requirements are explicitly documented.
+- All currently available required tests have been run, with evidence and truthful status classification.
+- Remaining BLOCKED, NOT VERIFIED, N/A, QUARANTINED, or manual-only cases are itemized with reasons and release impact.
+- The final acceptance report states what is implemented, what is verified, what is blocked, and what remains.
+
+Passing the verifier's own tests does not prove that every application control has been tested. Both the verification system and the actual application must independently satisfy their respective acceptance criteria.
+
+15. EXCEPTIONS, OWNERSHIP, AND CHANGE CONTROL
+
+No exception may silently override the No Evidence, No Pass rule.
+
+Every exception MUST record:
+- Unique exception ID.
+- Requirement or gate being excepted.
+- Reason and evidence supporting the request.
+- Affected application, platform, controls, and test IDs.
+- Risk and customer impact.
+- Compensating controls, if any.
+- Approver with authority to approve the exception.
+- Date approved and expiry/review date.
+- Conditions for closure.
+
+Exceptions cannot convert a failed, blocked, not-verified, or quarantined test into PASS. They may only document an authorized decision about whether a release can proceed despite a clearly stated limitation, where this standard permits it. An exception MUST NOT override applicable law, platform requirements, contractual obligations, or a stricter application-specific standard.
+
+Changes to this standard require a versioned update, documented rationale, and review of affected inventory schemas, manifests, validators, tests, CI gates, and project instructions. Existing reports must remain interpretable under the standard version used for their run.
+
+16. GOVERNING PRINCIPLE
+
+If the expected result was not independently observed and confirmed by reproducible machine-verifiable evidence, the test did not pass.
+
+A screen appearing is not proof that its controls work. A click is not proof that the operation succeeded. A file existing is not proof that its contents are correct. A successful build is not proof that the application behaves correctly. A manual statement is not proof of an automated test.
+
+The objective is to automate every test that can be automated reliably, retain human verification where it adds necessary value, minimize unverified behavior, and prevent unproven claims of quality or release readiness.
+
+Code is not verified until its required behavior has been tested and its evidence has been validated. A release is not approved until the applicable gates have passed or an expressly permitted, documented exception has been authorized.
+
+APPENDIX A — MANDATORY TESTING OF ALL MODES OF OPERATION
+
+Standard ID: N78-QA-001
+Requirement: Mandatory
+Applies to: Every application in the Nivo78 family
+Enforcement: Release-blocking
+
+A.1 PURPOSE
+
+The testing standard requires complete verification of every supported mode of operation. Testing the default mode alone is insufficient. A control, workflow, calculation, window, panel, or feature that passes testing in one mode MUST NOT be considered verified in another mode without applicable test evidence.
+
+This requirement supplements all existing inventory, automation, evidence, reporting, and release-gate requirements in N78-QA-001. It does not replace or weaken any existing requirement.
+
+A.2 REQUIRED MODE INVENTORY
+
+Before testing is considered complete, Cursor MUST identify and document every supported mode of operation for the application.
+
+The inventory MUST include all applicable:
+
+- Operating modes and alternate workflows.
+- Basic, Pro, Premier, trial, licensed, unlicensed, expired, and restricted states.
+- User-selectable options, settings, preferences, and feature toggles.
+- Online, offline, disconnected, and recovery states where supported.
+- Initial, empty, populated, saved, modified, and restored data states.
+- Supported device types, operating systems, screen sizes, display scaling values, and input methods.
+- Application startup, normal operation, background/resume, restart, and shutdown states.
+- Import, export, backup, restore, and other data-handling modes.
+- Accessibility and alternate display modes supported by the application.
+- Other application-specific modes, configurations, and state-dependent behaviors.
+
+This list is a minimum, not a limitation. Cursor MUST identify additional modes that exist in the actual application.
+
+The inventory MUST distinguish between:
+1. A mode that is supported and must be tested.
+2. A combination that is supported and must be tested.
+3. A combination that is intentionally unsupported and must be verified to fail safely or be rejected as designed.
+4. A mode that does not apply, with a documented justification.
+
+Cursor MUST NOT classify a mode as unsupported, irrelevant, or not applicable merely to avoid testing it.
+
+A.3 MODE-BY-MODE TEST COVERAGE
+
+Every supported mode MUST have its own identifiable test coverage and recorded results.
+
+For each mode, tests MUST verify:
+
+- The application can enter the mode through the actual supported user or system path.
+- Evidence confirms that the application actually entered the intended mode.
+- All applicable screens, windows, panels, dialogs, controls, buttons, links, menus, options, and workflows behave correctly in that mode.
+- Visible labels, instructions, status indicators, error messages, and restrictions accurately reflect the current mode.
+- Enabled, disabled, hidden, unavailable, and restricted controls behave as intended.
+- Calculations, business rules, validation, permissions, and data operations produce the correct results.
+- Persistence is correct when settings, mode selections, or application data are saved.
+- Exiting the mode returns the application to the correct state.
+- Restarting or resuming the application preserves or resets the mode as specified.
+- Errors, invalid inputs, interruptions, and recovery paths are handled correctly.
+- No mode introduces unintended data loss, data corruption, unauthorized access, incorrect calculations, or misleading user feedback.
+
+A test passing in one mode MUST NOT automatically count as a pass in another mode unless a documented technical analysis demonstrates that the tested behavior is genuinely identical and the verification system independently validates the shared implementation and all mode-specific differences. Such equivalence MUST NOT be used to bypass testing of mode-specific UI, integration, persistence, permissions, or platform behavior.
+
+A.4 MODE TRANSITIONS AND COMBINATIONS
+
+Cursor MUST identify and test all applicable transitions between modes, including entering, leaving, switching, enabling, disabling, upgrading, downgrading, expiration, interruption, recovery, and restart.
+
+Tests MUST verify both the destination state and the effects on existing data and application state.
+
+Where multiple settings or conditions can interact, Cursor MUST identify meaningful supported combinations and test them. Pairwise or other combinatorial techniques MAY reduce redundant combinations only when the chosen method is documented and does not omit known high-risk interactions.
+
+The following MUST receive explicit coverage when applicable:
+
+- Licensing and entitlement changes during an active workflow.
+- Changes to settings that affect calculations, validation, permissions, or stored data.
+- Offline/online transitions during reads, writes, imports, exports, or other transactions.
+- Application restart or interruption during an operation.
+- Data created in one mode and subsequently opened, modified, exported, or restored in another mode.
+- Conflicting settings, invalid combinations, and unsupported transitions.
+- Recovery after a failed or interrupted operation.
+
+A.5 AUTOMATION REQUIREMENT
+
+All mode-related behavior that can reasonably be tested automatically MUST have automated tests.
+
+The test suite MUST exercise the actual mode-selection or mode-entry path wherever feasible. Tests that only mock the mode or directly set an internal variable MUST NOT be the sole evidence that the user-accessible mode works.
+
+Required automation includes, where technically feasible:
+
+- Mode discovery and entry.
+- Mode-specific UI and control behavior.
+- Mode-specific business logic and calculations.
+- State transitions and persistence.
+- Positive and negative paths.
+- Validation, restrictions, and error handling.
+- Data integrity across mode changes.
+- Supported platform and configuration variations.
+- Regression tests for previously discovered mode-specific defects.
+
+When full automation is technically impossible, the precise limitation MUST be documented, the missing coverage MUST be identified, and a controlled manual verification procedure with recorded evidence MUST be provided. Lack of automation does not remove the obligation to test.
+
+A.6 EVIDENCE REQUIREMENTS
+
+Every mode-coverage result MUST be traceable to:
+
+- The mode's unique inventory identifier.
+- The applicable test or test-case identifier.
+- The application build and test-run identifiers.
+- The starting conditions and relevant configuration.
+- The action or workflow executed.
+- The expected result and the actual observed result.
+- Evidence proving the mode was active and the result occurred.
+- The final test status and any associated defect reference.
+
+Where visual behavior is testable, evidence MUST confirm the actual on-screen result. Screenshots, recordings, logs, assertions, or other artifacts MUST be genuine outputs of the recorded test run and MUST be linked to the corresponding test case.
+
+The existence of a test file, test name, screenshot, log, or report alone is not proof that the mode was tested successfully. The evidence validator MUST check that the evidence corresponds to the correct build, test run, mode, and expected result.
+
+A.7 REQUIRED MODE-COVERAGE MATRIX
+
+The test inventory and reporting system MUST maintain a machine-readable mode-coverage matrix connecting every identified mode to its required tests and evidence.
+
+Each mode MUST be assigned one of the standard's recognized statuses. A mode MUST NOT be marked PASS unless all mandatory tests for that mode have passed with validated evidence.
+
+The matrix MUST expose:
+
+- Modes with no associated tests.
+- Modes with incomplete test coverage.
+- Modes with failed, blocked, quarantined, or unverified tests.
+- Modes with missing or invalid evidence.
+- Modes added or changed since the previous verified inventory.
+- Modes whose coverage has become stale because relevant code or configuration changed.
+
+The verifier MUST independently check the matrix against the current application inventory and required coverage. A manually asserted completion flag is not sufficient.
+
+A.8 RELEASE-BLOCKING RULE
+
+A release MUST NOT be reported as fully tested or ready for release if any supported mode lacks required coverage or validated evidence.
+
+The release gate MUST block approval when:
+
+- A supported mode has not been identified or inventoried.
+- A required mode has no applicable test coverage.
+- A required test has not passed.
+- A mode transition or required combination remains unverified.
+- Evidence is missing, invalid, mismatched, or insufficient to prove the result.
+- A required mode-specific test is blocked, quarantined, or otherwise unresolved.
+- A recent code or configuration change invalidates prior evidence and the required regression tests have not passed.
+
+A mode MUST NOT be silently excluded to obtain a passing result. Any existing exception process remains subject to the original standard; an exception does not permit a false claim of full mode coverage or a PASS result for an unverified mode.
+
+If a required physical-device test cannot be performed because the device or environment is unavailable, the result MUST remain BLOCKED or otherwise NOT VERIFIED under the existing status definitions. It MUST NOT be reported as PASS.
+
+A.9 VERIFICATION OF THE VERIFIER
+
+Automated tests MUST confirm that the coverage verifier rejects at least these cases:
+
+- A supported mode is omitted from the coverage matrix.
+- A mode is inventoried but has no required tests.
+- A mode has failing or unverified tests.
+- Evidence belongs to a different mode, build, or test run.
+- A mode is marked PASS while mandatory evidence is missing.
+- A new or modified mode has not received required regression coverage.
+- A mode is incorrectly declared not applicable or unsupported without the required justification.
+
+The verifier MUST also demonstrate that a complete, valid mode inventory with passing tests and validated evidence can satisfy the coverage gate.
+
+A.10 ACCEPTANCE CRITERIA
+
+This addendum is implemented only when verified evidence demonstrates that:
+
+1. Every supported mode is inventoried.
+2. Every mode has an explicit, reviewed test-coverage requirement.
+3. All applicable controls and workflows are tested in each relevant mode.
+4. Required mode transitions and high-risk combinations are tested.
+5. Automated coverage exists wherever technically feasible.
+6. Manual gaps are documented and have controlled verification procedures.
+7. Evidence is validated and traceable to the mode, build, test, and result.
+8. The release gate blocks incomplete or unverified mode coverage.
+9. Negative tests prove the verifier rejects incomplete mode coverage.
+10. The final report identifies any remaining gaps without representing them as passed tests.
+
+APPENDIX A GOVERNING RULE
+
+Every supported mode of operation must be tested to the same evidence-based quality standard. A successful default-mode test is not proof that alternate modes work. No mode, transition, or required combination may be declared verified without confirmed evidence.
+
+NO EVIDENCE, NO PASS. NO COMPLETE MODE COVERAGE, NO RELEASE APPROVAL.
+
+APPENDIX B — PRODUCT ENFORCEMENT MATRIX (MANDATORY)
+
+Standard ID: N78-QA-001
+Requirement: Mandatory for every product claiming N78-QA-001 certification
+Enforcement: Release-blocking (Rule ID FAMILY-N78-QA-001-ENFORCEMENT-MATRIX)
+Canonical specification: reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_STANDARD.txt
+Template: reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_MATRIX_TEMPLATE.json
+
+B.1 PURPOSE
+
+Section 13 requires hooks, CI, and release gates where supported. Appendix B makes that
+concrete: each product MUST maintain a machine-readable clause-to-verifier registry,
+wire blocking verifiers into the release QA orchestrator, and treat Cursor rule files as
+projections only — not as proof of compliance.
+
+B.2 REQUIRED PRODUCT SPINE
+
+- Product enforcement matrix JSON under reference/ (see template).
+- verify-n78-qa-001-enforcement-matrix.ps1 (or product-equivalent) in Layer 1 of the QA suite.
+- verify-n78-qa-001-enforcement-matrix-dotnet.ps1 executing every blocking verifier_dotnet_filter.
+- Source gate (forbidden thin-test / mock-pipeline patterns) and disk evidence gate (final stage).
+- Governed exceptions file when deferring dialog or pipeline GATE tests (owner, review_by, rationale).
+
+B.3 REFERENCE IMPLEMENTATION
+
+N78-Frame is the family reference product for Appendix B wiring. New products MUST clone the
+template and adapt clause IDs and verifiers; they MUST NOT ship without a matrix.
+
+B.4 GOVERNING RULE
+
+NO ENFORCEMENT MATRIX WITH EXECUTED BLOCKING VERIFIERS, NO N78-QA-001 RELEASE APPROVAL.
+Cursor .mdc files alone do not satisfy this appendix.

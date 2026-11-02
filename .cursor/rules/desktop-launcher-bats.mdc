@@ -55,6 +55,8 @@ if %ERR% NEQ 0 pause
 endlocal & exit /b %ERR%
 ```
 
+**QA suite Apps twins (exception — FAMILY-QA-VISIBLE-PROGRESS-MONITOR):** Do **not** `call` a repo QA `.bat` that spawns a separate PowerShell progress window (idle stub). Use `cd /d "%REPO%"` then `start "Nivo78 QA Progress — {Product} — …" pwsh.exe …` and `endlocal & exit /b 0`. Repair: `tools/maintain/sync-n78-qa-visible-progress-monitor-to-family.ps1 -RepairAppsTwins`. Library: `tools/lib/N78QaFamilyLauncherStandard.ps1`.
+
 For PowerShell-only tools, call the `.ps1` under `tools/maintain/` instead of a repo `.bat`, same `REPO` block and error `pause`.
 
 ## Naming

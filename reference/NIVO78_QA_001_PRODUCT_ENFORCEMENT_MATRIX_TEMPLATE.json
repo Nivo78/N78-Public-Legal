@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "standard_id": "N78-QA-001",
+  "product": "{PRODUCT_DISPLAY_NAME}",
+  "authority_chain": [
+    "reference/NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt",
+    "reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_STANDARD.txt",
+    "reference/{PRODUCT_PREFIX}_QA_001_ENFORCEMENT_MATRIX.json"
+  ],
+  "mdc_projection_sync": {
+    ".cursor/rules/{product}-n78-test-standards.mdc": [
+      "{PRODUCT_PREFIX}_QA_001_ENFORCEMENT_MATRIX.json",
+      "verify-n78-qa-001-enforcement-matrix.ps1",
+      "Non-negotiable means a blocking row"
+    ]
+  },
+  "four_phase_dialog": {
+    "required_catalog_ids": [],
+    "governed_exemptions_source": "reference/{PRODUCT_PREFIX}_QA_001_GOVERNED_EXCEPTIONS.json",
+    "exemptions_exception_class": "four_phase_dialog_exemption",
+    "test_name_fragment": "fourPhaseDialogContract"
+  },
+  "clauses": [
+    {
+      "clause_id": "{PRODUCT}-QA-001-ENFORCEMENT-MATRIX",
+      "summary": "Matrix registry matches repo verifiers and QA suite spine",
+      "verifier_script": "tools/verify/verify-n78-qa-001-enforcement-matrix.ps1",
+      "qa_suite_layer": "1",
+      "blocking": true
+    },
+    {
+      "clause_id": "{PRODUCT}-QA-001-ENFORCEMENT-MATRIX-DOTNET",
+      "summary": "Execute all blocking verifier_dotnet_filter clauses (Layer 1)",
+      "verifier_script": "tools/verify/verify-n78-qa-001-enforcement-matrix-dotnet.ps1",
+      "qa_suite_layer": "1",
+      "blocking": true
+    },
+    {
+      "clause_id": "{PRODUCT}-QA-001-DISK-EVIDENCE-GATE",
+      "summary": "On-disk evidence and manifest validation (final QA stage)",
+      "verifier_script": "tools/verify/verify-n78-qa-001-disk-gate.ps1",
+      "qa_suite_layer": "n78-qa-001-final",
+      "blocking": true
+    }
+  ]
+}

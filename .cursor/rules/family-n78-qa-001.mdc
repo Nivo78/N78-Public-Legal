@@ -1,0 +1,37 @@
+---
+description: N78-QA-001 — family mandatory evidence-based testing (apply per product when operator requests)
+alwaysApply: true
+---
+
+**Rank:** Family **GATE** (**FAMILY-N78-QA-001**). Outranked only by explicit operator override with governance metadata. Complements **FAMILY-N78-TEST-001**; does not replace it.
+
+# N78-QA-001 — Mandatory automated and on-device testing
+
+**Canonical specification:** `reference/NIVO78_QA_001_MANDATORY_TESTING_STANDARD.txt` (Standard ID **N78-QA-001**; **Appendix B** product enforcement matrix: `reference/NIVO78_QA_001_PRODUCT_ENFORCEMENT_STANDARD.txt`, Rule ID **FAMILY-N78-QA-001-ENFORCEMENT-MATRIX** — load `family-n78-qa-001-enforcement-matrix.mdc`). Family standards home: `N78-Ops/reference/`; mirrored under each product `reference/` after `install-n78-cursor-standards.ps1` / `run-updocs.ps1 -SyncMirrors`.
+
+## When this binds
+
+- **Always:** Do not mark any test **PASS** without machine-verifiable evidence that matches the test’s pass criteria (Section 2.1 — *No Evidence, No Pass*).
+- **N78-Frame (active implementation):** Follow the product projection `.cursor/rules/frame-n78-qa-001.mdc` and Frame QA gate scripts on every Frame QA / release claim.
+- **Other family apps:** When the operator says to apply **N78-QA-001**, **family testing standard**, or **Testing standards.txt** to a product, implement or verify that product’s inventory (`.nivo78/inventory.json`), evidence directories, manifest validator, and QA orchestrator — same fail-closed rules. Report **FAMILY-WIDE NOT VERIFIED** until each in-scope app has executed evidence validation.
+
+## Mutually exclusive statuses
+
+Use exactly one of: **PASS**, **FAIL**, **NOT VERIFIED**, **BLOCKED**, **NOT APPLICABLE**, **QUARANTINED**. Skipped or omitted tests are never PASS. Do not count **NOT VERIFIED** or **BLOCKED** in passed totals.
+
+## Cursor MUST
+
+1. Inspect repo tooling before choosing test commands; never invent execution or device results.
+2. Maintain or reconcile `.nivo78/inventory.json` when changing user-facing surfaces (Stage 2+).
+3. Produce manifest + human report artifacts under `.nivo78/reports/` and `.nivo78/evidence/` when the product QA gate supports it.
+4. Run the product’s **N78-QA-001 evidence verifier** before claiming QA PASS.
+5. Refuse false completion: separate *implemented* from *verified*.
+
+## Cursor MUST NOT
+
+- Mark PASS without evidence validation.
+- Treat file existence alone as proof of correct content (validate against pass criteria).
+- Convert BLOCKED / NOT VERIFIED / QUARANTINED into PASS.
+- Weaken tests or inventory to green a gate without authorized requirements change.
+
+Sync edits: update the repo `.cursor/rules/` copy when changing this global rule, then `run-updocs.ps1 -SyncMirrors` from the product that owns the change.

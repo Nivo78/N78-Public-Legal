@@ -55,5 +55,7 @@ APP-TRIAL-READONLY-EXPORT-LOCK | tools/verify/verify-nivo78-gates.ps1 -RuleId AP
 APP-UI-UNIFORM-SURFACE-VIEWPORT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UI-UNIFORM-SURFACE-VIEWPORT | tools/verify/nivo78-gates/APP-UI-UNIFORM-SURFACE-VIEWPORT.ps1 | adapter exit 0 + captured output
 APP-UPGRADE-BACKUP | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-BACKUP | tools/verify/nivo78-gates/APP-UPGRADE-BACKUP.ps1 | adapter exit 0 + captured output
 APP-UPGRADE-INTERRUPTION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-INTERRUPTION | tools/verify/nivo78-gates/APP-UPGRADE-INTERRUPTION.ps1 | adapter exit 0 + captured output
+FAMILY-N78-QA-001 | tools/verify/verify-nivo78-gates.ps1 -RuleId FAMILY-N78-QA-001 | tools/verify/verify-n78-qa-001-frame-evidence.ps1 (product) | product QA suite + evidence manifest exit 0
+FAMILY-N78-QA-001-ENFORCEMENT-MATRIX | tools/verify/verify-nivo78-gates.ps1 -RuleId FAMILY-N78-QA-001-ENFORCEMENT-MATRIX | tools/verify/verify-nivo78-qa-001-product-enforcement-family.ps1 + tools/verify/verify-n78-qa-001-enforcement-matrix.ps1 | family + product matrix verifiers exit 0 in release QA Layer 1
 
 A missing product adapter is NOT VERIFIABLE and blocks certification.
