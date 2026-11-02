@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "destinations": [
+    {
+      "sourceFile": "N78-Public-Legal-CleanScript.bat",
+      "appsRelativePath": "Business\\N78-Public-Legal"
+    }
+  ]
+}
