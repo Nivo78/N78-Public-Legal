@@ -56,3 +56,16 @@ lack on-disk verifiers, the release QA suite omits matrix/dotnet/source/disk gat
 governed exceptions are expired.
 
 NO EVIDENCE, NO PASS. NO ENFORCEMENT MATRIX, NO RELEASE APPROVAL.
+
+OCR-FIRST INSTALLED UI (supplements N78-QA-001 disk evidence)
+-------------------------------------------------------------
+Desktop products with installed .exe automation MUST NOT claim OCR-first
+compliance from library presence alone. Blocking clauses SHOULD include
+APP-TEST-OCR-ENGINE-SELFTEST (stage-3 fixture PASS) and
+APP-TEST-OCR-INSTALLED-PILOT (stage-4 report overall PASS) where
+NIVO78_OCR_PLATFORM_APPLICABILITY.json marks desktopStage4Pilot=REQUIRED
+(N78-Ops mobile-only: desktop Stage-4 NOT APPLICABLE),
+verified by Common/N78-Family/tools/verify/verify-n78-ocr-first-family.ps1
+and product gate adapters FAMILY-N78-OCR-FIRST-UI-TARGETING /
+APP-TEST-OCR-INSTALLED-PILOT. Exceptions only via
+NIVO78_OCR_TARGETING_EXCEPTIONS.json.

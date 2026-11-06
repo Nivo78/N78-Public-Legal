@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 2,
+  "canonicalHome": "Common/N78-Family/reference/NIVO78_OCR_PLATFORM_APPLICABILITY.json",
+  "policy": "APP-TEST-OCR-INSTALLED-PILOT (desktop Stage-4 installed readonly pilot) applies only where desktopStage4Pilot is REQUIRED. NOT_APPLICABLE is distinct from PASS, FAIL, and BLOCKED and must not be counted as PASS. Mobile release gates use FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION (instrumented / XCUITest) — not desktop OCR-first §3g.",
+  "statusDefinitions": {
+    "REQUIRED": "Desktop Stage-4 pilot overall PASS evidence required for family desktop OCR closure.",
+    "NOT_APPLICABLE": "Requirement must not apply; absence of PASS is not a failure for that requirement.",
+    "PASS": "Executed report with overall PASS (evidence path required).",
+    "FAIL": "Executed report with overall FAIL.",
+    "BLOCKED": "Pilot could not complete (distinct from NOT APPLICABLE).",
+    "PLANNED": "Documented future native mobile automation adoption when mobile ship lane matures.",
+    "OPTIONAL_DIAGNOSTIC": "Engineering-only OCR diagnostic (Phase 4A); must never be REQUIRED for mobile release gates."
+  },
+  "desktopOcrPolicy": "Unchanged Phase 2c/4B: native-resolution screenshots, N78OcrResult v1, word boxes, verified bbox interaction, post-interaction OCR, fail-closed missing/ambiguous targets, Stage-4 evidence where REQUIRED.",
+  "mobileNativeUiAutomationPolicy": "Android: instrumented tests, UI Automator, Espresso/Compose UI Test, accessibility selectors, state verification after each interaction, screenshots/logs/JUnit evidence. iOS: XCUITest, accessibility ids/labels, xcresult retention. See NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md.",
+  "mobileOptionalOcrDiagnosticPolicy": "Phase 4A N78-Ops androidTest OCR adapter is optional diagnostic only — ML Kit / OCR bbox tapping must not be listed as REQUIRED in product gates.",
+  "displayScalingValidation": {
+    "note": "S4D-SCALE-150 and S4D-SCALE-200 are optional read-only scope items in Stage-4; BLOCKED on pilot report is not PASS and remains outstanding until executed at that scale.",
+    "outstandingScales": ["150", "200"]
+  },
+  "applications": [
+    {
+      "applicationId": "N78-Color",
+      "repoFolder": "N78-Color",
+      "primaryPlatform": "desktop",
+      "desktopStage4Pilot": "REQUIRED",
+      "canonicalPassEvidence": "docs/evidence/ocr-automation/stage4-installed-readonly-pilot/run-20261105-115641/stage4-pilot.report.json",
+      "mobileNativeUiAutomation": "NOT_APPLICABLE",
+      "mobileOptionalOcrDiagnostic": "NOT_APPLICABLE",
+      "mobileBuilds": { "android": "module present; not primary ship target", "ios": "POC only (poc/kmp-compose/iosApp)" }
+    },
+    {
+      "applicationId": "N78-Electrical",
+      "repoFolder": "N78-Electrical",
+      "primaryPlatform": "desktop",
+      "desktopStage4Pilot": "REQUIRED",
+      "canonicalPassEvidence": "docs/evidence/ocr-automation/stage4-installed-readonly-pilot/run-20261105-121511/stage4-pilot.report.json",
+      "mobileNativeUiAutomation": "PLANNED",
+      "mobileOptionalOcrDiagnostic": "NOT_APPLICABLE",
+      "mobileBuilds": { "android": "android/app module", "ios": "iosApp Xcode project (framework + deploy scripts)" }
+    },
+    {
+      "applicationId": "N78-Estimate",
+      "repoFolder": "N78-Estimate",
+      "primaryPlatform": "desktop",
+      "desktopStage4Pilot": "REQUIRED",
+      "canonicalPassEvidence": "docs/evidence/ocr-automation/stage4-installed-readonly-pilot/run-20261105-122157/stage4-pilot.report.json",
+      "mobileNativeUiAutomation": "NOT_APPLICABLE",
+      "mobileOptionalOcrDiagnostic": "NOT_APPLICABLE",
+      "mobileBuilds": { "android": "not in Gradle settings (desktop-only ship)", "ios": "iosMain stubs only" }
+    },
+    {
+      "applicationId": "N78-Machining",
+      "repoFolder": "N78-Machining",
+      "primaryPlatform": "desktop",
+      "desktopStage4Pilot": "REQUIRED",
+      "canonicalPassEvidence": "docs/evidence/ocr-automation/stage4-installed-readonly-pilot/run-20261105-124750/stage4-pilot.report.json",
+      "mobileNativeUiAutomation": "PLANNED",
+      "mobileOptionalOcrDiagnostic": "NOT_APPLICABLE",
+      "mobileBuilds": { "android": "android/app module", "ios": "iosApp stub (Compose wiring incomplete)" }
+    },
+    {
+      "applicationId": "N78-Ops",
+      "repoFolder": "N78-Ops",
+      "primaryPlatform": "mobile",
+      "desktopStage4Pilot": "NOT_APPLICABLE",
+      "rationale": "N78-Ops ships on Google Play as a mobile product. Desktop Stage-4 installed OCR pilot is out of scope; mobile gates use native Android/iOS automation.",
+      "mobileNativeUiAutomation": "REQUIRED",
+      "mobileNativeUiAutomationEvidence": "On_device tests/sources/androidTest (Compose semantics), connectedPlayDebugAndroidTest; iosAppUITests (XCUITest)",
+      "mobileOptionalOcrDiagnostic": "OPTIONAL_DIAGNOSTIC",
+      "mobileOptionalOcrDiagnosticEvidence": "app/src/androidTest/java/com/nivo78/n78ops/ocr/ (Phase 4A — not release-blocking)",
+      "phase4bArchitectureReport": "Common/N78-Family/docs/evidence/ocr-first-standardization/phase4b/PHASE4B-MOBILE-ARCHITECTURE-REPORT.md",
+      "mobileBuilds": { "android": "app module (Play playRelease)", "ios": "iosApp + iosAppUITests (XCUITest)" },
+      "outOfScopeDesktopLaunchAttempts": [
+        {
+          "stamp": "run-20261105-122050",
+          "evidenceRelative": "docs/evidence/ocr-automation/stage4-installed-readonly-pilot/run-20261105-122050/",
+          "description": "216x159 dialog Failed to launch JVM — exploratory/out-of-scope desktop launch; not APP-TEST-OCR-INSTALLED-PILOT failure for N78-Ops"
+        }
+      ]
+    }
+  ],
+  "deprecatedFields": {
+    "mobileInstalledOcrPilot": "Replaced schemaVersion 2 by mobileNativeUiAutomation (mandatory) and mobileOptionalOcrDiagnostic (optional). Do not require mobileInstalledOcrPilot for gates."
+  }
+}

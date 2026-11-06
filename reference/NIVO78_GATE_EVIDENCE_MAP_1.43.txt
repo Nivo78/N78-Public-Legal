@@ -1,4 +1,4 @@
-NIVO78 GATE EVIDENCE MAP — v1.46
+NIVO78 GATE EVIDENCE MAP — v1.47
 ================================
 
 RULE_ID | VERIFIER | REQUIRED PRODUCT ADAPTER | EVIDENCE
@@ -39,6 +39,8 @@ APP-TEST-DESKTOP-PAGE-LAYOUT | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-
 APP-TEST-FILE-IO-VERIFY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-FILE-IO-VERIFY | tools/verify/nivo78-gates/APP-TEST-FILE-IO-VERIFY.ps1 | adapter exit 0 + captured output
 APP-TEST-WINFORMS-ON-DEVICE-UI | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-WINFORMS-ON-DEVICE-UI | tools/verify/nivo78-gates/APP-TEST-WINFORMS-ON-DEVICE-UI.ps1 | adapter exit 0 + captured output
 FAMILY-N78-TEST-001 | tools/verify/verify-n78-test-001-family.ps1 | tools/verify/nivo78-gates/FAMILY-N78-TEST-001.ps1 | family wiring PASS + product orchestrator hook when run per product
+FAMILY-N78-OCR-FIRST-UI-TARGETING | Common/N78-Family/tools/verify/verify-n78-ocr-first-family.ps1 | tools/verify/nivo78-gates/FAMILY-N78-OCR-FIRST-UI-TARGETING.ps1 | family spine + product shim + standards; executed evidence required for product GATE rows
+APP-TEST-OCR-INSTALLED-PILOT | docs/evidence/ocr-automation/**/stage4-pilot.report.json overall PASS where NIVO78_OCR_PLATFORM_APPLICABILITY.json desktopStage4Pilot=REQUIRED; N78-Ops NOT APPLICABLE (mobile) | tools/verify/nivo78-gates/APP-TEST-OCR-INSTALLED-PILOT.ps1 | applicability registry + latest stage-4 report when REQUIRED
 APP-TEST-INTEGRATION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-INTEGRATION | tools/verify/nivo78-gates/APP-TEST-INTEGRATION.ps1 | adapter exit 0 + captured output
 APP-TEST-OFFLINE | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-OFFLINE | tools/verify/nivo78-gates/APP-TEST-OFFLINE.ps1 | adapter exit 0 + captured output
 APP-TEST-RECOVERY | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-TEST-RECOVERY | tools/verify/nivo78-gates/APP-TEST-RECOVERY.ps1 | adapter exit 0 + captured output
@@ -57,5 +59,7 @@ APP-UPGRADE-BACKUP | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-BA
 APP-UPGRADE-INTERRUPTION | tools/verify/verify-nivo78-gates.ps1 -RuleId APP-UPGRADE-INTERRUPTION | tools/verify/nivo78-gates/APP-UPGRADE-INTERRUPTION.ps1 | adapter exit 0 + captured output
 FAMILY-N78-QA-001 | tools/verify/verify-nivo78-gates.ps1 -RuleId FAMILY-N78-QA-001 | tools/verify/verify-n78-qa-001-frame-evidence.ps1 (product) | product QA suite + evidence manifest exit 0
 FAMILY-N78-QA-001-ENFORCEMENT-MATRIX | tools/verify/verify-nivo78-gates.ps1 -RuleId FAMILY-N78-QA-001-ENFORCEMENT-MATRIX | tools/verify/verify-nivo78-qa-001-product-enforcement-family.ps1 + tools/verify/verify-n78-qa-001-enforcement-matrix.ps1 | family + product matrix verifiers exit 0 in release QA Layer 1
+FAMILY-QA-VISIBLE-PROGRESS-MONITOR | tools/verify/verify-n78-qa-progress-monitor.ps1 | tools/verify/nivo78-gates/FAMILY-QA-VISIBLE-PROGRESS-MONITOR.ps1 | adapter exit 0 + suite wiring scan; negative fixture launchers in verifier
+FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION | Common/N78-Family/tools/verify/verify-n78-mobile-native-ui-automation-family.ps1 | tools/verify/nivo78-gates/FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION.ps1 | family spine PASS; product NOT APPLICABLE or executed mobile test evidence when REQUIRED per NIVO78_OCR_PLATFORM_APPLICABILITY.json
 
 A missing product adapter is NOT VERIFIABLE and blocks certification.

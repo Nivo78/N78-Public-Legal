@@ -35,6 +35,8 @@ Every test result marked PASS must have:
 
 Evidence may include assertion results, application state dumps, accessibility-tree snapshots, screenshots, navigation destinations, persisted file checks, file hashes, database integrity results, and sanitized device logs. Evidence type must be appropriate to the behavior under test.
 
+Platform note (Phase 4B): On Android and iOS, mandatory device-level UI evidence comes from native automation (instrumented tests, XCUITest, accessibility snapshots) — not from desktop-style OCR JSON or OCR bounding-box tap logs. Desktop Windows installed pilots continue to use OCR-first evidence where REQUIRED (NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md section 2.7). Mobile native requirements: NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md.
+
 A test definition, planned action, code inspection, successful build, screenshot of an unchanged screen, empty log file, or unverified agent statement is not proof of a passing test. Evidence presence alone does not prove the expected result. The verifier must validate the evidence against the test's stated pass criteria.
 
 If evidence is missing, incomplete, ambiguous, contradictory, unreadable, or cannot be independently validated, the test MUST NOT be counted as PASS. Classify it as NOT VERIFIED, BLOCKED, or FAIL according to Section 2.2.
@@ -823,3 +825,23 @@ B.4 GOVERNING RULE
 
 NO ENFORCEMENT MATRIX WITH EXECUTED BLOCKING VERIFIERS, NO N78-QA-001 RELEASE APPROVAL.
 Cursor .mdc files alone do not satisfy this appendix.
+
+APPENDIX C — ZERO FALSE ALARM AND LAYER BOUNDARIES (MANDATORY)
+
+Standard ID: N78-QA-001
+Requirement: Mandatory for every product claiming N78-QA-001 certification
+Enforcement: QA policy and STATIC audit (see Appendix C section C.9); complements Appendices A and B
+Canonical specification: reference/NIVO78_QA_001_APPENDIX_C_ZERO_FALSE_ALARM.txt
+
+C.0 PURPOSE
+
+Appendix C reduces test-suite friction inversion: blocking failures must mean product
+defect or missing gate evidence, not harness plumbing, parallel static collisions, or
+rigid script substring guardrails. It aligns N78-QA-001 layers with N78-TEST-001 (headless
+logic first; visible UI diagnostic-first; serial collections for ambient state).
+
+C.0.1 GOVERNING RULE
+
+Products MUST comply with reference/NIVO78_QA_001_APPENDIX_C_ZERO_FALSE_ALARM.txt in full.
+Forensic failure audits (Appendix C section C.6) use reference/NIVO78_QA_001_FORENSIC_FAILURE_AUDIT_PROMPT.txt.
+NO LAYER DISCIPLINE, NO CLAIM OF CALIBRATED BLOCKING QA.

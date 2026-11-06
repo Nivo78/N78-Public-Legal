@@ -1,4 +1,4 @@
-NIVO78 STANDARD RULE ID REGISTRY — 1.46
+NIVO78 STANDARD RULE ID REGISTRY — 1.47
 
 Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 
@@ -197,6 +197,11 @@ Format: NUMBER | RULE ID | CLASS | PRIMARY CURSOR PROJECTION
 192 | FAMILY-QA-VISIBLE-PROGRESS-MONITOR | GATE | n78-ops-qa-visible-console.mdc
 193 | FAMILY-N78-QA-001 | GATE | family-n78-qa-001.mdc, frame-n78-qa-001.mdc
 194 | FAMILY-N78-QA-001-ENFORCEMENT-MATRIX | GATE | family-n78-qa-001-enforcement-matrix.mdc, frame-n78-test-standards.mdc
+195 | FAMILY-N78-OCR-FIRST-UI-TARGETING | GATE | family-n78-ocr-first-ui-targeting.mdc
+196 | APP-TEST-OCR-ENGINE-SELFTEST | STATIC | family-n78-ocr-first-ui-targeting.mdc
+197 | APP-TEST-OCR-INSTALLED-PILOT | GATE | family-n78-ocr-first-ui-targeting.mdc
+198 | FAMILY-OCR-TARGETING-EXCEPTIONS | STATIC | family-n78-ocr-first-ui-targeting.mdc
+200 | FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION | GATE | family-n78-mobile-native-ui-automation.mdc
 
 CLASS DEFINITIONS
 - STATIC = source/configuration requirement suitable for automated/static enforcement.

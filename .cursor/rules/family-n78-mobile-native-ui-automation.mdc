@@ -1,0 +1,38 @@
+---
+description: FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION — Android instrumented / iOS XCUITest; not desktop OCR (Phase 4B)
+globs: "**/androidTest/**,**/iosAppUITests/**,**/connected*AndroidTest*,**/On_device tests/**,**/shared/src/**,**/commonMain/**,**/app/src/main/**,**/iosApp/**"
+alwaysApply: false
+---
+
+**Rank:** Family **GATE / QA** (**FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION**). Complements **N78-TEST-001** Layer 3 and **N78-QA-001** device evidence.
+
+# Native mobile UI automation
+
+**Canonical:** `Common/N78-Family/reference/NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md`; `NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md` §2.8.
+
+## Policy
+
+- **Android:** instrumented tests, UI Automator, Espresso / Compose UI Test, accessibility semantics, test tags / resource ids, native screenshots, state verification after every interaction, connected-test XML + logs.
+- **iOS:** XCTest / XCUITest, accessibility identifiers and labels, native screenshots, `.xcresult` retention.
+- **Primary targeting:** native selectors and observable state — **not** OCR word bounding boxes or ML Kit for mandatory gates.
+- **Registry:** `mobileNativeUiAutomation` in `NIVO78_OCR_PLATFORM_APPLICABILITY.json` (REQUIRED for mobile-primary products such as N78-Ops).
+
+## Optional diagnostic (not mandatory)
+
+Phase 4A N78-Ops `com.nivo78.n78ops.ocr` androidTest package — ML Kit / N78OcrResult v1 experiment — **`mobileOptionalOcrDiagnostic: OPTIONAL_DIAGNOSTIC` only**. Do not wire into release gates as REQUIRED.
+
+## Cursor MUST
+
+1. Prefer existing product harnesses (e.g. N78-Ops `InstrumentedComposeHarness`, `UiTestTags`, `iosAppUITests`).
+2. Verify post-interaction UI or persisted state after each automated action.
+3. Report device Layer 3 as NOT VERIFIED or BLOCKED when no emulator/device — never invent PASS.
+
+## Cursor MUST NOT
+
+- Require mobile products to pass desktop Stage-4 OCR or mobile OCR pilot for release.
+- Use raw coordinate guessing as the primary mobile targeting strategy.
+- Delete Phase 4A OCR diagnostic code when correcting standards (Phase 4B retains implementation).
+
+## Verification
+
+Product QA suite + N78-QA-001 enforcement matrix when adopted — executed connected / XCUITest evidence. Desktop OCR verifiers do **not** satisfy mobile native gates.

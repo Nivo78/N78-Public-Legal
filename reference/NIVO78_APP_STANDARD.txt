@@ -3593,6 +3593,44 @@ documented orchestrator scripts and ALL-RESULTS reporting.
 
 
 
+FAMILY-N78-OCR-FIRST-UI-TARGETING [GATE]
+
+\- Installed and production-faithful on-device UI automation MUST use
+OCR as the primary targeting mechanism (native-resolution capture,
+N78OcrResult v1 word boxes, unique-match selection, post-action OCR
+verification, retained evidence). BLOCKED on ambiguous or missing
+targets. No unregistered coordinate guessing. Shared library:
+Common/N78-Family/tools/lib/N78WindowsUiOcr.ps1. See
+NIVO78_ON_SCREEN_QA_TESTING_STANDARD §3g.
+
+
+
+APP-TEST-OCR-ENGINE-SELFTEST [STATIC]
+
+\- Products with installed OCR pilots MUST keep the family OCR engine
+and schema self-test (stage-3 fixture suite or equivalent) passing on
+CI/operator machines with Windows OCR language packs.
+
+
+
+APP-TEST-OCR-INSTALLED-PILOT [GATE]
+
+\- Each desktop product that ships an installed .exe MUST maintain an
+executed installed readonly OCR pilot (stage-4 pattern) with
+overall PASS report JSON under docs/evidence/ocr-automation/ unless
+covered by a valid governed exception until Phase 2c adoption.
+
+
+
+FAMILY-OCR-TARGETING-EXCEPTIONS [STATIC]
+
+\- Non-OCR targeting (geometry, template, accessibility-only taps)
+is permitted ONLY when registered in
+Common/N78-Family/reference/NIVO78_OCR_TARGETING_EXCEPTIONS.json
+with owner, rationale, review_by, scope, and compensating_control.
+
+
+
 APP-TEST-FRESH-UPGRADE [QA]
 
 \- Before release, verify both a clean installation and
@@ -5637,6 +5675,10 @@ APP-TEST-UI-CRITICAL | [GATE] | 11-testing-quality.mdc
 APP-TEST-UNIT | [GATE] | 11-testing-quality.mdc
 APP-TEST-FILE-IO-VERIFY | [GATE] | 11-testing-quality.mdc
 FAMILY-N78-TEST-001 | [GATE] | n78-test-001-orchestration-runner.mdc
+FAMILY-N78-OCR-FIRST-UI-TARGETING | [GATE] | family-n78-ocr-first-ui-targeting.mdc
+APP-TEST-OCR-ENGINE-SELFTEST | [STATIC] | family-n78-ocr-first-ui-targeting.mdc
+APP-TEST-OCR-INSTALLED-PILOT | [GATE] | family-n78-ocr-first-ui-targeting.mdc
+FAMILY-OCR-TARGETING-EXCEPTIONS | [STATIC] | family-n78-ocr-first-ui-targeting.mdc
 APP-UI-A11Y-FLOOR | [QA] | 05-accessibility-i18n.mdc
 APP-UI-EXPLAIN-JARGON | [QA] | 05-accessibility-i18n.mdc
 APP-UPGRADE-BACKUP | [GATE] | 14-backup-upgrade-lifecycle.mdc

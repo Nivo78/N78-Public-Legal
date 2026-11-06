@@ -1,0 +1,120 @@
+NIVO78 FAMILY — ALWAYS-VISIBLE QA PROGRESS MONITOR
+Document ID: NIVO78-QA-VISIBLE-MONITOR-2026-V1
+Priority: MANDATORY — FAMILY-WIDE — NON-OPTIONAL
+Rule ID: FAMILY-QA-VISIBLE-PROGRESS-MONITOR (GATE)
+Primary implementation: tools/lib/N78QaProgressMonitor.ps1 (N78-Ops reference; stamp to family Common)
+Companion: tools/lib/N78QaOperatorConsole.ps1 (visible window, color, heartbeats)
+Verifier: tools/verify/verify-n78-qa-progress-monitor.ps1
+Cursor projection: .cursor/rules/n78-ops-qa-visible-console.mdc (N78-Ops); extend per product.
+
+================================================================================
+1. NON-NEGOTIABLE REQUIREMENT
+================================================================================
+Every Nivo78 QA run MUST show a continuously visible progress monitor from before
+the first QA operation until the final result is displayed. Interactive runs on
+Windows MUST use a dedicated, descriptively titled PowerShell console (pwsh -NoExit
+via launcher or auto-delegate). The monitor MUST NOT depend on Cursor chat, a hidden
+IDE terminal, or a log the operator must hunt for.
+
+Headless/CI mode (-AllowHeadless) is permitted only when explicitly selected and
+MUST emit equivalent machine-readable progress (run-state JSON under Desktop Results).
+
+A successful launcher is not proof of test success. Missing monitor integration is
+an enforceable GATE failure.
+
+================================================================================
+2. REQUIRED UX (WINDOWS INTERACTIVE)
+================================================================================
+Default window title pattern:
+  Nivo78 QA Progress — {Product} — {Lane}
+Examples: Nivo78 QA Progress — N78-Ops — Visible UI
+          Nivo78 QA Progress — N78-Ops — iPhone
+
+Windows interactive layout (optional — Set-N78QaProgressConsoleLayout):
+  Default: Windows chooses initial size and position; the operator may move and
+  resize the progress console freely (no forced geometry).
+  Opt-in preset: N78_QA_CONSOLE_LAYOUT=LeftTwoThirds before launch — left two-thirds
+  of the work area, full height (one-time SetWindowPos at run start; still resizable).
+
+The console MUST remain open after PASS, FAIL, BLOCKED, or CANCELLED until the
+operator closes it (-NoExit on launchers).
+
+The monitor MUST continuously show (refreshed on phase change and at least every
+30 seconds during long steps):
+  - Product and suite name
+  - Unique run ID and start time (UTC + local)
+  - Overall status: STARTING | RUNNING | PASS | FAIL | BLOCKED | CANCELLED
+  - Current stage; completed and pending stages
+  - Current operation (command or readable description)
+  - Elapsed time (run and current stage)
+  - Last activity time
+  - Live scrolling subprocess output (stdout/stderr streamed, not withheld)
+  - Most recent error/warning when applicable
+  - Final summary with pass/fail/skip/not-executed counts when available
+
+Heartbeats every 30s during silent stages MUST distinguish:
+  RUNNING — PROGRESS CONFIRMED (output within interval)
+  RUNNING — NO RECENT OUTPUT (silent but process alive)
+
+Generic "Working..." alone is insufficient.
+
+Single visible console (no idle stub window):
+  - After the operator starts QA, exactly ONE interactive progress console must
+    remain for the run (plus intentional on-screen app under test, e.g. Compose
+    visibleUiQa). An empty cmd.exe or PowerShell left at the prompt is a FAIL.
+  - Start-N78QaVisibleOperatorConsoleIfNeeded MUST use Start-Process pwsh.exe
+    (never cmd.exe /c start — that leaves a second console).
+  - Canonical repo .bat: start "Nivo78 QA Progress — {Product} — {Lane}" pwsh.exe
+    -NoExit … -InVisibleOperatorConsole … then endlocal & exit /b 0.
+  - Desktop\Apps\{Product}\*QA*.bat MUST NOT call the repo launcher in the same
+    window when that launcher spawns a separate pwsh (start pwsh or open-*-test-run.ps1).
+    Apps twins MUST cd to REPO and use the same start pwsh line, then exit.
+  - From an open PowerShell (IDE/agent), prefer tools\launchers\N78-{Product}-QA.ps1
+    when present (Start-Process pwsh, then return to prompt).
+  - Family sync: tools/maintain/sync-n78-qa-visible-progress-monitor-to-family.ps1
+    -RepairAppsTwins; gate: Assert-N78QaAppsTwinsSingleWindowUnderDesktopApps.
+
+================================================================================
+3. ENFORCEMENT
+================================================================================
+Every product release QA suite orchestrator MUST:
+  - Dot-source N78QaProgressMonitor.ps1 (via N78QaOperatorConsole.ps1 or direct)
+  - Call Initialize-N78QaProgressRun before first long operation
+  - Route long child processes through Invoke-N78QaMonitoredProcess
+  - Call Start-N78QaVisibleOperatorConsoleIfNeeded (no silent bypass on Windows)
+  - Register canonical launcher(s) that pass -InVisibleOperatorConsole
+
+Direct pwsh -File suite invocation on Windows MUST auto-open the visible console
+or exit BLOCKED when interactive display is unavailable (non-Windows without
+-AllowHeadless).
+
+Duplicate interactive runs for the same product lock file MUST NOT start a second
+full suite while an active run holds the lock.
+
+================================================================================
+4. REMOTE MAC / IPHONE (N78-Ops reference path)
+================================================================================
+Windows orchestrators that SSH to n78-remote MUST stream remote stdout/stderr to
+the same visible monitor, label each stage (sync, xcodebuild, install, xctest),
+report SSH disconnect separately from test assertion failure, and preserve remote
+log paths in the final summary.
+
+Do not infer test FAIL from unrelated "FAIL" substrings in build logs; use exit
+codes and structured test results.
+
+================================================================================
+5. AUTOMATED TESTS (MONITOR INFRASTRUCTURE)
+================================================================================
+tools/verify/verify-n78-qa-progress-monitor.ps1 MUST PASS in release-family gates.
+It verifies routing, streaming, heartbeats, exit-code mapping, bypass detection,
+and negative fixture launchers without requiring a physical device.
+
+Real end-to-end verification of Windows-to-Mac iPhone QA is documented in
+docs/QA_RELEASE_SUITE.md and is required before claiming full family certification
+for that lane.
+
+================================================================================
+6. CHANGE CONTROL
+================================================================================
+Do not weaken or bypass this requirement to green a build. Exceptions require
+registered override metadata per NIVO78_MANDATORY_ENFORCEMENT_CONSTITUTION.txt.

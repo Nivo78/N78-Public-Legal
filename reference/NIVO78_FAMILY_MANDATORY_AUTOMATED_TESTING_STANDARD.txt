@@ -92,6 +92,14 @@ A unit test or simulated UI test MUST NOT be represented as a device-level test.
 
 When a real device is required but unavailable, Cursor MUST report the device-level requirement as NOT VERIFIED. It MUST still run every feasible automated test and provide the missing device test as an explicit release-blocking item.
 
+### 2.3.1 Platform UI automation split (Phase 4B — desktop OCR vs mobile native)
+
+Windows desktop installed / production-faithful on-device UI automation for applicable products MUST follow OCR-first installed targeting (FAMILY-N78-OCR-FIRST-UI-TARGETING, NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md section 2.7) where desktop Stage-4 is REQUIRED in NIVO78_OCR_PLATFORM_APPLICABILITY.json.
+
+Android and iOS MUST use native platform automation (FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION, NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md): instrumented tests, UI Automator, Espresso or Compose UI Test, XCUITest, accessibility identifiers and semantics, native screenshots, and post-interaction state verification. Mobile applications MUST NOT be required to use desktop OCR engines, ML Kit OCR bounding boxes, or OCR-based tapping for mandatory release gates.
+
+Optional mobile OCR diagnostic tooling (Phase 4A experimental) may exist for engineering comparison only when marked OPTIONAL_DIAGNOSTIC in the applicability registry.
+
 ### 2.4 File input and output verification (APP-TEST-FILE-IO-VERIFY) — GATE
 
 Whenever application behavior **reads an input file** or **writes an output file** (images, exports, imports, batch folders, profiles, settings, backups, caches, or any persisted artifact on disk), automated QA MUST prove the I/O works as expected. This requirement is mandatory and fail-closed.

@@ -1,0 +1,28 @@
+---
+description: Cumulative change-class router — which focused rules to load (T1); alwaysApply index only
+alwaysApply: true
+---
+
+**Rank:** Family workflow (T1). Complements `nivo78-core.mdc` step 3.
+
+# Change-class router (cumulative)
+
+When you change files in this turn, **classify every touched path** — **no first-match-only**. Union all matching classes, **dedupe** rule filenames, then **read each** listed projection before implementing.
+
+Implementation table and algorithm: `N78-Ops/tools/lib/N78ChangeClassRouter.ps1` (STATIC verifiers use the same logic).
+
+## MUST load rules by class (union all that apply)
+
+| Class | Typical paths | Load |
+| ----- | ------------- | ---- |
+| ENGINE | shared, commonMain, logic | `11-testing-quality.mdc`, `04-input-architecture.mdc` |
+| UI | ui, Screen/Page, desktop, compose | `11-testing-quality.mdc`, `02-ui-input-save.mdc` |
+| PERSISTENCE | backup, storage, database | `14-backup-upgrade-lifecycle.mdc`, `11-testing-quality.mdc` |
+| MOBILE_UI_TEST | androidTest, iosAppUITests, On_device tests | `family-n78-mobile-native-ui-automation.mdc` |
+| DESKTOP_QA_OCR | verify ocr scripts, ocr evidence | `family-n78-ocr-first-ui-targeting.mdc` |
+| QA_MATRIX | QA_001 matrix, qa-001 verifiers | `family-n78-qa-001-enforcement-matrix.mdc` |
+| RELEASE | RELEASE_GATE, ReleaseGate | `12-release-supply-chain.mdc`, `11-testing-quality.mdc` |
+
+## Handoff
+
+List **`Router — MUST load explicitly:`** with deduped rule files. List **`Router — unmatched paths:`** for any production path with zero classes.

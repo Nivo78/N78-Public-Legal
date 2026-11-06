@@ -109,6 +109,59 @@ Every desktop product MUST automate a **full page sweep** before release:
 * Text-test segment markers (01–07) remain mandatory manual/Agent depth; they do not satisfy § 3f.
 * Each `Record(name, action)` from the WinForms reporter is one ALL-RESULTS row under lane `:winforms:visibleUiQa`.
 
+### 2.7 OCR-first installed targeting — **Windows desktop only** (§ 3g — **FAMILY-N78-OCR-FIRST-UI-TARGETING**)
+
+**Rule IDs:** **FAMILY-N78-OCR-FIRST-UI-TARGETING** [GATE], **APP-TEST-OCR-ENGINE-SELFTEST** [STATIC], **APP-TEST-OCR-INSTALLED-PILOT** [GATE], **FAMILY-OCR-TARGETING-EXCEPTIONS** [STATIC].
+
+For **installed** or **production-faithful on-device** UI automation on **Windows desktop** (`.exe`, shown WinForms main form, Compose Desktop installed window), **OCR is the primary targeting mechanism** for selecting on-screen UI items. Compose `:desktop:visibleUiQa` semantics remain required for Layer 2 breadth in the JVM test host but **do not alone** satisfy § 3g.
+
+**Mobile Android and iOS are out of scope for § 3g.** They use **native platform automation** per § 2.8 and `NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md`. Do not require ML Kit OCR, OCR bounding boxes, or OCR-based tapping on mobile release gates.
+
+**Mandatory behavior:**
+
+1. **Native-resolution screenshots** of the target application window (or documented device frame buffer via platform adapter).
+2. **OCR word bounding boxes** using the family **N78OcrResult schema v1** (`Common/N78-Family/tools/verify/invoke-windows-ocr.ps1`).
+3. **Verified bounding-box targeting** — pointer actions derive from matched word boxes (or registered exception alternative).
+4. **Post-interaction OCR verification** — re-capture and assert expected text/state after each critical action.
+5. **Evidence retention** — PNG + OCR JSON + machine report under `docs/evidence/ocr-automation/` or `.nivo78/evidence/`.
+6. **BLOCKED** when targets are missing or ambiguous (`Select-N78OcrTargetUnique`); never silently pick among duplicates.
+7. **No unregistered coordinate guessing** — raw screen clicks without prior OCR match and audit log are prohibited in installed pilots.
+8. **Exceptions only** via `Common/N78-Family/reference/NIVO78_OCR_TARGETING_EXCEPTIONS.json` (owner, rationale, review_by, compensating_control).
+
+**Shared library:** `Common/N78-Family/tools/lib/N78WindowsUiOcr.ps1` (product shims under `{Product}/tools/lib/`).
+
+**Verification:** `Common/N78-Family/tools/verify/verify-n78-ocr-first-family.ps1` + product **APP-TEST-OCR-INSTALLED-PILOT** evidence (executed stage-4-style report with `overall: PASS`) **where desktop Stage-4 is REQUIRED** per `NIVO78_OCR_PLATFORM_APPLICABILITY.json`. Library presence alone is **not** compliance.
+
+**Platform applicability (Phase 2c+):**
+
+| Application | Primary platform | Desktop Stage-4 (`APP-TEST-OCR-INSTALLED-PILOT`) |
+| ----------- | ---------------- | ------------------------------------------------- |
+| N78-Color | Desktop | **REQUIRED** — `overall: PASS` evidence |
+| N78-Electrical | Desktop | **REQUIRED** |
+| N78-Estimate | Desktop | **REQUIRED** |
+| N78-Machining | Desktop | **REQUIRED** |
+| N78-Ops | **Mobile (Google Play)** | **NOT APPLICABLE** — do not require desktop Stage-4 PASS; mobile compliance is **native instrumented / XCUITest** (§ 2.8) |
+
+**Status semantics:** **NOT APPLICABLE** is mutually exclusive from **PASS**, **FAIL**, and **BLOCKED**. Family-wide desktop OCR closure PASS requires every **REQUIRED** desktop application to have executed Stage-4 **PASS** evidence; **NOT APPLICABLE** products must not be silently omitted from the applicability registry.
+
+**Display scaling (Stage-4 §4D):** **S4D-SCALE-150** and **S4D-SCALE-200** remain **outstanding** until executed on each applicable desktop product at that scale; pilot **BLOCKED** / **NOT VERIFIED** rows must **not** be reported as PASS.
+
+**Registry:** `Common/N78-Family/reference/NIVO78_OCR_PLATFORM_APPLICABILITY.json`
+
+**Phase 4B correction:** Phase 4A experimental **mobile OCR adapter** code (N78-Ops `androidTest`) is **optional diagnostic tooling only** — not mandatory mobile architecture. See Phase 4B report under `phase4b/`.
+
+### 2.8 Native mobile UI automation (§ 3h — **FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION**)
+
+**Canonical:** `Common/N78-Family/reference/NIVO78_MOBILE_NATIVE_UI_AUTOMATION_STANDARD.md`
+
+**Android:** instrumented tests, UI Automator, Espresso / Compose UI Test, accessibility semantics and stable identifiers, native screenshots, post-interaction state verification, connected-test and failure evidence.
+
+**iOS:** XCTest / XCUITest, accessibility identifiers and labels, native screenshots, `.xcresult` retention, equivalent workflow coverage.
+
+**Verification:** Product release QA suites and N78-QA-001 enforcement matrix (where adopted) — executed device/simulator evidence. **Not** `verify-n78-ocr-first-family.ps1` Stage-4 mobile OCR.
+
+**Registry:** `mobileNativeUiAutomation` and `mobileOptionalOcrDiagnostic` in `NIVO78_OCR_PLATFORM_APPLICABILITY.json`.
+
 ### 2.4 Unified Consolidation (single-file law)
 * Each visible interaction assertion emits a discrete pass/fail record.
 * ALL lanes compile into `Desktop\Results\N78-{Product}\ALL-RESULTS.html`.

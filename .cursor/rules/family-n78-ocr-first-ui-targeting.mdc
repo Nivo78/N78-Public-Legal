@@ -1,0 +1,48 @@
+---
+description: FAMILY-N78-OCR-FIRST-UI-TARGETING — OCR-primary installed Windows desktop UI automation only; mobile uses native automation (Phase 4B)
+globs: "tools/**,docs/evidence/ocr*/**,reference/NIVO78_OCR*"
+alwaysApply: false
+---
+
+**Rank:** Family **GATE** (**FAMILY-N78-OCR-FIRST-UI-TARGETING**, **APP-TEST-OCR-INSTALLED-PILOT**) and **STATIC** (**APP-TEST-OCR-ENGINE-SELFTEST**, **FAMILY-OCR-TARGETING-EXCEPTIONS**). Outranked only by explicit governed override.
+
+# OCR-first UI targeting (Windows desktop)
+
+**Canonical:** `Common/N78-Family/reference/NIVO78_ON_SCREEN_QA_TESTING_STANDARD.md` §2.7; `NIVO78_FAMILY_MANDATORY_AUTOMATED_TESTING_STANDARD.txt` §2.3.1.
+
+## Policy
+
+- **OCR is primary** for **Windows desktop installed / production-faithful on-device** UI selection (`.exe`, WinForms, Compose Desktop installed window).
+- **Mobile Android / iOS:** use **FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION** — **not** OCR-first §2.7. Load `family-n78-mobile-native-ui-automation.mdc` for mobile work.
+- **Desktop Stage-4** applies only where `NIVO78_OCR_PLATFORM_APPLICABILITY.json` marks `desktopStage4Pilot: REQUIRED`. **N78-Ops desktop Stage-4 is NOT APPLICABLE** (mobile-primary).
+- **Shared library:** `Common/N78-Family/tools/lib/N78WindowsUiOcr.ps1` — products use `{Product}/tools/lib/N78WindowsUiOcr.ps1` **shim only** (no forked copies).
+- **Engine:** `Common/N78-Family/tools/verify/invoke-windows-ocr.ps1` (N78OcrResult schema v1).
+- **BLOCKED** on missing/ambiguous targets — never silent coordinate guesses on desktop installed pilots.
+- **Post-action OCR verification** and **evidence** (PNG + JSON + report) required for desktop installed pilots where REQUIRED.
+- **Exceptions:** `Common/N78-Family/reference/NIVO78_OCR_TARGETING_EXCEPTIONS.json` only.
+- **Phase 4A mobile OCR adapter** (N78-Ops androidTest): **optional diagnostic only** — never require for mobile release gates.
+
+## Cursor MUST
+
+1. Dot-source product shim `tools/lib/N78WindowsUiOcr.ps1` in **desktop** installed OCR scripts.
+2. Run `Common/N78-Family/tools/verify/verify-n78-ocr-first-family.ps1` before claiming **desktop** OCR GATE PASS.
+3. Run stage-3 fixture selftest for engine STATIC compliance when touching OCR tooling.
+4. Register non-OCR targeting in the exception JSON with review_by and compensating_control.
+
+## Cursor MUST NOT
+
+- Claim product OCR compliance because the family library exists.
+- Add unregistered raw screen clicks in `tools/verify/*installed*` / `*ocr*` **desktop** scripts.
+- Weaken `Select-N78OcrTargetUnique` BLOCKED behavior to green a gate.
+- Require ML Kit / mobile OCR bbox tapping for Android or iOS mandatory gates.
+
+## Verification
+
+| Rule ID | Verifier |
+| ------- | -------- |
+| FAMILY-N78-OCR-FIRST-UI-TARGETING | `verify-n78-ocr-first-family.ps1 -Mode Full` (desktop scope) |
+| APP-TEST-OCR-ENGINE-SELFTEST | stage-3 `*.report.json` overall PASS |
+| APP-TEST-OCR-INSTALLED-PILOT | stage-4 `stage4-pilot.report.json` overall PASS where REQUIRED |
+| FAMILY-OCR-TARGETING-EXCEPTIONS | JSON schema + non-expired active entries |
+
+Compose `:desktop:visibleUiQa` remains Layer 2 — does **not** replace installed OCR GATE on desktop.

@@ -1,20 +1,35 @@
 NIVO78 FAMILY STANDARDS — HOME
 ===============================
 
-Canonical home (edit here):
+Document classes (Phase 2B — complementary authority):
 
-  Desktop/Nivo78/N78Ops/reference/NIVO78_APP_STANDARD.txt
-  Desktop/Nivo78/N78Ops/reference/NIVO78_STANDARD_RULE_IDS.txt
-  Desktop/Nivo78/N78Ops/reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md
-  Desktop/Nivo78/N78Ops/reference/NIVO78_NEW_PRODUCT_CHECKLIST.txt
-  Desktop/Nivo78/N78Ops/reference/CURSOR_STANDARDS_ENFORCEMENT.txt
-  Desktop/Nivo78/N78Ops/reference/NIVO78_CURSOR_RULE_MAP_1.31.md
+  Class A — Install manifest spine (sync/hash set):
+    Edit each listed file at: Desktop/Nivo78/N78-Ops/reference/{filename}
+    Mirrors: product reference/ copies via install-n78-cursor-standards.ps1
+
+  Class B — Family extensions not yet in manifest:
+    Edit at: Desktop/Nivo78/Common/N78-Family/reference/
+    Promote: add filename to Get-N78FamilyStandardReferenceFileNames(), then edit at Class A path
+
+  Class C — Canonical application standard (member of Class A):
+    Normative APP-* text: Desktop/Nivo78/N78-Ops/reference/NIVO78_APP_STANDARD.txt
+    Same mirror path on products — never edit product copy as source
+
+Canonical hub (Class A + C edit location):
+
+  Desktop/Nivo78/N78-Ops/reference/NIVO78_APP_STANDARD.txt
+  Desktop/Nivo78/N78-Ops/reference/NIVO78_STANDARD_RULE_IDS.txt
+  Desktop/Nivo78/N78-Ops/reference/NIVO78_UNIFORM_UI_SURFACE_AND_VIEWPORT.md
+  Desktop/Nivo78/N78-Ops/reference/NIVO78_NEW_PRODUCT_CHECKLIST.txt
+  Desktop/Nivo78/N78-Ops/reference/CURSOR_STANDARDS_ENFORCEMENT.txt
+  Desktop/Nivo78/N78-Ops/reference/NIVO78_CURSOR_RULE_MAP_1.31.md
 
 Cursor enforcement (layout 1.31):
 
-  Desktop/Nivo78/N78Ops/.cursor/rules/nivo78-core.mdc          (alwaysApply)
-  Desktop/Nivo78/N78Ops/.cursor/rules/01-…19-….mdc             (focused + globs)
-  Desktop/Nivo78/N78Ops/.cursor/rules/nivo78-app-standards.mdc (DEPRECATED stub)
+  Desktop/Nivo78/N78-Ops/.cursor/rules/nivo78-core.mdc          (alwaysApply)
+  Desktop/Nivo78/N78-Ops/.cursor/rules/n78-change-class-router.mdc (alwaysApply)
+  Desktop/Nivo78/N78-Ops/.cursor/rules/01-…19-….mdc             (focused + globs)
+  Desktop/Nivo78/N78-Ops/.cursor/rules/nivo78-app-standards.mdc (DEPRECATED stub)
   (+ anticipate-before-implementing, fix-propagation-audit, desktop-launcher-bats)
 
 Install / sync:
@@ -22,6 +37,10 @@ Install / sync:
   pwsh -NoProfile -File tools/maintain/install-n78-cursor-standards.ps1
   pwsh -NoProfile -File tools/maintain/run-updocs.ps1 -SyncMirrors
   tools/launchers/N78-Install-Cursor-Standards.bat
+
+Portfolio drift (five products):
+
+  pwsh -NoProfile -File Common/N78-Family/tools/verify/verify-n78-family-standards-mirror-portfolio.ps1
 
 Override registry (portfolio DB, not in product git):
 

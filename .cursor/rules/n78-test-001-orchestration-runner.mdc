@@ -31,7 +31,7 @@ Detect harnesses and run the correct lane:
 
 | Stack | Layer 1 — Logic | Layer 2 — Rendered UI | Layer 3 — Device / runtime |
 | ----- | ----------------- | --------------------- | --------------------------- |
-| **Gradle / KMP** | `gradlew.bat` / `gradlew` — `allTests`, `:shared:desktopTest`, `:common:testDebugUnitTest`, or product doc | Compose `desktopTest`, Android `androidTest`, screen-reading suite | `connectedDebugAndroidTest`, `:desktop:visibleUiQa`, or product on-screen orchestrator |
+| **Gradle / KMP** | `gradlew.bat` / `gradlew` — `allTests`, `:shared:desktopTest`, `:common:testDebugUnitTest`, or product doc | Compose `desktopTest`, Android `androidTest`, screen-reading suite | **Desktop:** `:desktop:visibleUiQa`, installed OCR Stage-4 where REQUIRED. **Mobile:** `connected*AndroidTest`, XCUITest — native automation (`FAMILY-N78-MOBILE-NATIVE-UI-AUTOMATION`); mobile OCR pilot optional diagnostic only |
 | **npm / Node** | `npm run test:logic` or `npm test` | `npm run test:ui` | `npm run test:e2e` or `npm run test:all` |
 | **Python** | `pytest` (unit paths) | integration/UI paths per project | E2E per product QA doc |
 
@@ -42,6 +42,8 @@ Inspect exit codes and JUnit (or equivalent) XML. Fix failures; do not suppress.
 Each product MUST document a release orchestrator (`run-*-qa-suite.ps1`, `*ReleaseGate.bat`, or equivalent) that maps the three layers when the product ships user-facing behavior.
 
 ## Required compliance output
+
+Also follow `reference/NIVO78_AGENT_COMPLETION_PROTOCOL.txt` and validate JSON with `tools/verify/validate-n78-completion-evidence.ps1` before claiming automated PASS.
 
 When behavior or tests changed, end the turn with:
 

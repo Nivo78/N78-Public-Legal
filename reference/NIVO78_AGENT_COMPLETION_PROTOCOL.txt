@@ -1,0 +1,19 @@
+NIVO78 AGENT COMPLETION PROTOCOL (Phase 2B)
+==========================================
+
+V0 — Self-report only (chat): NOT VERIFIED for GATE/tests — never PASS.
+V1 — Shell-attested: command + exit + timestamp + log path in JSON.
+V2 — Artifact-attested: JUnit/XML, gate JSON, verifier stdout retained.
+
+Required handoff blocks:
+  1. Change scope (one line)
+  2. Applicability mini-matrix (rule IDs + tier)
+  3. N78 Completion Evidence JSON under docs/evidence/agent-runs/
+  4. N78-TEST-001 compliance block
+  5. GATE rollup with evidence paths
+  6. Certification boundary (dev complete vs release certified)
+
+Validate before claiming PASS:
+  pwsh -NoProfile -File tools/verify/validate-n78-completion-evidence.ps1 -EvidenceJsonPath <path>
+
+Forbidden: PASS without validatedBy from validate-n78-completion-evidence.ps1 or release orchestrator exit 0.
